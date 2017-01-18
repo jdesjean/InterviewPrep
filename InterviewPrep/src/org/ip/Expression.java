@@ -1,7 +1,11 @@
 package org.ip;
 
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Expression {
 	private static class StateMachine {
@@ -16,7 +20,7 @@ public class Expression {
 		private int add() {
 			int x = multiply();
 			while (eat('+')) {
-				x += join();
+				x += multiply();
 			}
 			return x;
 		}
@@ -55,31 +59,66 @@ public class Expression {
 			return currentChar = ++currentIndex < expression.length() ? expression.charAt(currentIndex) : -1;
 		}
 	}
+	
+	private static Deque<Integer> convertToBase(int value, int base, int digits) {
+		Deque<Integer> list = new LinkedList<Integer>();
+		for (int i = 0; i < digits; i++) {
+			list.push(value % base);
+			value /= base;
+		}
+		return list;
+	}
+	
+	public static List<String> solve(String integers, int target) {
+		return evaluateIterative(integers,target);
+	}
+	
+	private static List<String> evaluateIterative(String integers, int target) {
+		int digits = integers.length()-1;
+		return IntStream
+		.rangeClosed(0, (int)Math.pow(3, digits)-1)
+		.mapToObj(i -> convertToBase(i, 3, digits))
+		.map(base3 -> base3.stream().map(i -> i == 0 ? "." : i == 1 ? "+" : "*").collect(Collectors.joining("")))
+		.map(operators -> join(integers,operators))
+		.filter(expression -> (new StateMachine(expression)).evaluate() == target)
+		.collect(Collectors.toList());
+	}
+	
+	private static List<String> evaluateRecursive(String integers, int target) {
+		return generate(integers, 0, new char[integers.length() * 2 - 1], 0, new ArrayList<String>(), target);
+	}
+	
+	private static String join(String integers, String operators) {
+		char[] buffer = new char[integers.length()*2-1];
+		int length = 0;
+		for (int i = 0; i < integers.length(); i++) {
+			buffer[length++] = integers.charAt(i);
+			if (i >= operators.length() || operators.charAt(i) == '.') continue;
+			buffer[length++] = operators.charAt(i);
+		}
+		return String.copyValueOf(buffer, 0, length);
+	}
 
-	public static List<String> evaluate(String integers, int target) {
-		List<String> expressions = new ArrayList<String>();
-		generate(integers, 0, new char[integers.length() * 2 - 1], 0, expressions);
-		expressions.removeIf(expression -> (new StateMachine(expression)).evaluate() != target);
+	private static List<String> generate(String integers, int integersIndex, char[] expression, int expressionIndex,
+			List<String> expressions, int target) {
+		if (integersIndex == integers.length()) {
+			String exp = String.copyValueOf(expression, 0, expressionIndex);
+			if (new StateMachine(exp).evaluate() != target) return expressions; 
+			expressions.add(exp);
+			return expressions;
+		}
+		expression[expressionIndex] = integers.charAt(integersIndex);
+		generate(integers, integersIndex + 1, expression, expressionIndex + 1, expressions, target);
+		if (expressionIndex == 0 || expression[expressionIndex - 1] == '+' || expression[expressionIndex - 1] == '*')
+			return expressions;
+		expression[expressionIndex] = '+';
+		generate(integers, integersIndex, expression, expressionIndex + 1, expressions, target);
+		expression[expressionIndex] = '*';
+		generate(integers, integersIndex, expression, expressionIndex + 1, expressions, target);
 		return expressions;
 	}
 
-	public static void generate(String integers, int integersIndex, char[] expression, int expressionIndex,
-			List<String> expressions) {
-		if (integersIndex == integers.length()) {
-			expressions.add(String.copyValueOf(expression, 0, expressionIndex));
-			return;
-		}
-		expression[expressionIndex] = integers.charAt(integersIndex);
-		generate(integers, integersIndex + 1, expression, expressionIndex + 1, expressions);
-		if (expressionIndex == 0 || expression[expressionIndex - 1] == '+' || expression[expressionIndex - 1] == '*')
-			return;
-		expression[expressionIndex] = '+';
-		generate(integers, integersIndex, expression, expressionIndex + 1, expressions);
-		expression[expressionIndex] = '*';
-		generate(integers, integersIndex, expression, expressionIndex + 1, expressions);
-	}
-
 	public static void main(String[] input) {
-		System.out.println(evaluate("222", 24));
+		System.out.println(solve("222", 6));
 	}
 }
