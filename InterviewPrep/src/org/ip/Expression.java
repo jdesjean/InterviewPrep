@@ -1,8 +1,6 @@
 package org.ip;
 
 import java.util.ArrayList;
-import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -65,14 +63,7 @@ public class Expression {
 	}
 	
 	public static class IterativeEvaluator implements Evaluator {
-		private static Deque<Integer> convertToBase(int value, int base, int digits) {
-			Deque<Integer> list = new LinkedList<Integer>();
-			for (int i = 0; i < digits; i++) {
-				list.push(value % base);
-				value /= base;
-			}
-			return list;
-		}
+		
 		private static String join(String integers, String operators) {
 			char[] buffer = new char[integers.length()*2-1];
 			int length = 0;
@@ -88,7 +79,7 @@ public class Expression {
 			int digits = integers.length()-1;
 			return IntStream
 			.rangeClosed(0, (int)Math.pow(3, digits)-1)
-			.mapToObj(i -> convertToBase(i, 3, digits))
+			.mapToObj(i -> NumbersUtil.convertToBase(i, 3, digits))
 			.map(base3 -> base3.stream().map(i -> i == 0 ? "." : i == 1 ? "+" : "*").collect(Collectors.joining("")))
 			.map(operators -> join(integers,operators))
 			.filter(expression -> (new StateMachine(expression)).evaluate() == target)
@@ -130,5 +121,6 @@ public class Expression {
 	
 	public static void main(String[] input) {
 		System.out.println(solve(new IterativeEvaluator(), "222", 6));
+		System.out.println(solve(new RecursiveEvaluator(), "222", 6));
 	}
 }
