@@ -79,7 +79,7 @@ public class Expression {
 			int digits = integers.length()-1;
 			return IntStream
 			.rangeClosed(0, (int)Math.pow(3, digits)-1)
-			.mapToObj(i -> NumbersUtil.convertToBase(i, 3, digits))
+			.mapToObj(i -> NumberUtils.convertToBase(i, 3, digits))
 			.map(base3 -> base3.stream().map(i -> i == 0 ? "." : i == 1 ? "+" : "*").collect(Collectors.joining("")))
 			.map(operators -> join(integers,operators))
 			.filter(expression -> (new StateMachine(expression)).evaluate() == target)

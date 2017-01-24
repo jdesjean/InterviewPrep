@@ -58,7 +58,7 @@ public class Palindrome {
 			int to = (int)Math.pow(2, digits)-1;
 			return IntStream
 					.rangeClosed(from, to)
-					.mapToObj(i -> NumbersUtil.convertToBase(i, 2, digits))
+					.mapToObj(i -> NumberUtils.convertToBase(i, 2, digits))
 					.map(base2 -> base2.stream().map(i -> i == 0 ? "." : "|").collect(Collectors.joining("")))
 					.map(operators -> join(palindrome,operators))
 					.filter(string -> isPalindrome(string))
