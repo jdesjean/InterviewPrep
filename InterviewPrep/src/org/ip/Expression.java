@@ -1,9 +1,9 @@
 package org.ip;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import org.ip.Visitors.StringVisitor;
 
 public class Expression {
 	private static class StateMachine {
@@ -59,7 +59,7 @@ public class Expression {
 	}
 	
 	public interface Evaluator {
-		public List<String> evaluate(String integers, int target);
+		public void evaluate(StringVisitor visitor, String integers, int target);
 	}
 	
 	public static class IterativeEvaluator implements Evaluator {
@@ -75,52 +75,57 @@ public class Expression {
 			return String.copyValueOf(buffer, 0, length);
 		}
 		@Override
-		public List<String> evaluate(String integers, int target) {
+		public void evaluate(StringVisitor visitor, String integers, int target) {
 			int digits = integers.length()-1;
-			return IntStream
+			IntStream
 			.rangeClosed(0, (int)Math.pow(3, digits)-1)
 			.mapToObj(i -> NumberUtils.convertToBase(i, 3, digits))
 			.map(base3 -> base3.stream().map(i -> i == 0 ? "." : i == 1 ? "+" : "*").collect(Collectors.joining("")))
 			.map(operators -> join(integers,operators))
 			.filter(expression -> (new StateMachine(expression)).evaluate() == target)
-			.collect(Collectors.toList());
+			.forEach(string -> visitor.visit(string));
 		}
 		
 	}
 	
 	public static class RecursiveEvaluator implements Evaluator {
-		private static List<String> generate(String integers, int integersIndex, char[] expression, int expressionIndex,
-				List<String> expressions, int target) {
+		private static void generate(String integers, int integersIndex, char[] expression, int expressionIndex,
+				StringVisitor visitor, int target) {
 			if (integersIndex == integers.length()) {
 				String exp = String.copyValueOf(expression, 0, expressionIndex);
-				if (new StateMachine(exp).evaluate() != target) return expressions; 
-				expressions.add(exp);
-				return expressions;
+				if (new StateMachine(exp).evaluate() != target) return; 
+				visitor.visit(exp);
+				return;
 			}
 			expression[expressionIndex] = integers.charAt(integersIndex);
-			generate(integers, integersIndex + 1, expression, expressionIndex + 1, expressions, target);
+			generate(integers, integersIndex + 1, expression, expressionIndex + 1, visitor, target);
 			if (expressionIndex == 0 || expression[expressionIndex - 1] == '+' || expression[expressionIndex - 1] == '*')
-				return expressions;
+				return;
 			expression[expressionIndex] = '+';
-			generate(integers, integersIndex, expression, expressionIndex + 1, expressions, target);
+			generate(integers, integersIndex, expression, expressionIndex + 1, visitor, target);
 			expression[expressionIndex] = '*';
-			generate(integers, integersIndex, expression, expressionIndex + 1, expressions, target);
-			return expressions;
+			generate(integers, integersIndex, expression, expressionIndex + 1, visitor, target);
+			return ;
 		}
 		
 		@Override
-		public List<String> evaluate(String integers, int target) {
-			return generate(integers, 0, new char[integers.length() * 2 - 1], 0, new ArrayList<String>(), target);
+		public void evaluate(StringVisitor visitor, String integers, int target) {
+			generate(integers, 0, new char[integers.length() * 2 - 1], 0, visitor, target);
 		}
 		
 	}
 	
-	public static List<String> solve(Evaluator evaluator, String integers, int target) {
-		return evaluator.evaluate(integers,target);
-	}
-	
 	public static void main(String[] input) {
-		System.out.println(solve(new IterativeEvaluator(), "222", 6));
-		System.out.println(solve(new RecursiveEvaluator(), "222", 6));
+		StringVisitor visitor = new StringVisitor(){
+
+			@Override
+			public void visit(String string) {
+				System.out.println(string);
+			}
+			
+		};
+		new IterativeEvaluator().evaluate(visitor, "222", 6);
+		System.out.println("");
+		new RecursiveEvaluator().evaluate(visitor, "222", 6);
 	}
 }

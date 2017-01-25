@@ -25,4 +25,11 @@ public class ArrayUtils {
 		}
 		return array;
 	}
+	public static void println(int[] array, int length) {
+		int size = Math.min(array.length, length);
+		for (int i = 0; i < size; i++) {
+			System.out.print(array[i]);
+		}
+		System.out.println("");
+	}
 }

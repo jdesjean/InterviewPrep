@@ -61,8 +61,15 @@ public class Queens {
 		}
 		return false;
 	}
+	private static void printChessLine(int[] array) {
+		for (int i = 0; i < array.length; i++) {
+			System.out.print("+");
+			System.out.print("-");
+		}
+		System.out.println("+");
+	}
 	private static void printChess(int[] array) {
-		System.out.println("+-+-+-+-+");
+		printChessLine(array);
 		for (int i = 0; i < array.length; i++) {
 			for (int j = 0; j < array.length; j++) {
 				System.out.print("|");
@@ -70,9 +77,9 @@ public class Queens {
 				else System.out.print(" ");
 			}
 			System.out.println("|");
-			if (i < array.length - 1) System.out.println("+-+-+-+-+");
+			if (i < array.length - 1) printChessLine(array);
 		}
-		System.out.println("+-+-+-+-+");
+		printChessLine(array);
 	}
 	public static void solve(PermutationVisitor visitor, int size) {
 		int[] columns = new int[size];
