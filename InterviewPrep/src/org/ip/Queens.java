@@ -1,9 +1,9 @@
 package org.ip;
 
-import java.util.List;
-
 import org.ip.ArrayUtils.Filter;
 import org.ip.ArrayUtils.PermutationVisitor;
+import org.ip.ArrayUtils.PermutatorIterative;
+import org.ip.ArrayUtils.PermutatorRecursive;
 
 public class Queens {
 	public static void main(String[] s) {
@@ -45,10 +45,21 @@ public class Queens {
 			
 			+-+-+-+-+
 					 */
-		solve(new PermutationVisitor(){
+		solveRecursive(new PermutationVisitor(){
 
 			@Override
 			public void visit(int[] array) {
+				printChess(array);
+				System.out.println("");
+			}
+			
+		},4);
+		System.out.println("**");
+		solveIterative(new PermutationVisitor(){
+
+			@Override
+			public void visit(int[] array) {
+				if (isDiagonal(array)) return;
 				printChess(array);
 				System.out.println("");
 			}
@@ -58,6 +69,15 @@ public class Queens {
 	private static boolean isDiagonal(int[] columns, int column) {
 		for (int i = 0; i < column; i++) {
 			if (Math.abs(columns[i] - columns[column]) == column - i) return true;
+		}
+		return false;
+	}
+	private static boolean isDiagonal(int[] columns) {
+		for (int i = 0; i < columns.length; i++) {
+			for (int j = 0; j < columns.length; j++) {
+				if (i == j) continue;
+				if (Math.abs(columns[i] - columns[j]) == Math.abs(j - i)) return true;
+			}
 		}
 		return false;
 	}
@@ -81,18 +101,25 @@ public class Queens {
 		}
 		printChessLine(array);
 	}
-	public static void solve(PermutationVisitor visitor, int size) {
+	public static void solveRecursive(PermutationVisitor visitor, int size) {
 		int[] columns = new int[size];
 		for (int i = 0; i < size; i++) {
 			columns[i] = i;
 		}
-		ArrayUtils.permutations(visitor, new Filter(){
+		new PermutatorRecursive(new Filter(){
 
 			@Override
 			public boolean test(int[] array, int i) {
 				return !isDiagonal(columns,i);
 			}
 			
-		}, columns, 0);
+		}).permute(visitor, columns);
+	}
+	public static void solveIterative(PermutationVisitor visitor, int size) {
+		int[] columns = new int[size];
+		for (int i = 0; i < size; i++) {
+			columns[i] = i;
+		}
+		new PermutatorIterative().permute(visitor, columns);
 	}
 }
