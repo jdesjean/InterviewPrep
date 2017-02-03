@@ -54,6 +54,10 @@ public class ArrayUtils {
         }
         return fact;
     }
+	/*
+	 * Knuth's L-Algorithm
+	 * another option could be factoradics
+	 */
 	public static class PermutatorIterative implements Permutator {
 		
 		private static void reverse(int[] array, int startIndex, int endIndex) {

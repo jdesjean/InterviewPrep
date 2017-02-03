@@ -1,8 +1,6 @@
 package org.ip;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
 import org.ip.Visitors.StringVisitor;
@@ -22,58 +20,101 @@ public class Palindrome {
 			}
 			
 		};
-		new InterativeDecomposer().decompose(visitor,"abracadabra");
-		System.out.println("");
-		new RecursiveDecomposer().decompose(visitor,"abracadabra");
+		Decomposer[] decomposers = new Decomposer[]{new IterativeDecomposer(),new IterativeFilteredDecomposer(),new RecursiveDecomposer()};
+		for (int i = 0; i < decomposers.length; i++) {
+			decomposers[i].decompose(visitor, "abracadabra");
+			System.out.println("");
+		}
 	}
 	
 	public interface Decomposer {
 		public void decompose(StringVisitor visitor, String palindrome);
 	}
 	
-	//IterativeDecomposer needs some optimization
-	//A lot of the generated combination are filtered
-	public static class InterativeDecomposer implements Decomposer {
+	//Naive IterativeDecomposer. 
+	public static class IterativeDecomposer implements Decomposer {
 
-		private static boolean isPalindrome(String palindrome) {
+		protected static int isPalindrome(String palindrome, char[] operators) {
 			for (int i = 0, j = 0; i < palindrome.length(); i++) {
-				if (palindrome.charAt(i) == '|' && j != i) {
-					int jj = palindrome.charAt(j) == '|'  ? j+1 : j;
-					int ii = palindrome.charAt(i) == '|'  ? i-1 : i;
-					if (!Palindrome.isPalindrome(palindrome,jj,ii)) return false;
+				if (operators[i] == '|' && j != i) {
+					int jj = operators[j] == '|'  ? j+1 : j;
+					int ii = operators[i] == '|'  ? i : i;
+					if (!Palindrome.isPalindrome(palindrome,jj,ii)) return i;
 					j = i;
-				} else if (i == palindrome.length()-1 && j != i) return false;
+				} else if (i == palindrome.length()-1 && j != i) return i;
 			}
-			return true;
+			return palindrome.length();
 		}
-		
-		private static String join(String letters, String operators) {
+		protected static String join(String letters, char[] operators) {
 			char[] buffer = new char[letters.length()*2];
 			int length = 0;
 			for (int i = 0; i < letters.length(); i++) {
 				buffer[length++] = letters.charAt(i);
-				if (i >= operators.length() || operators.charAt(i) == '.') continue;
-				buffer[length++] = operators.charAt(i);
+				if (i >= operators.length || operators[i] == '.') continue;
+				buffer[length++] = operators[i];
 			}
 			return String.copyValueOf(buffer, 0, length);
+		}
+		protected static char[] toOperators(char[] buffer, int current) {
+			for (int i = buffer.length-1, value = current; i >= 0; i--, value>>=1) {
+				buffer[i] = (value & 1) == 0 ? '.' : '|';
+			}
+			return buffer;
+		}
+		@Override
+		public void decompose(StringVisitor visitor, String palindrome) {
+			int digits = palindrome.length();
+			int from = 0;
+			int to = (int)Math.pow(2, digits)-1;
+			char[] buffer = new char[digits];
+			IntStream
+					.rangeClosed(from, to)
+					.filter(current -> isPalindrome(palindrome,IterativeDecomposer.toOperators(buffer,current)) == palindrome.length())
+					.forEach(string -> visitor.visit(join(palindrome,buffer)));
+		}
+	}
+	//Still not as efficient as RecursiveDecomposer, but much better than Naive iterative
+	public static class IterativeFilteredDecomposer implements Decomposer {
+		
+		private static class PalindromeSupplier implements IntSupplier {
+			private int digits;
+			private int max;
+			private int current;
+			private String palindrome;
+			private char[] buffer;
+
+			public PalindromeSupplier(String palindrome, int digits) {
+				this.palindrome=palindrome;
+				this.digits = digits;
+				this.max = (int)Math.pow(2, digits)-1;
+				this.current = this.max;
+				this.buffer = new char[digits];
+			}
+			
+			@Override
+			public int getAsInt() {
+				while (current > 0) {
+					IterativeDecomposer.toOperators(buffer,current);
+					int index = IterativeDecomposer.isPalindrome(palindrome,buffer);
+					if (index == palindrome.length()) return current--;
+					current-=Math.pow(2, digits-index-1);
+				}
+				return current;
+				//return current--;
+			}
+			
 		}
 		
 		@Override
 		public void decompose(StringVisitor visitor, String palindrome) {
-			/*IntStream
-					.rangeClosed(0, (int)Math.pow(2, palindrome.length())-1)
-					.mapToObj(i -> NumbersUtil.convertToBase(i, 2, palindrome.length))
-					.map(base2 -> base2.stream().map(i -> i == 0 ? palindrome.charAt(i) : palindrome.charAt(i)+"|").collect(Collectors.joining("")));*/
 			int digits = palindrome.length();
-			int from = 0;
-			int to = (int)Math.pow(2, digits)-1;
-			IntStream
-					.rangeClosed(from, to)
-					.mapToObj(i -> NumberUtils.convertToBase(i, 2, digits))
-					.map(base2 -> base2.stream().map(i -> i == 0 ? "." : "|").collect(Collectors.joining("")))
-					.map(operators -> join(palindrome,operators))
-					.filter(string -> isPalindrome(string))
-					.forEach(string -> visitor.visit(string));
+			IntSupplier supplier = new PalindromeSupplier(palindrome,digits);
+			int current = 0;
+			char[] buffer = new char[digits];
+			while ((current = supplier.getAsInt()) > 0) {
+				IterativeDecomposer.toOperators(buffer,current);
+				visitor.visit(IterativeDecomposer.join(palindrome,buffer));
+			}
 		}
 	}
 	
