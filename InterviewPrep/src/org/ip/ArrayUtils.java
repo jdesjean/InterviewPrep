@@ -56,10 +56,14 @@ public class ArrayUtils {
     }
 	/*
 	 * Knuth's L-Algorithm
-	 * another option could be factoradics
+	 * Computes all permutation in factoradic manner
 	 */
 	public static class PermutatorIterative implements Permutator {
-		
+		private Filter filter;
+
+		public PermutatorIterative(Filter filter) {
+			this.filter = filter;
+		}
 		private static void reverse(int[] array, int startIndex, int endIndex) {
 	        int size = endIndex + 1 - startIndex;
 	        int limit = startIndex + size / 2;
@@ -69,15 +73,17 @@ public class ArrayUtils {
 	    }
 		public static class PermutatorIntSupplier implements Supplier<int[]> {
 			private int[] array;
-			public PermutatorIntSupplier(int[] array) {
+			private Filter filter;
+			public PermutatorIntSupplier(int[] array,Filter filter) {
 				this.array = array;
+				this.filter = filter;
 			}
 			@Override
 			public int[] get() {
 				final int N = array.length;
 	            for (int i = N - 1; i >= 1; i--) {
 	                if (array[i - 1] < array[i]) {
-	                    int pivotIndex = i - 1;
+	                	int pivotIndex = i - 1;
 	                    //TODO: Check if we can filter here
 	                    for (int j = N - 1; j > pivotIndex; j--) {
 	                        if (array[j] > array[pivotIndex]) {
@@ -97,35 +103,64 @@ public class ArrayUtils {
 		
 		@Override
 		public void permute(PermutationVisitor visitor, int[] array) {
-			Stream.generate(new PermutatorIntSupplier(array)).limit(factorial(array.length)-1).forEach(i -> visitor.visit(i));
+			Stream.generate(new PermutatorIntSupplier(array,filter)).limit(factorial(array.length)-1)
+			.filter(i -> filter.test(i, array.length-1))
+			.forEach(i -> visitor.visit(i));
 		};
 	}
-/*this.reduceArrayPermutationWithoutDups2 = function(data, f, o, ifBreakEarly, fk, initIdx, dataLength) {
-if (!fk) {
-	fk = function(o){return o;};
-}
-o = f(o,data);
-while (true) {
-	var k = dataLength - 2;
-    while (fk(data[k]) >= fk(data[k + 1])) {
-        k--;
-        if (k < initIdx) {
-            return o;
-        }
-    }
-    var l = dataLength- 1;
-    while (fk(data[k]) >= fk(data[l])) {
-        l--;
-    }
-    this.swap(data, k, l);
-    var length = dataLength - (k + 1);
-    for (var i = initIdx; i < length / 2; i++) {
-        this.swap(data, k + 1 + i, dataLength - i - 1);
-    }
-    o = f(o,data);
-    if (ifBreakEarly(o,data)) return o;
-}
-};*/
+	public static class PermutatorFactoradicIterative implements Permutator {
+		private Filter filter;
+
+		public PermutatorFactoradicIterative(Filter filter) {
+			this.filter = filter;
+		}
+		private int permute(int[] array, int[] buffer, int factorial, int size) {
+			for (int i = 0; i < array.length; i++) {
+				buffer[i] = array[i]; 
+			}
+			int current = factorial;
+			for (int i = size-1, j = 0; i > 0; i--, j++) {
+				int fact = factorial(i);
+				int value = current / fact;
+				current -= value*fact;
+				int tmp = buffer[j+value];
+				shift(buffer,j,j+value);
+				buffer[j] = tmp;
+				if (!filter.test(buffer, j)) {
+					return factorial+fact;
+				}
+			}
+			if (!filter.test(buffer, array.length-1)) {
+				return factorial+factorial(size-1);
+			} else {
+				return factorial;
+			}
+		}
+		private static void shift(int[] array, int left, int right) {
+			for (int i = left, prev = array[i]; i < right; i++) {
+				int tmp = array[i+1];
+				array[i+1] = prev;
+				prev = tmp;
+			}
+		}
+		
+		@Override
+		public void permute(PermutationVisitor visitor, int[] array) {
+			int[] buffer = new int[array.length];
+			int from = 0;
+			int to = factorial(array.length)-1;
+			
+			for (int i = from; i <= to;) {
+				int tmp = permute(array,buffer,i,array.length);
+				if (tmp == i) {
+					i++;
+					visitor.visit(buffer);
+				} else {
+					i = tmp;
+				}
+			}
+		};
+	}
 	public static void println(int[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {

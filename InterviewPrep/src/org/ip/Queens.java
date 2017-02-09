@@ -1,7 +1,11 @@
 package org.ip;
 
+import java.util.Arrays;
+
 import org.ip.ArrayUtils.Filter;
 import org.ip.ArrayUtils.PermutationVisitor;
+import org.ip.ArrayUtils.Permutator;
+import org.ip.ArrayUtils.PermutatorFactoradicIterative;
 import org.ip.ArrayUtils.PermutatorIterative;
 import org.ip.ArrayUtils.PermutatorRecursive;
 
@@ -45,7 +49,7 @@ public class Queens {
 			
 			+-+-+-+-+
 					 */
-		solveRecursive(new PermutationVisitor(){
+		PermutationVisitor visitor = new PermutationVisitor(){
 
 			@Override
 			public void visit(int[] array) {
@@ -53,18 +57,33 @@ public class Queens {
 				System.out.println("");
 			}
 			
-		},4);
-		System.out.println("**");
-		solveIterative(new PermutationVisitor(){
+		};
+		Filter filter = new Filter(){
 
 			@Override
-			public void visit(int[] array) {
-				if (isDiagonal(array)) return;
-				printChess(array);
-				System.out.println("");
+			public boolean test(int[] array, int i) {
+				return !isDiagonal(array,i);
 			}
 			
-		},4);
+		};
+		Filter filter2 = new Filter(){
+
+			@Override
+			public boolean test(int[] array, int i) {
+				return !isDiagonal(array);
+			}
+			
+		};
+		
+		
+		Permutator[] permutators = new Permutator[]{new PermutatorRecursive(filter),new PermutatorIterative(filter2), new PermutatorFactoradicIterative(filter)};
+		long t1, t2;
+		for (int i = 0; i < permutators.length; i++) {
+			t1 = System.currentTimeMillis();
+			solve(permutators[i],visitor,4);
+			t2 = System.currentTimeMillis();
+			System.out.println("**" + (t2-t1));
+		}
 	}
 	private static boolean isDiagonal(int[] columns, int column) {
 		for (int i = 0; i < column; i++) {
@@ -101,6 +120,13 @@ public class Queens {
 		}
 		printChessLine(array);
 	}
+	public static void solve(Permutator permutator, PermutationVisitor visitor, int size) {
+		int[] columns = new int[size];
+		for (int i = 0; i < size; i++) {
+			columns[i] = i;
+		}
+		permutator.permute(visitor, columns);
+	}
 	public static void solveRecursive(PermutationVisitor visitor, int size) {
 		int[] columns = new int[size];
 		for (int i = 0; i < size; i++) {
@@ -110,7 +136,7 @@ public class Queens {
 
 			@Override
 			public boolean test(int[] array, int i) {
-				return !isDiagonal(columns,i);
+				return !isDiagonal(array,i);
 			}
 			
 		}).permute(visitor, columns);
@@ -120,6 +146,28 @@ public class Queens {
 		for (int i = 0; i < size; i++) {
 			columns[i] = i;
 		}
-		new PermutatorIterative().permute(visitor, columns);
+		new PermutatorIterative(new Filter(){
+
+			@Override
+			public boolean test(int[] array, int i) {
+				return !isDiagonal(array,i);
+			}
+			
+		}).permute(visitor, columns);
 	}
+	public static void solveIterative2(PermutationVisitor visitor, int size) {
+		int[] columns = new int[size];
+		for (int i = 0; i < size; i++) {
+			columns[i] = i;
+		}
+		new PermutatorFactoradicIterative(new Filter(){
+
+			@Override
+			public boolean test(int[] array, int i) {
+				return !isDiagonal(array,i);
+			}
+			
+		}).permute(visitor, columns);
+	}
+	
 }
