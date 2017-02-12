@@ -7,4 +7,7 @@ public class Visitors {
 	public interface IntArrayVisitor {
 		public void visit(int[] array, int length);
 	}
+	public interface CharArrayVisitor {
+		public void visit(char[] array, int length);
+	}
 }
