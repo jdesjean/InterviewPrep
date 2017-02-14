@@ -25,6 +25,14 @@ public class Matrix {
 			t2 = System.currentTimeMillis();
 			System.out.println("t"+(t2-t1));
 		}
+		MatrixMultiplicationMinimizer[] minimizers = new MatrixMultiplicationMinimizer[]{new RecursiveMatrixMultiplicationMinimizer(), new DPMatrixMultiplicationMinimizer()};
+		int[] matrices = new int[]{40,20,30,10,30};
+		for (int i = 0; i < minimizers.length; i++) {
+			t1 = System.currentTimeMillis();
+			System.out.println(minimizers[i].minimum(matrices));
+			t2 = System.currentTimeMillis();
+			System.out.println("t"+(t2-t1));
+		}
 	}
 	public interface SubMatrixMaximizer {
 		public int maximum(boolean[][] array);
@@ -74,4 +82,49 @@ public class Matrix {
 	public static int min(int a, int b, int c) {
 		return Math.min(a, Math.min(b, c));
 	}
+	public interface MatrixMultiplicationMinimizer {
+		public int minimum(int[] matrices);
+	}
+	public static class RecursiveMatrixMultiplicationMinimizer implements MatrixMultiplicationMinimizer {
+
+		@Override
+		public int minimum(int[] matrices) {
+			return minimize(matrices,1,matrices.length-1);
+		}
+		private static int minimize(int[] matrices, int i, int j) {
+			if(i == j) return 0;
+		    int min = Integer.MAX_VALUE;
+		 
+		    for (int k = i; k < j; k++)
+		    {
+		        int count = minimize(matrices, i, k) +
+		        		minimize(matrices, k+1, j) +
+		        		matrices[i-1]*matrices[k]*matrices[j];
+		 
+		        min = Math.min(min, count);
+		    }
+		 
+		    return min;
+		}
+		
+	}
+	public static class DPMatrixMultiplicationMinimizer implements MatrixMultiplicationMinimizer {
+
+		@Override
+		public int minimum(int[] matrices) {
+			int[][] cache = new int[matrices.length][matrices.length];
+			for (int length = 2; length < matrices.length; length++) {
+				for (int i = 1, j=i+length-1; i <= matrices.length-length; i++,j++) {
+					cache[i][j] = Integer.MAX_VALUE;
+					for (int k = i; k < j; k++) {
+						int count = cache[i][k] + cache[k+1][j] + matrices[i-1]*matrices[k]*matrices[j];
+						cache[i][j] = Math.min(count, cache[i][j]);
+					}
+				}
+			}
+			return cache[1][matrices.length-1];
+		}
+		
+	}
+	
 }

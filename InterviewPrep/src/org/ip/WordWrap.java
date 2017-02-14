@@ -1,33 +1,47 @@
 package org.ip;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class WordWrap {
 	public static void main(String[] s) {
-		Set<String> set = new HashSet<String>();
-		set.add("apple");
-		set.add("pie");
-		System.out.println(solve("applepie",set));
+		WordWrapMinimizer[] minimizers = new WordWrapMinimizer[]{new RecursiveWordWrapMinimizer(), new DPWordWrapMinimizer()};
+		String[] text = "Geeks for Geeks presents word wrap problem".split(" ");
+		for (WordWrapMinimizer minimizer : minimizers) {
+			System.out.println(minimizer.minimize(text, 15));
+		}
 	}
-	public static String solve(String word, Set<String> dictionary) {
-		int[] cache = new int[word.length()+1];
-		cache[0] = 1;
-		for (int i = 1; i <= word.length(); i++) {
-			for (int j = 0; j < i; j++) {
-				if (cache[j] == 0 || !dictionary.contains(word.substring(j, i))) continue;
-				cache[i] = i-j;
-				break;
-			}
+	public interface WordWrapMinimizer {
+		public int minimize(String[] words, int width);
+	}
+	public static class RecursiveWordWrapMinimizer implements WordWrapMinimizer {
+
+		@Override
+		public int minimize(String[] words, int width) {
+			return min(words, width, 0);
 		}
-		StringBuilder sb = new StringBuilder();
-		if (cache[word.length()] == 0) return "";
-		for (int i = word.length(), j = word.length()-1; i >= 1; i-=cache[i]) {
-			for (int k = 0; k < cache[i]; k++, j--) {
-				sb.append(word.charAt(j));
+		private static int min(String[] words, int width, int left) {
+			if (left >= words.length) return 0;
+			int min = Integer.MAX_VALUE;
+			for (int i = left, length = width-words[i].length(); length >= 0 && i < words.length; i++, length-= i < words.length ? (words[i].length()+1) : 0) {
+				int cost = (int)Math.pow(length, 2);
+				min = Math.min(min, cost+min(words,width,i+1));
 			}
-			sb.append(' ');
+			return min;
 		}
-		return sb.reverse().toString();
+	}
+	public static class DPWordWrapMinimizer implements WordWrapMinimizer {
+
+		@Override
+		public int minimize(String[] words, int width) {
+			int[] cache = new int[words.length];
+			for (int j = words.length-1; j >= 0; j--) {
+				cache[j] = Integer.MAX_VALUE;
+				for (int i = j, length = width-words[i].length(); length >= 0 && i < words.length; i++, length -= i < words.length ? (words[i].length()+1) : 0) {
+					int cost = (int)Math.pow(length, 2);
+					cache[j] = Math.min(cache[j], i < words.length - 1 ? cost+cache[i+1] : cost);
+				}
+				
+			}
+			return cache[0];
+		}
+		
 	}
 }
