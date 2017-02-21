@@ -70,6 +70,9 @@ public class ArrayUtils {
 			System.out.print(array[i]);
 		}
 	}
+	public static int min(int a, int b, int c) {
+		return Math.min(a, Math.min(b, c));
+	}
 	public static int min(int[] array, int length) {
 		int size = Math.min(array.length, length);
 		int min = Integer.MAX_VALUE;
