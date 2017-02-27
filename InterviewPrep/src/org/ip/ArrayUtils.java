@@ -1,10 +1,18 @@
 package org.ip;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 public class ArrayUtils {
 	public static void main(String[] s) {
-		testPartition();
+		testToFile();
+	}
+	public static void testToFile() {
+		toFile(new long[]{1},1);
 	}
 	public static void testPartition() {
 		Partition[] partitions = new Partition[]{new RecursivePartition(), new DPPartition()};
@@ -26,6 +34,11 @@ public class ArrayUtils {
 		for (int i = 0, j = array.length-1; i < j; i++, j--) {
 			swap(array,i,j);
 		}
+	}
+	public static void swap(Object[] array, int i, int j) {
+		Object tmp = array[i];
+		array[i] = array[j];
+		array[j] = tmp;
 	}
 	public static void swap(char[] array, int i, int j) {
 		char tmp = array[i];
@@ -50,9 +63,35 @@ public class ArrayUtils {
         }
         return fact;
     }
+	public static void toFile(long[] array, int length) {
+		File file = new File("C:\\Users\\Jean-Francois\\Downloads\\prime.txt");
+		try {
+			PrintWriter out = new PrintWriter(file, "UTF-8");
+			int size = Math.min(array.length, length);
+			for (int i = 0; i < size; i++) {
+				if (i != 0) out.print(",");
+				out.print(array[i]);
+			}
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public static void println(long[] array, int length) {
+		int size = Math.min(array.length, length);
+		for (int i = 0; i < size; i++) {
+			if (i != 0) System.out.print(",");
+			System.out.print(array[i]);
+		}
+		System.out.println("");
+	}
 	public static void println(int[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
+			if (i != 0) System.out.print(",");
 			System.out.print(array[i]);
 		}
 		System.out.println("");
@@ -60,6 +99,7 @@ public class ArrayUtils {
 	public static void println(char[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
+			if (i != 0) System.out.print(",");
 			System.out.print(array[i]);
 		}
 		System.out.println("");
@@ -67,6 +107,7 @@ public class ArrayUtils {
 	public static void print(char[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
+			if (i != 0) System.out.print(",");
 			System.out.print(array[i]);
 		}
 	}
