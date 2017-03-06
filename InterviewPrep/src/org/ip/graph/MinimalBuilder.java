@@ -8,10 +8,10 @@ public class MinimalBuilder {
 	public static void main(String[] s) {
 		Graph graph = build(6,2);
 		System.out.println(maxDistance(graph));
-		for (Vertex vertex : graph.aVertex) {
-			for (Iterator<Vertex> iterator = graph.map.get(vertex).iterator(); iterator.hasNext();) {
-				System.out.print(iterator.next());
-				if (iterator.hasNext()) System.out.print(" ");
+		for (Iterator<Vertex> iterator = graph.map.keySet().iterator(); iterator.hasNext();) {
+			for (Iterator<Vertex> iterator2 = graph.map.get(iterator.next()).iterator(); iterator2.hasNext();) {
+				System.out.print(iterator2.next());
+				if (iterator2.hasNext()) System.out.print(" ");
 			}
 			System.out.println("");
 		}
@@ -27,12 +27,12 @@ public class MinimalBuilder {
 	}
 	public static int maxDistance(Graph graph) {
 		MaxVisitor visitor = new MaxVisitor();
-		graph.dfs(visitor);
+		graph.bfs(visitor);
 		return visitor.getMax();
 	}
 	public static Graph build(int n, int m) {
 		Vertex[] aVertex = new Vertex[n];
-		Graph graph = new Graph(aVertex);
+		Graph graph = new Graph();
 		for (int i = 0; i < n; i++) {
 			aVertex[i] = new Vertex(i);
 		}
