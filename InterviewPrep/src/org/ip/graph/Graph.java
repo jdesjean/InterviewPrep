@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-public class Graph {
-	Map<Vertex,Set<Vertex>> map = new HashMap<Vertex,Set<Vertex>>();
+public class Graph<T> {
+	Map<Vertex<T>,Set<Vertex<T>>> map = new HashMap<Vertex<T>,Set<Vertex<T>>>();
 	public static void main(String[] s) {
 		Graph graph = new Graph();
 		Vertex[] vertex = new Vertex[]{new Vertex(0),new Vertex(1), new Vertex(2), new Vertex(3), new Vertex(4)};
@@ -23,44 +23,44 @@ public class Graph {
 		graph.addEdge(vertex[1],vertex[2]);
 		System.out.println(graph.hasCycle());
 	}
-	public void addEdge(Vertex node1, Vertex node2) {
-		Set<Vertex> set = map.get(node1);
+	public void addEdge(Vertex<T> node1, Vertex<T> node2) {
+		Set<Vertex<T>> set = map.get(node1);
 		if (set == null) {
-			set = new HashSet<Vertex>();
+			set = new HashSet<Vertex<T>>();
 			map.put(node1, set);
 		}
 		set.add(node2);
 		if (!map.containsKey(node2)) {
-			map.put(node2, new HashSet<Vertex>());
+			map.put(node2, new HashSet<Vertex<T>>());
 		}
 	}
 	public interface Visitor<T> {
 		public void visit(T t, int depth);
 	}
-	public final static Vertex EMPTY = new Vertex(0);
-	public Deque<Vertex> topoSort() {
-		Deque<Vertex> stack = new LinkedList<Vertex>();
-		postOrder(new Visitor<Vertex>(){
+	public final Vertex<T> EMPTY = new Vertex<T>();
+	public Deque<Vertex<T>> topoSort() {
+		Deque<Vertex<T>> stack = new LinkedList<Vertex<T>>();
+		postOrder(new Visitor<Vertex<T>>(){
 			@Override
-			public void visit(Vertex t, int depth) {
+			public void visit(Vertex<T> t, int depth) {
 				stack.addFirst(t);
 			}
 		});
 		return stack;
 	}
 	public boolean hasCycle() {
-		Set<Vertex> visited = new HashSet<Vertex>();
-		Deque<Vertex> queue = new LinkedList<Vertex>();
+		Set<Vertex<T>> visited = new HashSet<Vertex<T>>();
+		Deque<Vertex<T>> queue = new LinkedList<Vertex<T>>();
 		if (map.isEmpty()) return false;
-		for (Iterator<Vertex> iterator =  map.keySet().iterator(); iterator.hasNext();) {
-			Vertex vertex = iterator.next();
+		for (Iterator<Vertex<T>> iterator =  map.keySet().iterator(); iterator.hasNext();) {
+			Vertex<T> vertex = iterator.next();
 			if (visited.contains(vertex)) continue;
 			queue.addLast(vertex);
 			visited.add(vertex);
 			while(!queue.isEmpty()) {
-				Vertex current = queue.removeFirst();
-				for (Iterator<Vertex> iterator2 = map.get(current).iterator(); iterator2.hasNext();) {
-					Vertex neighbor = iterator2.next();
+				Vertex<T> current = queue.removeFirst();
+				for (Iterator<Vertex<T>> iterator2 = map.get(current).iterator(); iterator2.hasNext();) {
+					Vertex<T> neighbor = iterator2.next();
 					if (visited.contains(neighbor)) return true;
 					visited.add(neighbor);
 					queue.addLast(neighbor);
@@ -69,12 +69,12 @@ public class Graph {
 		}
 		return false;
 	}
-	public void bfs(Visitor<Vertex> visitor) {
-		Set<Vertex> visited = new HashSet<Vertex>();
-		Deque<Vertex> queue = new LinkedList<Vertex>();
+	public void bfs(Visitor<Vertex<T>> visitor) {
+		Set<Vertex<T>> visited = new HashSet<Vertex<T>>();
+		Deque<Vertex<T>> queue = new LinkedList<Vertex<T>>();
 		if (map.isEmpty()) return ;
-		for (Iterator<Vertex> iterator =  map.keySet().iterator(); iterator.hasNext();) {
-			Vertex vertex = iterator.next();
+		for (Iterator<Vertex<T>> iterator =  map.keySet().iterator(); iterator.hasNext();) {
+			Vertex<T> vertex = iterator.next();
 			if (visited.contains(vertex)) continue;
 			queue.addLast(vertex);
 			queue.addLast(EMPTY);
@@ -82,37 +82,37 @@ public class Graph {
 			bfs(visited,queue,visitor,0);
 		}
 	}
-	public void bfs(Set<Vertex> visited, Deque<Vertex> queue, Visitor<Vertex> visitor, int depth) {
+	public void bfs(Set<Vertex<T>> visited, Deque<Vertex<T>> queue, Visitor<Vertex<T>> visitor, int depth) {
 		while(!queue.isEmpty()) {
-			Vertex current = queue.removeFirst();
+			Vertex<T> current = queue.removeFirst();
 			if (current == EMPTY) {
 				depth++;
 				if (!queue.isEmpty()) queue.addLast(EMPTY);
 				continue;
 			}
 			visitor.visit(current, depth);
-			Set<Vertex> neighbors = map.get(current);
+			Set<Vertex<T>> neighbors = map.get(current);
 			if (neighbors == null) return;
-			for (Iterator<Vertex> iterator = neighbors.iterator(); iterator.hasNext();) {
-				Vertex neighbor = iterator.next();
+			for (Iterator<Vertex<T>> iterator = neighbors.iterator(); iterator.hasNext();) {
+				Vertex<T> neighbor = iterator.next();
 				if (visited.contains(neighbor)) continue;
 				visited.add(neighbor);
 				queue.addLast(neighbor);
 			}
 		}
 	}
-	public void postOrder(Visitor<Vertex> visitor) {
-		Set<Vertex> visited = new HashSet<Vertex>();
-		for (Iterator<Vertex> iterator = map.keySet().iterator(); iterator.hasNext();) {
-			Vertex v = iterator.next();
+	public void postOrder(Visitor<Vertex<T>> visitor) {
+		Set<Vertex<T>> visited = new HashSet<Vertex<T>>();
+		for (Iterator<Vertex<T>> iterator = map.keySet().iterator(); iterator.hasNext();) {
+			Vertex<T> v = iterator.next();
 			if (visited.contains(v)) continue;
 			postOrder(visited,v,visitor,1);
 		}
 	}
-	public void postOrder(Set<Vertex> visited, Vertex v, Visitor<Vertex> visitor, int depth) {
+	public void postOrder(Set<Vertex<T>> visited, Vertex<T> v, Visitor<Vertex<T>> visitor, int depth) {
 		visited.add(v);
-		for (Iterator<Vertex> iterator = map.get(v).iterator(); iterator.hasNext();) {
-			Vertex vv = iterator.next();
+		for (Iterator<Vertex<T>> iterator = map.get(v).iterator(); iterator.hasNext();) {
+			Vertex<T> vv = iterator.next();
 			if (visited.contains(vv)) continue;
 			postOrder(visited,vv,visitor,depth+1);
 		}

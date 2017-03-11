@@ -6,35 +6,35 @@ import org.ip.graph.Graph.Visitor;
 
 public class MinimalBuilder {
 	public static void main(String[] s) {
-		Graph graph = build(6,2);
+		Graph<Integer> graph = build(6,2);
 		System.out.println(maxDistance(graph));
-		for (Iterator<Vertex> iterator = graph.map.keySet().iterator(); iterator.hasNext();) {
-			for (Iterator<Vertex> iterator2 = graph.map.get(iterator.next()).iterator(); iterator2.hasNext();) {
+		for (Iterator<Vertex<Integer>> iterator = graph.map.keySet().iterator(); iterator.hasNext();) {
+			for (Iterator<Vertex<Integer>> iterator2 = graph.map.get(iterator.next()).iterator(); iterator2.hasNext();) {
 				System.out.print(iterator2.next());
 				if (iterator2.hasNext()) System.out.print(" ");
 			}
 			System.out.println("");
 		}
 	}
-	public static class MaxVisitor implements Visitor<Vertex> {
+	public static class MaxVisitor implements Visitor<Vertex<Integer>> {
 		private int max = 0;
 		@Override
-		public void visit(Vertex t, int depth) {
+		public void visit(Vertex<Integer> t, int depth) {
 			max = Math.max(max, depth);
 		}
 		public int getMax() { return max; }
 		
 	}
-	public static int maxDistance(Graph graph) {
+	public static int maxDistance(Graph<Integer> graph) {
 		MaxVisitor visitor = new MaxVisitor();
 		graph.bfs(visitor);
 		return visitor.getMax();
 	}
-	public static Graph build(int n, int m) {
-		Vertex[] aVertex = new Vertex[n];
-		Graph graph = new Graph();
+	public static Graph<Integer> build(int n, int m) {
+		Vertex<Integer>[] aVertex = new Vertex[n];
+		Graph<Integer> graph = new Graph<Integer>();
 		for (int i = 0; i < n; i++) {
-			aVertex[i] = new Vertex(i);
+			aVertex[i] = new Vertex<Integer>(i);
 		}
 		for (int i = 0; i < n; i++) {
 			graph.addEdge(aVertex[i], aVertex[(i+1)%n]);

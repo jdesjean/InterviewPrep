@@ -41,7 +41,7 @@ public class AlphabetOrder {
 				break;
 			}
 		}
-		Deque<Vertex> stack = graph.topoSort();
+		Deque<Vertex<Integer>> stack = graph.topoSort();
 		StringBuffer sb = new StringBuffer();
 
 		while (!stack.isEmpty()) {

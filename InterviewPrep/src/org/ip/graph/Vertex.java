@@ -1,8 +1,9 @@
 package org.ip.graph;
 
-public class Vertex {
-	int val;
-	public Vertex(int val) {this.val=val;}
+public class Vertex<T> {
+	T val;
+	public Vertex(){}
+	public Vertex(T val) {this.val=val;}
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Vertex)) return false;
@@ -11,7 +12,7 @@ public class Vertex {
 	}
 	@Override
 	public int hashCode() {
-		return val;
+		return val.hashCode();
 	}
 	@Override
 	public String toString() {
