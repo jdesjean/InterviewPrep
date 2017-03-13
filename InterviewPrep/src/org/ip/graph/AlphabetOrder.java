@@ -10,7 +10,7 @@ public class AlphabetOrder {
 		System.out.println(solve(new int[][]{{5,1},{2,1},{4,2},{3,2},{6,3},{9,3},{7,2}},10));
 	}
 	public static String solve(int[][] g, int max) {
-		Graph graph = new Graph();
+		AdjacencyList graph = new AdjacencyList();
 		Vertex[] vertex = new Vertex[max];
 		for (int i = 0; i < max; i++) {
 			vertex[i] = new Vertex(i);
@@ -26,7 +26,7 @@ public class AlphabetOrder {
 		return sb.toString();
 	}
 	public static String solve(String[] s) {
-		Graph graph = new Graph();
+		AdjacencyList graph = new AdjacencyList();
 		Vertex[] vertex = new Vertex[26];
 		for (int i = 0; i < vertex.length; i++) {
 			vertex[i] = new Vertex('a' + i);

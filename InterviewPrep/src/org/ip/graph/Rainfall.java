@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.ip.graph.Graph.Visitor;
+import org.ip.graph.AdjacencyList.Visitor;
 
 public class Rainfall {
 	public static void main(String[] s) {
@@ -44,7 +44,7 @@ public class Rainfall {
 	}
 	public static int[] solve(int[][] map) {
 		if (map.length == 0) return new int[0];
-		Graph graph = new Graph();
+		AdjacencyList graph = new AdjacencyList();
 		Vertex[][] vertex = new Vertex[map.length][map[0].length];
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[0].length; j++) {
@@ -69,7 +69,7 @@ public class Rainfall {
 		}
 		return sizes;
 	}
-	public static int bfs(Graph graph, Vertex v, Set<Vertex> visited) {
+	public static int bfs(AdjacencyList graph, Vertex v, Set<Vertex> visited) {
 		Deque<Vertex> queue = new LinkedList<Vertex>();
 		queue.addLast(v);
 		CountVisitor visitor = new CountVisitor();
