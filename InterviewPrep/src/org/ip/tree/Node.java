@@ -9,6 +9,9 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 	public Node(T value, Node<T> left, Node<T> right){this.value=value;childs=new Node[]{left,right};}
 	public Node<T> getLeft(){return childs[0];}
 	public Node<T> getRight(){return childs[1];}
+	public boolean isLeaf() {
+		return childs[0] == null && childs[1] == null;
+	}
 	@Override
 	public String toString() {
 		return "Node [value=" + value + ", childs=" + Arrays.toString(childs) + "]";

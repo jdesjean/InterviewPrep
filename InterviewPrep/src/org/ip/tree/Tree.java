@@ -1,5 +1,6 @@
 package org.ip.tree;
 
+import java.lang.reflect.Array;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,7 +9,20 @@ import java.util.Queue;
 public class Tree<T extends Comparable<T>> {
 	private Node<T> root;
 	public static void main(String[] s) {
-		testMerge();
+		testPrintAllPaths();
+	}
+	public static void testPrintAllPaths() {
+		BST().printAllPaths(new ArrayVisitor<Integer>(){
+
+			@Override
+			public void visit(Integer[] visit, int length) {
+				for (int i = 0; i < length; i++) {
+					System.out.print(visit[i]);
+					if (i < length-1) System.out.print(",");
+				}
+				System.out.println("");
+			}
+		});
 	}
 	public static void testMerge() {
 		Tree<Integer> tree = small();
@@ -130,15 +144,46 @@ public class Tree<T extends Comparable<T>> {
 		}
 		return head;
 	}
-	private void toTree(Node<T> root1, Node<T> root2) {
-		
-	}
 	private Node<T> smallest(Node<T> a, Node<T> b) {
 		if (b == null || (a != null && a.compareTo(b) <= 0)) return a;
 		else return b;
 	}
+	public interface ArrayVisitor<T extends Comparable<T>> {
+		public void visit(T[] visit, int length);
+	}
+	public void printAllPaths(ArrayVisitor<T> visitor) {
+		RecursivePreOrderExecutor executor = new RecursivePreOrderExecutor(new PrintBooleanVisitor(visitor));
+		executor.execute();
+	}
+	public int height() {
+		return height(root);
+	}
+	private int height(Node<T> root) {
+		if (root == null) return 0;
+		int max = 0;
+		for (Node<T> child : root.childs) {
+			max = Math.max(max, height(child)+1);
+		}
+		return max;
+	}
+	private final class PrintBooleanVisitor implements BooleanVisitor<T>{
+		private ArrayVisitor<T> visitor;
+		private T[] path;
+		public PrintBooleanVisitor(ArrayVisitor<T> visitor) {
+			if (root == null) return;
+			this.visitor = visitor;
+			int height = height();
+			this.path = (T[])Array.newInstance(root.value.getClass(), height);
+		}
+		@Override
+		public boolean visit(Node<T> node, int depth) {
+			path[depth] = node.value;
+			if (node.isLeaf()) visitor.visit(path, depth+1);
+			return true;
+		}
+	}
 	public interface BooleanVisitor<T extends Comparable<T>> {
-		public boolean visit(Node<T> node);
+		public boolean visit(Node<T> node, int depth);
 	}
 	public interface Executor {
 		public boolean execute();
@@ -182,12 +227,13 @@ public class Tree<T extends Comparable<T>> {
 		@Override
 		public boolean execute() {
 			if (root == null) return true;
-			return inOrder(reducer,root);
+			return inOrder(reducer,root,0);
 		}
-		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current) {
-			if (!visitor.visit(current)) return false;
+		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current, int depth) {
+			if (!visitor.visit(current,depth)) return false;
 			for (Node<T> child : current.childs) {
-				if (!inOrder(visitor,child)) return false;
+				if (child == null) continue;
+				if (!inOrder(visitor,child,depth+1)) return false;
 			}
 			return true;
 		}
@@ -200,18 +246,19 @@ public class Tree<T extends Comparable<T>> {
 		@Override
 		public boolean execute() {
 			if (root == null) return true;
-			return inOrder(reducer,root);
+			return inOrder(reducer,root,0);
 		}
-		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current) {
+		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current, int depth) {
 			int mid = current.childs.length/2;
 			for (int i = 0; i < current.childs.length; i++) {
 				Node<T> child = current.childs[i];
+				if (child == null) continue;
 				if (i < mid) {
-					if (!inOrder(visitor,child)) return false;
+					if (!inOrder(visitor,child,depth+1)) return false;
 				}
-				if (!visitor.visit(child)) return false;
+				if (!visitor.visit(current,depth)) return false;
 				if (i >= mid)  {
-					if (!inOrder(visitor,child)) return false;
+					if (!inOrder(visitor,child,depth+1)) return false;
 				}
 			}
 			return true;
@@ -225,13 +272,14 @@ public class Tree<T extends Comparable<T>> {
 		@Override
 		public boolean execute() {
 			if (root == null) return true;
-			return inOrder(reducer,root);
+			return inOrder(reducer,root,0);
 		}
-		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current) {
+		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current, int depth) {
 			for (Node<T> child : current.childs) {
-				if (!inOrder(visitor,child)) return false;
+				if (child == null) continue;
+				if (!inOrder(visitor,child,depth+1)) return false;
 			}
-			return visitor.visit(current); 
+			return visitor.visit(current,depth); 
 		}
 	}
 	private class PreOrderIterator  implements Iterator<Node<T>> {
