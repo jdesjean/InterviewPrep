@@ -9,10 +9,16 @@ import java.util.Queue;
 public class Tree<T extends Comparable<T>> {
 	private Node<T> root;
 	public static void main(String[] s) {
-		testPrintAllPaths();
+		testLCA();
+	}
+	public static void testLCA() {
+		Tree<Integer> tree = bst2();
+		System.out.println(tree.lca(10, 20));
+		System.out.println(tree.lca(50, 80));
+		System.out.println(tree.lca(20, 60));
 	}
 	public static void testPrintAllPaths() {
-		BST().printAllPaths(new ArrayVisitor<Integer>(){
+		bst1().printAllPaths(new ArrayVisitor<Integer>(){
 
 			@Override
 			public void visit(Integer[] visit, int length) {
@@ -37,7 +43,7 @@ public class Tree<T extends Comparable<T>> {
 		System.out.println(tree.new IterativeIsBSTExecutor().execute());
 	}
 	public static void testBST() {
-		Tree[] trees = new Tree[]{BST(), nonBST()};
+		Tree[] trees = new Tree[]{bst1(), nonBST()};
 		for (Tree tree : trees) {
 			Executor[] executors = new Executor[]{tree.new RecursiveIsBSTExecutor(), tree.new IterativeIsBSTExecutor()};
 			for (int i = 0; i < executors.length; i++) {
@@ -47,7 +53,7 @@ public class Tree<T extends Comparable<T>> {
 		}
 	}
 	public static void testIterators() {
-		Tree[] trees = new Tree[]{BST(), nonBST()};
+		Tree[] trees = new Tree[]{bst1(), nonBST()};
 		for (Tree tree : trees) {
 			Iterator<Node>[] iterators = new Iterator[]{tree.inOrderIterator(), tree.bfsIterator(), tree.new PostOrderIterator(), tree.new PreOrderIterator()};
 			for (int i = 0; i < iterators.length; i++) {
@@ -69,8 +75,12 @@ public class Tree<T extends Comparable<T>> {
 		Node<Integer> root = new Node<Integer>(7, new Node<Integer>(6), new Node<Integer>(8));
 		return new Tree<Integer>(root);
 	}
-	public static Tree<Integer> BST() {
+	public static Tree<Integer> bst1() {
 		Node<Integer> root = new Node<Integer>(5, new Node<Integer>(2, new Node<Integer>(1), null), new Node<Integer>(7, new Node<Integer>(6), new Node<Integer>(8, null, new Node<Integer>(9))));
+		return new Tree<Integer>(root);
+	}
+	public static Tree<Integer> bst2() {
+		Node<Integer> root = new Node<Integer>(45, new Node<Integer>(25, new Node<Integer>(15, new Node<Integer>(10), new Node<Integer>(20)), new Node<Integer>(30)), new Node<Integer>(65, new Node<Integer>(55, new Node<Integer>(50), new Node<Integer>(60)), new Node<Integer>(75, null, new Node<Integer>(80))));
 		return new Tree<Integer>(root);
 	}
 	public static Tree<Integer> nonBST() {
@@ -82,7 +92,7 @@ public class Tree<T extends Comparable<T>> {
 		Node<T> head2 = tree.toLinkedList();
 		head1 = mergeLinkedList(head1,head2);
 		int size = sizeLinkedList(head1);
-		root = bstify(new Wrapper(head1),size);
+		root = bstify(new BstifyWrapper(head1),size);
 	}
 	public Node<T> toLinkedList() {
 		Node<T> head = null, prev = null;
@@ -96,16 +106,40 @@ public class Tree<T extends Comparable<T>> {
 		prev.childs[1] = null;
 		return head;
 	}
-	public class Wrapper {
+	public class BstifyWrapper {
 		public Node<T> node;
-		public Wrapper(Node<T> node){this.node=node;}
+		public BstifyWrapper(Node<T> node){this.node=node;}
 	}
-	private Node<T> advance(Node<T> head, int step) {
-		Node<T> current = head; 
-		for (; current != null && step > 0; current = current.getRight(), step--) {}
-		return current;
+	public final LcaWrapper EMPTY = new LcaWrapper(null);
+	public class LcaWrapper {
+		public Node<T> node;
+		int count = 0;
+		public LcaWrapper(Node<T> node){this.node=node;}
 	}
-	private Node<T> bstify(Wrapper head, int size) {
+	public Node<T> lca(T v1, T v2) {
+		LcaWrapper wrapper = lca(root,v1,v2);
+		return wrapper.count >= 2 ? wrapper.node : null;
+	}
+	public LcaWrapper lca(Node<T> current, T v1, T v2) {
+		if (current == null) return new LcaWrapper(null);
+		//4 cases
+		//1) 1 left & 1 right: Return current
+		//2) 1 current & (1 left | right) : Return current;
+		//3) 2 left | 2 right : Return left or right
+		//4) Can't find both : Return left or right
+		LcaWrapper wrapper = lca(current.getLeft(),v1,v2);
+		if (wrapper.count >= 2) return wrapper;
+		if (current.value == v1 || current.value == v2) wrapper.count++;
+		if (wrapper.count < 2) {
+			LcaWrapper wrapper2 = lca(current.getRight(),v1,v2);
+			if (wrapper2.count >= 2) return wrapper2;
+			wrapper.count += wrapper2.count;
+			if (wrapper2.count > 0) wrapper.node = wrapper2.node; 
+		}
+		if (wrapper.count >= 2) wrapper.node = current;
+		return wrapper;
+	}
+	private Node<T> bstify(BstifyWrapper head, int size) {
 		if (size <= 0) return null;
 		if (size == 1) {
 			Node<T> root = head.node;
