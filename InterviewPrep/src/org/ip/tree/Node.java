@@ -5,8 +5,10 @@ import java.util.Arrays;
 public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 	public final T value;
 	public final Node<T>[] childs;
+	public Node<T> sibling;
 	public Node(T value){this.value=value;childs = new Node[2];}
 	public Node(T value, Node<T> left, Node<T> right){this.value=value;childs=new Node[]{left,right};}
+	public Node(T value, Node<T>[] childs){this.value=value;this.childs=childs;}
 	public Node<T> getLeft(){return childs[0];}
 	public Node<T> getRight(){return childs[1];}
 	public boolean isLeaf() {
@@ -14,7 +16,12 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 	}
 	@Override
 	public String toString() {
-		return "Node [value=" + value + ", childs=" + Arrays.toString(childs) + "]";
+		if (sibling != null) {
+			return "Node [value=" + value + ", nextRight="+sibling.toString()+", childs=" + Arrays.toString(childs) + "]";
+		} else {
+			return "Node [value=" + value + ", childs=" + Arrays.toString(childs) + "]";
+		}
+		
 	}
 	@Override
 	public int hashCode() {

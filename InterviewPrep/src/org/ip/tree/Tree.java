@@ -1,15 +1,34 @@
 package org.ip.tree;
 
 import java.lang.reflect.Array;
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class Tree<T extends Comparable<T>> {
 	private Node<T> root;
 	public static void main(String[] s) {
-		testLCA();
+		testPopulateSibling();
+	}
+	public Node<T> root() {return root;}
+	public static void testPopulateSibling() {
+		Tree<Integer> tree = bst1();
+		tree.populateSibling();
+		for (Iterator<Node<Integer>> it1 = new BFSIterator<Integer>(tree); it1.hasNext();) {
+			System.out.println(it1.next());
+		}
+	}
+	public static void testClone() {
+		Tree<Integer> tree1 = bst1();
+		Tree<Integer> tree2 = tree1.clone();
+		System.out.println(tree1.equals(tree2));
+	}
+	public boolean equals(Tree<T> tree) {
+		for (Iterator<Node<T>> it1 = new InOrderIterator<T>(this), it2 = new InOrderIterator<T>(tree); it1.hasNext() && it2.hasNext();) {
+			if (!it1.next().equals(it2.next())) return false;
+		}
+		for (Iterator<Node<T>> it1 = new PreOrderIterator<T>(this), it2 = new PreOrderIterator<T>(tree); it1.hasNext() && it2.hasNext();) {
+			if (!it1.next().equals(it2.next())) return false;
+		}
+		return true;
 	}
 	public static void testLCA() {
 		Tree<Integer> tree = bst2();
@@ -29,11 +48,50 @@ public class Tree<T extends Comparable<T>> {
 				System.out.println("");
 			}
 		});
+		testBSTBuild();
+	}
+	public void populateSibling() {
+		Node<T> prev = null;
+		int depth = 0;
+		for (Iterator<NodeWrapper<T>> it1 = new BFSWrapperIterator<T>(this); it1.hasNext();) {
+			NodeWrapper<T> wrapper = it1.next();
+			Node<T> current = wrapper.node;
+			if (depth != wrapper.depth) prev = null;
+			if (prev != null) prev.sibling = current;
+			prev = current;
+			depth = wrapper.depth;
+		}
+	}
+	public int count() {
+		int count =0;
+		for (Iterator<Node<T>> iterator = new PreOrderIterator<T>(this); iterator.hasNext();) {
+			iterator.next();
+			count++;
+		}
+		return count;
+	}
+	public static void testBSTBuild() {
+		Tree<Integer> bst = bst1();
+		int count = bst.count();
+		Integer[] pre = new Integer[count];
+		Integer[] in = new Integer[count];
+		int index = 0;
+		for (Iterator<Node<Integer>> iterator = new PreOrderIterator<Integer>(bst); iterator.hasNext();) {
+			pre[index++] = iterator.next().value;
+		}
+		index = 0;
+		for (Iterator<Node<Integer>> iterator = bst.inOrderIterator(); iterator.hasNext();) {
+			in[index++] = iterator.next().value;
+		}
+		Tree<Integer> copy = Tree.fromPreIn(pre,in);
+		for (Iterator<Node<Integer>> iterator = new PreOrderIterator<Integer>(copy); iterator.hasNext();) {
+			System.out.println(iterator.next());
+		}
 	}
 	public static void testMerge() {
 		Tree<Integer> tree = small();
 		tree.merge(big());
-		Iterator<Node>[] iterators = new Iterator[]{tree.inOrderIterator(), tree.bfsIterator(), tree.new PostOrderIterator(), tree.new PreOrderIterator()};
+		Iterator<Node>[] iterators = new Iterator[]{tree.inOrderIterator(), tree.bfsIterator(), new PostOrderIterator<Integer>(tree), new PreOrderIterator<Integer>(tree)};
 		for (int i = 0; i < iterators.length; i++) {
 			for (Iterator<Node> iterator = iterators[i]; iterator.hasNext();) {
 				System.out.println(iterator.next().value);
@@ -43,8 +101,8 @@ public class Tree<T extends Comparable<T>> {
 		System.out.println(tree.new IterativeIsBSTExecutor().execute());
 	}
 	public static void testBST() {
-		Tree[] trees = new Tree[]{bst1(), nonBST()};
-		for (Tree tree : trees) {
+		Tree<Integer>[] trees = new Tree[]{bst1(), nonBST()};
+		for (Tree<Integer> tree : trees) {
 			Executor[] executors = new Executor[]{tree.new RecursiveIsBSTExecutor(), tree.new IterativeIsBSTExecutor()};
 			for (int i = 0; i < executors.length; i++) {
 				System.out.println(executors[i].execute());
@@ -53,11 +111,11 @@ public class Tree<T extends Comparable<T>> {
 		}
 	}
 	public static void testIterators() {
-		Tree[] trees = new Tree[]{bst1(), nonBST()};
-		for (Tree tree : trees) {
-			Iterator<Node>[] iterators = new Iterator[]{tree.inOrderIterator(), tree.bfsIterator(), tree.new PostOrderIterator(), tree.new PreOrderIterator()};
+		Tree<Integer>[] trees = new Tree[]{bst1(), nonBST()};
+		for (Tree<Integer> tree : trees) {
+			Iterator<Node<Integer>>[] iterators = new Iterator[]{tree.inOrderIterator(), tree.bfsIterator(), new PostOrderIterator<Integer>(tree), new PreOrderIterator<Integer>(tree)};
 			for (int i = 0; i < iterators.length; i++) {
-				for (Iterator<Node> iterator = iterators[i]; iterator.hasNext();) {
+				for (Iterator<Node<Integer>> iterator = iterators[i]; iterator.hasNext();) {
 					System.out.println(iterator.next().value);
 				}
 				System.out.println("***");
@@ -86,6 +144,33 @@ public class Tree<T extends Comparable<T>> {
 	public static Tree<Integer> nonBST() {
 		Node<Integer> root = new Node<Integer>(5, new Node<Integer>(2, new Node<Integer>(1), null), new Node<Integer>(7, new Node<Integer>(7), new Node<Integer>(8, null, new Node<Integer>(9))));
 		return new Tree<Integer>(root);
+	}
+	public static <T extends Comparable<T>> Tree<T> fromPreIn(T[] preOrder, T[] inOrder) {
+		Node<T> node = fromPreIn(preOrder,0,preOrder.length-1,inOrder,0,inOrder.length-1);
+		return new Tree<T>(node);
+	}
+	private static <T extends Comparable<T>> Node<T> fromPreIn(T[] pre, int leftPre, int rightPre, T[] in, int leftIn, int rightIn) {
+		if (leftPre > rightPre || leftIn > rightIn) return null;
+		T current = pre[leftPre];
+		int indexIn;
+		for (indexIn = leftIn; indexIn <= rightIn; indexIn++) {
+			if (current == in[indexIn]) break;
+		}
+		Node<T> left = fromPreIn(pre,leftPre+1,rightPre,in,leftIn,indexIn-1);
+		int len = indexIn - leftIn;
+		Node<T> right = fromPreIn(pre,leftPre+len+1,rightPre,in,indexIn+1,rightIn);
+		return new Node<T>(current,left,right);
+	}
+	public Tree<T> clone() {
+		return new Tree<T>(clone(root));
+	}
+	public Node<T> clone(Node<T> node) {
+		if (node == null) return null;
+		Node<T>[] childs = new Node[node.childs.length];
+		for (int i = 0; i < node.childs.length; i++) {
+			childs[i] = clone(node.childs[i]);
+		}
+		return new Node<T>(node.value,childs);
 	}
 	public void merge(Tree<T> tree) {
 		Node<T> head1 = this.toLinkedList();
@@ -316,107 +401,10 @@ public class Tree<T extends Comparable<T>> {
 			return visitor.visit(current,depth); 
 		}
 	}
-	private class PreOrderIterator  implements Iterator<Node<T>> {
-		Deque<Node<T>> stack = new LinkedList<Node<T>>();
-		public PreOrderIterator(){
-			if (root != null) stack.push(root);
-		}
-		@Override
-		public boolean hasNext() {
-			return !stack.isEmpty();
-		}
-
-		@Override
-		public Node<T> next() {
-			Node<T> current = stack.pop();
-			if (current.getRight() != null) stack.push(current.getRight());
-			if (current.getLeft() != null) stack.push(current.getLeft());
-			return current;
-		}
-		
-	}
-	private class PostOrderIterator implements Iterator<Node<T>> {
-		Deque<Node<T>> stack = new LinkedList<Node<T>>();
-		Node<T> prev;
-		public PostOrderIterator(){
-			pushLeft(root);
-		}
-		public void pushLeft(Node<T> start) {
-			for (Node<T> current = start; current != null;current = current.getLeft()) {
-				stack.push(current);
-			}
-		}
-		@Override
-		public boolean hasNext() {
-			return !stack.isEmpty();
-		}
-
-		@Override
-		public Node<T> next() {
-			Node<T> peek = stack.peek();
-			Node<T> right = peek.getRight();
-			if (right == null) return prev = stack.pop();
-			if (prev == right) return prev = stack.pop();
-			stack.push(right);
-			while(right.getLeft() == null && right.getRight() != null) {
-				right = right.getRight();
-				stack.push(right);
-			}
-			pushLeft(right.getLeft());
-			return prev = stack.pop();
-		}
-		
-	}
-	private class InOrderIterator implements Iterator<Node<T>> {
-		Deque<Node<T>> stack = new LinkedList<Node<T>>();
-		public InOrderIterator() {
-			pushLeft(root);
-		}
-		@Override
-		public boolean hasNext() {
-			return !stack.isEmpty();
-		}
-		public void pushLeft(Node<T> start) {
-			for (Node<T> current = start; current != null;current = current.getLeft()) {
-				stack.push(current);
-			}
-		}
-		@Override
-		public Node<T> next() {
-			Node<T> removed = stack.pop();
-			if (removed.getRight() != null) {
-				stack.push(removed.getRight());
-				pushLeft(removed.getRight().getLeft());
-			}
-			return removed;
-		}
-		
-	}
 	public Iterator<Node<T>> inOrderIterator() {
-		return new InOrderIterator();
+		return new InOrderIterator<T>(this);
 	}
 	public Iterator<Node<T>> bfsIterator() {
-		return new BFSIterator();
-	}
-	private class BFSIterator implements Iterator<Node<T>> {
-		Queue<Node<T>> queue = new LinkedList<Node<T>>();
-		public BFSIterator() {
-			if (root == null) return;
-			queue.add(root);
-		}
-		@Override
-		public boolean hasNext() {
-			return !queue.isEmpty();
-		}
-
-		@Override
-		public Node<T> next() {
-			Node<T> current = queue.remove();
-			for (Node<T> child : current.childs) {
-				if (child == null) continue;
-				queue.add(child);
-			}
-			return current;
-		}
+		return new BFSIterator<T>(this);
 	}
 }
