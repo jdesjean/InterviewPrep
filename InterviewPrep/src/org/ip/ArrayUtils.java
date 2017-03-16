@@ -50,6 +50,16 @@ public class ArrayUtils {
 		array[i] = array[j];
 		array[j] = tmp;
 	}
+	public static void reverse(int[] array, int i, int j) {
+		for (; i < j ; i++,j--) {
+			swap(array,i,j);
+		}
+	}
+	public static void reverse(Object[] array, int i, int j) {
+		for (; i < j ; i++,j--) {
+			swap(array,i,j);
+		}
+	}
 	public interface PermutationVisitor {
 		public void visit(int[] array);
 	}

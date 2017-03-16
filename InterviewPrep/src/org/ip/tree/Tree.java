@@ -3,53 +3,30 @@ package org.ip.tree;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
+import org.ip.ArrayUtils;
+
 public class Tree<T extends Comparable<T>> {
 	private Node<T> root;
-	public static void main(String[] s) {
-		testPopulateSibling();
+	public Tree(Node<T> root) {
+		this.root=root;
+	}
+	public static <T extends Comparable<T>> Tree<T> fromPreIn(T[] preOrder, T[] inOrder) {
+		Node<T> node = fromPreIn(preOrder,0,preOrder.length-1,inOrder,0,inOrder.length-1);
+		return new Tree<T>(node);
+	}
+	private static <T extends Comparable<T>> Node<T> fromPreIn(T[] pre, int leftPre, int rightPre, T[] in, int leftIn, int rightIn) {
+		if (leftPre > rightPre || leftIn > rightIn) return null;
+		T current = pre[leftPre];
+		int indexIn;
+		for (indexIn = leftIn; indexIn <= rightIn; indexIn++) {
+			if (current == in[indexIn]) break;
+		}
+		Node<T> left = fromPreIn(pre,leftPre+1,rightPre,in,leftIn,indexIn-1);
+		int len = indexIn - leftIn;
+		Node<T> right = fromPreIn(pre,leftPre+len+1,rightPre,in,indexIn+1,rightIn);
+		return new Node<T>(current,left,right);
 	}
 	public Node<T> root() {return root;}
-	public static void testPopulateSibling() {
-		Tree<Integer> tree = bst1();
-		tree.populateSibling();
-		for (Iterator<Node<Integer>> it1 = new BFSIterator<Integer>(tree); it1.hasNext();) {
-			System.out.println(it1.next());
-		}
-	}
-	public static void testClone() {
-		Tree<Integer> tree1 = bst1();
-		Tree<Integer> tree2 = tree1.clone();
-		System.out.println(tree1.equals(tree2));
-	}
-	public boolean equals(Tree<T> tree) {
-		for (Iterator<Node<T>> it1 = new InOrderIterator<T>(this), it2 = new InOrderIterator<T>(tree); it1.hasNext() && it2.hasNext();) {
-			if (!it1.next().equals(it2.next())) return false;
-		}
-		for (Iterator<Node<T>> it1 = new PreOrderIterator<T>(this), it2 = new PreOrderIterator<T>(tree); it1.hasNext() && it2.hasNext();) {
-			if (!it1.next().equals(it2.next())) return false;
-		}
-		return true;
-	}
-	public static void testLCA() {
-		Tree<Integer> tree = bst2();
-		System.out.println(tree.lca(10, 20));
-		System.out.println(tree.lca(50, 80));
-		System.out.println(tree.lca(20, 60));
-	}
-	public static void testPrintAllPaths() {
-		bst1().printAllPaths(new ArrayVisitor<Integer>(){
-
-			@Override
-			public void visit(Integer[] visit, int length) {
-				for (int i = 0; i < length; i++) {
-					System.out.print(visit[i]);
-					if (i < length-1) System.out.print(",");
-				}
-				System.out.println("");
-			}
-		});
-		testBSTBuild();
-	}
 	public void populateSibling() {
 		Node<T> prev = null;
 		int depth = 0;
@@ -70,96 +47,41 @@ public class Tree<T extends Comparable<T>> {
 		}
 		return count;
 	}
-	public static void testBSTBuild() {
-		Tree<Integer> bst = bst1();
-		int count = bst.count();
-		Integer[] pre = new Integer[count];
-		Integer[] in = new Integer[count];
-		int index = 0;
-		for (Iterator<Node<Integer>> iterator = new PreOrderIterator<Integer>(bst); iterator.hasNext();) {
-			pre[index++] = iterator.next().value;
+	public class SizeWrapper {
+		int current;
+		int max;
+		boolean bst;
+		public SizeWrapper(){}
+		public SizeWrapper(int current, int max, boolean bst){this.current=current;this.max=max;this.bst=bst;}
+	}
+	public int largestBst() {
+		return largestBst(root,null,null).max;
+	}
+	private SizeWrapper largestBst(Node<T> current, T bottom, T top) {
+		if (current == null) return new SizeWrapper();
+		int max = 0;
+		boolean bst = (bottom == null && top == null)
+				|| (bottom == null && current.value.compareTo(top) < 0)
+				|| (top == null && bottom.compareTo(current.value) < 0)
+				|| (bottom.compareTo(current.value) < 0 && current.value.compareTo(top) < 0);
+		int size = 1;
+		SizeWrapper wrapper = largestBst(current.getLeft(),bst ? bottom : null,current.value);
+		max = Math.max(max, wrapper.max);
+		if (wrapper.bst) size+=wrapper.current;
+		wrapper = largestBst(current.getRight(),current.value,bst ? top : null);
+		max = Math.max(max, wrapper.max);
+		if (wrapper.bst) size+=wrapper.current;
+		max = Math.max(max, size);
+		return new SizeWrapper(size,max,bst);
+	}
+	public boolean equals(Tree<T> tree) {
+		for (Iterator<Node<T>> it1 = this.inOrderIterator(), it2 = tree.inOrderIterator(); it1.hasNext() && it2.hasNext();) {
+			if (!it1.next().equals(it2.next())) return false;
 		}
-		index = 0;
-		for (Iterator<Node<Integer>> iterator = bst.inOrderIterator(); iterator.hasNext();) {
-			in[index++] = iterator.next().value;
+		for (Iterator<Node<T>> it1 = this.preOrderIterator(), it2 = tree.preOrderIterator(); it1.hasNext() && it2.hasNext();) {
+			if (!it1.next().equals(it2.next())) return false;
 		}
-		Tree<Integer> copy = Tree.fromPreIn(pre,in);
-		for (Iterator<Node<Integer>> iterator = new PreOrderIterator<Integer>(copy); iterator.hasNext();) {
-			System.out.println(iterator.next());
-		}
-	}
-	public static void testMerge() {
-		Tree<Integer> tree = small();
-		tree.merge(big());
-		Iterator<Node>[] iterators = new Iterator[]{tree.inOrderIterator(), tree.bfsIterator(), new PostOrderIterator<Integer>(tree), new PreOrderIterator<Integer>(tree)};
-		for (int i = 0; i < iterators.length; i++) {
-			for (Iterator<Node> iterator = iterators[i]; iterator.hasNext();) {
-				System.out.println(iterator.next().value);
-			}
-			System.out.println("***");
-		}
-		System.out.println(tree.new IterativeIsBSTExecutor().execute());
-	}
-	public static void testBST() {
-		Tree<Integer>[] trees = new Tree[]{bst1(), nonBST()};
-		for (Tree<Integer> tree : trees) {
-			Executor[] executors = new Executor[]{tree.new RecursiveIsBSTExecutor(), tree.new IterativeIsBSTExecutor()};
-			for (int i = 0; i < executors.length; i++) {
-				System.out.println(executors[i].execute());
-			}
-			System.out.println("***");
-		}
-	}
-	public static void testIterators() {
-		Tree<Integer>[] trees = new Tree[]{bst1(), nonBST()};
-		for (Tree<Integer> tree : trees) {
-			Iterator<Node<Integer>>[] iterators = new Iterator[]{tree.inOrderIterator(), tree.bfsIterator(), new PostOrderIterator<Integer>(tree), new PreOrderIterator<Integer>(tree)};
-			for (int i = 0; i < iterators.length; i++) {
-				for (Iterator<Node<Integer>> iterator = iterators[i]; iterator.hasNext();) {
-					System.out.println(iterator.next().value);
-				}
-				System.out.println("***");
-			}
-		}
-	}
-	public Tree(Node<T> root) {
-		this.root=root;
-	}
-	public static Tree<Integer> small() {
-		Node<Integer> root = new Node<Integer>(2, new Node<Integer>(1), new Node<Integer>(3));
-		return new Tree<Integer>(root);
-	}
-	public static Tree<Integer> big() {
-		Node<Integer> root = new Node<Integer>(7, new Node<Integer>(6), new Node<Integer>(8));
-		return new Tree<Integer>(root);
-	}
-	public static Tree<Integer> bst1() {
-		Node<Integer> root = new Node<Integer>(5, new Node<Integer>(2, new Node<Integer>(1), null), new Node<Integer>(7, new Node<Integer>(6), new Node<Integer>(8, null, new Node<Integer>(9))));
-		return new Tree<Integer>(root);
-	}
-	public static Tree<Integer> bst2() {
-		Node<Integer> root = new Node<Integer>(45, new Node<Integer>(25, new Node<Integer>(15, new Node<Integer>(10), new Node<Integer>(20)), new Node<Integer>(30)), new Node<Integer>(65, new Node<Integer>(55, new Node<Integer>(50), new Node<Integer>(60)), new Node<Integer>(75, null, new Node<Integer>(80))));
-		return new Tree<Integer>(root);
-	}
-	public static Tree<Integer> nonBST() {
-		Node<Integer> root = new Node<Integer>(5, new Node<Integer>(2, new Node<Integer>(1), null), new Node<Integer>(7, new Node<Integer>(7), new Node<Integer>(8, null, new Node<Integer>(9))));
-		return new Tree<Integer>(root);
-	}
-	public static <T extends Comparable<T>> Tree<T> fromPreIn(T[] preOrder, T[] inOrder) {
-		Node<T> node = fromPreIn(preOrder,0,preOrder.length-1,inOrder,0,inOrder.length-1);
-		return new Tree<T>(node);
-	}
-	private static <T extends Comparable<T>> Node<T> fromPreIn(T[] pre, int leftPre, int rightPre, T[] in, int leftIn, int rightIn) {
-		if (leftPre > rightPre || leftIn > rightIn) return null;
-		T current = pre[leftPre];
-		int indexIn;
-		for (indexIn = leftIn; indexIn <= rightIn; indexIn++) {
-			if (current == in[indexIn]) break;
-		}
-		Node<T> left = fromPreIn(pre,leftPre+1,rightPre,in,leftIn,indexIn-1);
-		int len = indexIn - leftIn;
-		Node<T> right = fromPreIn(pre,leftPre+len+1,rightPre,in,indexIn+1,rightIn);
-		return new Node<T>(current,left,right);
+		return true;
 	}
 	public Tree<T> clone() {
 		return new Tree<T>(clone(root));
@@ -224,6 +146,12 @@ public class Tree<T extends Comparable<T>> {
 		if (wrapper.count >= 2) wrapper.node = current;
 		return wrapper;
 	}
+	public void flip() {
+		for (Iterator<Node<T>> iterator = this.inOrderIterator(); iterator.hasNext();) {
+			Node<T> current = iterator.next();
+			ArrayUtils.reverse(current.childs, 0, current.childs.length-1);
+		}
+	}
 	private Node<T> bstify(BstifyWrapper head, int size) {
 		if (size <= 0) return null;
 		if (size == 1) {
@@ -271,7 +199,7 @@ public class Tree<T extends Comparable<T>> {
 		public void visit(T[] visit, int length);
 	}
 	public void printAllPaths(ArrayVisitor<T> visitor) {
-		RecursivePreOrderExecutor executor = new RecursivePreOrderExecutor(new PrintBooleanVisitor(visitor));
+		RecursivePreOrderReducer<T> executor = new RecursivePreOrderReducer<T>(this,new PrintBooleanVisitor(visitor));
 		executor.execute();
 	}
 	public int height() {
@@ -304,102 +232,20 @@ public class Tree<T extends Comparable<T>> {
 	public interface BooleanVisitor<T extends Comparable<T>> {
 		public boolean visit(Node<T> node, int depth);
 	}
-	public interface Executor {
+	public interface BooleanReducer {
 		public boolean execute();
 	}
-	public class RecursiveIsBSTExecutor implements Executor {
-
-		@Override
-		public boolean execute() {
-			return isBST(root,null,null);
-		}
-		private boolean isBST(Node<T> node, Node<T> left, Node<T> right) {
-			if (node == null) return true;
-			if ((left == null && right == null)
-					|| (left == null && node.compareTo(right) < 0)
-					|| (right == null && node.compareTo(left) > 0)
-					|| (node.compareTo(left) > 0 && node.compareTo(right) < 0)) {
-				return isBST(node.getLeft(), left, node) && isBST(node.getRight(), node, right);
-			} else  {
-				return false;
-			}
-		}
+	public BooleanReducer iterativeIsBSTReducer() {
+		return new IterativeIsBSTReducer<T>(this);
 	}
-	public class IterativeIsBSTExecutor implements Executor {
-		@Override
-		public boolean execute() {
-			Node<T> previous = null;
-			for (Iterator<Node<T>> iterator = inOrderIterator(); iterator.hasNext();) {
-				Node<T> prev = previous;
-				previous = iterator.next();
-				if (prev != null && prev.compareTo(previous) >= 0) return false;
-			}
-			return true;
-		}
-		
+	public BooleanReducer recursiveIsBSTReducer() {
+		return new RecursiveIsBSTReducer<T>(this);
 	}
-	public class RecursivePreOrderExecutor implements Executor{
-		private BooleanVisitor<T> reducer;
-		public RecursivePreOrderExecutor(BooleanVisitor<T> reducer) {
-			this.reducer = reducer;
-		}
-		@Override
-		public boolean execute() {
-			if (root == null) return true;
-			return inOrder(reducer,root,0);
-		}
-		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current, int depth) {
-			if (!visitor.visit(current,depth)) return false;
-			for (Node<T> child : current.childs) {
-				if (child == null) continue;
-				if (!inOrder(visitor,child,depth+1)) return false;
-			}
-			return true;
-		}
-	}
-	public class RecursiveInOrderExecutor implements Executor{
-		private BooleanVisitor<T> reducer;
-		public RecursiveInOrderExecutor(BooleanVisitor<T> reducer) {
-			this.reducer = reducer;
-		}
-		@Override
-		public boolean execute() {
-			if (root == null) return true;
-			return inOrder(reducer,root,0);
-		}
-		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current, int depth) {
-			int mid = current.childs.length/2;
-			for (int i = 0; i < current.childs.length; i++) {
-				Node<T> child = current.childs[i];
-				if (child == null) continue;
-				if (i < mid) {
-					if (!inOrder(visitor,child,depth+1)) return false;
-				}
-				if (!visitor.visit(current,depth)) return false;
-				if (i >= mid)  {
-					if (!inOrder(visitor,child,depth+1)) return false;
-				}
-			}
-			return true;
-		}
-	}
-	public class RecursivePostOrderExecutor implements Executor{
-		private BooleanVisitor<T> reducer;
-		public RecursivePostOrderExecutor(BooleanVisitor<T> reducer) {
-			this.reducer = reducer;
-		}
-		@Override
-		public boolean execute() {
-			if (root == null) return true;
-			return inOrder(reducer,root,0);
-		}
-		private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current, int depth) {
-			for (Node<T> child : current.childs) {
-				if (child == null) continue;
-				if (!inOrder(visitor,child,depth+1)) return false;
-			}
-			return visitor.visit(current,depth); 
-		}
+	public Iterator<Node<T>> postOrderIterator() {
+		return new PostOrderIterator<T>(this); 
+	} 
+	public Iterator<Node<T>> preOrderIterator() {
+		return new PreOrderIterator<T>(this); 
 	}
 	public Iterator<Node<T>> inOrderIterator() {
 		return new InOrderIterator<T>(this);
