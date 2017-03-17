@@ -10,9 +10,18 @@ public class Tree<T extends Comparable<T>> {
 	public Tree(Node<T> root) {
 		this.root=root;
 	}
+	public static <T extends Comparable<T>> Tree<T> tree(Node<T> root) {
+		return new Tree<T>(root);
+	}
+	public static <T extends Comparable<T>> Node<T> node(T t) {
+		return new Node<T>(t);
+	} 
+	public static <T extends Comparable<T>> Node<T> node(T t, Node<T> c1, Node<T> c2) {
+		return new Node<T>(t,c1,c2);
+	}
 	public static <T extends Comparable<T>> Tree<T> fromPreIn(T[] preOrder, T[] inOrder) {
 		Node<T> node = fromPreIn(preOrder,0,preOrder.length-1,inOrder,0,inOrder.length-1);
-		return new Tree<T>(node);
+		return tree(node);
 	}
 	private static <T extends Comparable<T>> Node<T> fromPreIn(T[] pre, int leftPre, int rightPre, T[] in, int leftIn, int rightIn) {
 		if (leftPre > rightPre || leftIn > rightIn) return null;
@@ -24,7 +33,15 @@ public class Tree<T extends Comparable<T>> {
 		Node<T> left = fromPreIn(pre,leftPre+1,rightPre,in,leftIn,indexIn-1);
 		int len = indexIn - leftIn;
 		Node<T> right = fromPreIn(pre,leftPre+len+1,rightPre,in,indexIn+1,rightIn);
-		return new Node<T>(current,left,right);
+		return node(current,left,right);
+	}
+	public static <T extends Comparable<T>> Tree<T> fromIn(T[] inOrder) {
+		return tree(fromIn(inOrder,0,inOrder.length-1));
+	}
+	private static <T extends Comparable<T>> Node<T> fromIn(T[] in, int left, int right) {
+		if (left > right) return null;
+		int mid = (right-left)/2+left;
+		return node(in[mid],fromIn(in,left,mid-1),fromIn(in,mid+1,right));
 	}
 	public Node<T> root() {return root;}
 	public void populateSibling() {
