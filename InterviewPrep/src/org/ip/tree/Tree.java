@@ -39,6 +39,25 @@ public class Tree<T extends Comparable<T>> {
 			depth = wrapper.depth;
 		}
 	}
+	public int countUnival() {
+		return countUnival(root,null).max;
+	}
+	private SizeWrapper countUnival(Node<T> current, T value) {
+		if (current == null) return new SizeWrapper();
+		//if (value.equals(current.value))
+		int size = 1;
+		int max = 0;
+		boolean bst = (value == null) 
+				|| (current.value.equals(value));
+		SizeWrapper wrapper = countUnival(current.getLeft(),current.value);
+		if (wrapper.bst) size+=wrapper.current;
+		max = Math.max(max, wrapper.max);
+		wrapper = countUnival(current.getRight(),current.value);
+		max = Math.max(max, wrapper.max);
+		if (wrapper.bst) size+=wrapper.current;
+		max = Math.max(max, size);
+		return new SizeWrapper(size,max,bst);
+	}
 	public int count() {
 		int count =0;
 		for (Iterator<Node<T>> iterator = new PreOrderIterator<T>(this); iterator.hasNext();) {

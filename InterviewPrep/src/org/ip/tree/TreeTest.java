@@ -7,23 +7,22 @@ import org.ip.tree.Tree.BooleanReducer;
 
 public class TreeTest {
 	public static void main(String[] s) {
-		testLargestBst();
+		testUnival();
 	}
 
 	public static Tree<Integer> small() {
-		Node<Integer> root = new Node<Integer>(2, new Node<Integer>(1), new Node<Integer>(3));
-		return new Tree<Integer>(root);
+		Node<Integer> root = node(2,node(1),node(3));
+		return tree(root);
 	}
 
 	public static Tree<Integer> big() {
-		Node<Integer> root = new Node<Integer>(7, new Node<Integer>(6), new Node<Integer>(8));
-		return new Tree<Integer>(root);
+		Node<Integer> root = node(7,node(6),node(8));
+		return tree(root);
 	}
 
 	public static Tree<Integer> bst1() {
-		Node<Integer> root = new Node<Integer>(5, new Node<Integer>(2, new Node<Integer>(1), null),
-				new Node<Integer>(7, new Node<Integer>(6), new Node<Integer>(8, null, new Node<Integer>(9))));
-		return new Tree<Integer>(root);
+		Node<Integer> root = node(5,node(2,node(1),null),node(7, node(6), node(8, null, node(9))));
+		return tree(root);
 	}
 
 	public static Tree<Integer> bst2() {
@@ -32,17 +31,32 @@ public class TreeTest {
 						new Node<Integer>(30)),
 				new Node<Integer>(65, new Node<Integer>(55, new Node<Integer>(50), new Node<Integer>(60)),
 						new Node<Integer>(75, null, new Node<Integer>(80))));
-		return new Tree<Integer>(root);
+		return tree(root);
 	}
 	public static Tree<Integer> nonBST1() {
-		Node<Integer> root = new Node<Integer>(5, new Node<Integer>(2, new Node<Integer>(1), null),
-				new Node<Integer>(7, new Node<Integer>(7), new Node<Integer>(8, null, new Node<Integer>(9))));
-		return new Tree<Integer>(root);
+		Node<Integer> root = node(5, node(2, node(1), null), node(7, node(7), node(8, null, node(9)))); 
+		return tree(root);
 	}
 	public static Tree<Integer> nonBST2() {
-		Node<Integer> root = new Node<Integer>(5, new Node<Integer>(2, null, null),
-				new Node<Integer>(7, null, new Node<Integer>(7, new Node<Integer>(4, new Node<Integer>(2), new Node<Integer>(6)), new Node<Integer>(9))));
-		return new Tree<Integer>(root);
+		Node<Integer> root = node(5, node(2), node(7, null, node(7, node(4, node(2), node(6)), node(9)))); 
+		return tree(root);
+	}
+	public static Tree<Integer> unival() {
+		Node<Integer> root = node(5, node(5, node(5), node(5)), node(5, null, node(5)));
+		return tree(root);
+	}
+	public static <T extends Comparable<T>> Node<T> node(T t) {
+		return new Node<T>(t);
+	} 
+	public static <T extends Comparable<T>> Node<T> node(T t, Node<T> c1, Node<T> c2) {
+		return new Node<T>(t,c1,c2);
+	}
+	public static <T extends Comparable<T>> Tree<T> tree(Node<T> root) {
+		return new Tree<T>(root);
+	}
+	public static void testUnival() {
+		Tree<Integer> tree = unival();
+		System.out.println(tree.countUnival());
 	}
 	public static void testLargestBst(){
 		Tree<Integer> tree = nonBST2();
