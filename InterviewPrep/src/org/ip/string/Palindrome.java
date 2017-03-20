@@ -1,8 +1,9 @@
-package org.ip;
+package org.ip.string;
 
 import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
+import org.ip.Visitors;
 import org.ip.Visitors.StringVisitor;
 
 public class Palindrome {
@@ -143,13 +144,16 @@ public class Palindrome {
 			decompose(visitor, palindrome, new char[palindrome.length()*2],0,0,0);
 		}
 	}
-	private static boolean isPalindrome(String palindrome, int left, int right) {
+	public static boolean isPalindrome(String palindrome) {
+		return isPalindrome(palindrome,0,palindrome.length()-1);
+	}
+	public static boolean isPalindrome(String palindrome, int left, int right) {
 		for (int i = left, j = right; i < j; i++, j--) {
 			if (palindrome.charAt(i) != palindrome.charAt(j)) return false;
 		}
 		return true;
 	}
-	private static boolean isPalindrome(char[] palindrome, int left, int right) {
+	public static boolean isPalindrome(char[] palindrome, int left, int right) {
 		for (int i = left, j = right; i < j; i++, j--) {
 			if (palindrome[i] != palindrome[j]) return false;
 		}

@@ -10,4 +10,10 @@ public class Visitors {
 	public interface CharArrayVisitor {
 		public void visit(char[] array, int length);
 	}
+	public static final StringVisitor PRINT_CONSOLE = new StringVisitor(){
+		@Override
+		public void visit(String string) {
+			System.out.println(string);
+		}
+	};
 }

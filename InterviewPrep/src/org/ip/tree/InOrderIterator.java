@@ -6,12 +6,17 @@ import java.util.LinkedList;
 
 public class InOrderIterator<T extends Comparable<T>> implements Iterator<Node<T>> {
 	Deque<Node<T>> stack = new LinkedList<Node<T>>();
+	private int k;
 	public InOrderIterator(Tree<T> tree) {
 		pushLeft(tree.root());
 	}
+	public InOrderIterator(Tree<T> tree, int k) {
+		pushLeft(tree.root());
+		this.k = k;
+	}
 	@Override
 	public boolean hasNext() {
-		return !stack.isEmpty();
+		return !stack.isEmpty() && k > 0;
 	}
 	public void pushLeft(Node<T> start) {
 		for (Node<T> current = start; current != null;current = current.getLeft()) {
@@ -25,6 +30,7 @@ public class InOrderIterator<T extends Comparable<T>> implements Iterator<Node<T
 			stack.push(removed.getRight());
 			pushLeft(removed.getRight().getLeft());
 		}
+		k--;
 		return removed;
 	}
 	

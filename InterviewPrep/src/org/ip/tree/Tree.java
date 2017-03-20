@@ -268,8 +268,21 @@ public class Tree<T extends Comparable<T>> {
 	public interface BooleanVisitor<T extends Comparable<T>> {
 		public boolean visit(Node<T> node, int depth);
 	}
+	public interface Visitor<S, T extends Comparable<T>> {
+		public S visit(Node<T> node, int depth, S[] s, S previous);
+	}
 	public interface BooleanReducer {
 		public boolean execute();
+	}
+	public interface Reducer<T> {
+		public T execute(T init);
+		public T get();
+	}
+	public Iterator<Node<T>> reverseOrderIterator(int k) {
+		return new ReverseOrderIterator<T>(this, k);
+	}
+	public Iterator<Node<T>> reverseOrderIterator() {
+		return new ReverseOrderIterator<T>(this);
 	}
 	public BooleanReducer iterativeIsBSTReducer() {
 		return new IterativeIsBSTReducer<T>(this);
@@ -282,6 +295,9 @@ public class Tree<T extends Comparable<T>> {
 	} 
 	public Iterator<Node<T>> preOrderIterator() {
 		return new PreOrderIterator<T>(this); 
+	}
+	public Iterator<Node<T>> inOrderIterator(int k) {
+		return new InOrderIterator<T>(this,k);
 	}
 	public Iterator<Node<T>> inOrderIterator() {
 		return new InOrderIterator<T>(this);

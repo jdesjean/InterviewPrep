@@ -7,7 +7,7 @@ import org.ip.tree.Tree.BooleanReducer;
 
 public class TreeTest {
 	public static void main(String[] s) {
-		testFromIn();
+		testHeight();
 	}
 
 	public static Tree<Integer> small() {
@@ -53,6 +53,19 @@ public class TreeTest {
 	}
 	public static <T extends Comparable<T>> Tree<T> tree(Node<T> root) {
 		return new Tree<T>(root);
+	}
+	public static void testHeight() {
+		System.out.println(unival().height());
+	}
+	public static void testTopK() {
+		for (Iterator<Node<Integer>> iterator = bst2().inOrderIterator(5); iterator.hasNext();) {
+			System.out.println(iterator.next());
+		}
+	}
+	public static void testReverseIterator() {
+		for (Iterator<Node<Integer>> iterator = bst2().reverseOrderIterator(5); iterator.hasNext();) {
+			System.out.println(iterator.next());
+		}
 	}
 	public static void testFromIn() {
 		for (Iterator<Node<Integer>> iterator = Tree.fromIn(new Integer[]{1,2,3}).bfsIterator(); iterator.hasNext();) {

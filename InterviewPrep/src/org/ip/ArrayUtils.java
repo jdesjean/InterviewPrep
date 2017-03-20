@@ -35,6 +35,13 @@ public class ArrayUtils {
 			swap(array,i,j);
 		}
 	}
+	public static String reverse(String string) {
+		char[] array = string.toCharArray(); 
+		for (int i = 0, j = array.length-1; i < j; i++, j--) {
+			swap(array,i,j);
+		}
+		return String.copyValueOf(array);
+	}
 	public static void swap(Object[] array, int i, int j) {
 		Object tmp = array[i];
 		array[i] = array[j];
@@ -167,6 +174,20 @@ public class ArrayUtils {
 		}
 		buffer[write] = buffer[read];
 		return isSum(array,read+1,buffer,write+1,target) || isSum(array,read+1,buffer,write,target);  
+	}
+	public static <T extends Comparable<T>> T max(T[] array) {
+		T max = null;
+		for (int i = 0; i < array.length; i++) {
+			max = max == null ? array[i] : array[i] == null ? max : max.compareTo(array[i]) >= 0 ? max : array[i];
+		}
+		return max;
+	}
+	public static int max(int[] array) {
+		int max = Integer.MIN_VALUE;
+		for (int i = 0; i < array.length; i++) {
+			max = Math.max(max, array[i]);
+		}
+		return max;
 	}
 	public interface Partition {
 		public boolean balance(int[] array);
