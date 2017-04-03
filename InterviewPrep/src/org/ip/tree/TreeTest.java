@@ -48,8 +48,14 @@ public class TreeTest {
 	public static <T extends Comparable<T>> Node<T> node(T t) {
 		return new Node<T>(t);
 	} 
+	public static <T extends Comparable<T>> Node<T> node(T t, Node<T> c1) {
+		return new Node<T>(t,c1,null);
+	}
 	public static <T extends Comparable<T>> Node<T> node(T t, Node<T> c1, Node<T> c2) {
 		return new Node<T>(t,c1,c2);
+	}
+	public static <T extends Comparable<T>> Node<T> node(T t, Node<T> c1, Node<T> c2, Node<T> c3) {
+		return new Node<T>(t,new Node[]{c1,c2,c3});
 	}
 	public static <T extends Comparable<T>> Tree<T> tree(Node<T> root) {
 		return new Tree<T>(root);
@@ -107,7 +113,7 @@ public class TreeTest {
 	public static void testPopulateSibling() {
 		Tree<Integer> tree = bst1();
 		tree.populateSibling();
-		for (Iterator<Node<Integer>> it1 = new BFSIterator<Integer>(tree); it1.hasNext();) {
+		for (Iterator<Node<Integer>> it1 = new IteratorBFS<Integer>(tree); it1.hasNext();) {
 			System.out.println(it1.next());
 		}
 	}
@@ -174,7 +180,7 @@ public class TreeTest {
 		Integer[] pre = new Integer[count];
 		Integer[] in = new Integer[count];
 		int index = 0;
-		for (Iterator<Node<Integer>> iterator = new PreOrderIterator<Integer>(bst); iterator.hasNext();) {
+		for (Iterator<Node<Integer>> iterator = new IteratorPreOrder<Integer>(bst); iterator.hasNext();) {
 			pre[index++] = iterator.next().value;
 		}
 		index = 0;
@@ -182,8 +188,25 @@ public class TreeTest {
 			in[index++] = iterator.next().value;
 		}
 		Tree<Integer> copy = Tree.fromPreIn(pre, in);
-		for (Iterator<Node<Integer>> iterator = new PreOrderIterator<Integer>(copy); iterator.hasNext();) {
+		for (Iterator<Node<Integer>> iterator = new IteratorPreOrder<Integer>(copy); iterator.hasNext();) {
 			System.out.println(iterator.next());
 		}
+	}
+	
+	public static void testCount() {
+		for (int i = 0; i < 5; i++) {
+			System.out.println(Tree.count(i) + "==" + Tree.catalan(i));
+		}
+	}
+	
+	public static void testDiameter() {
+		/*{"{0,1,{5,1,{4,1,{7,0}}}}", 0},*/
+		System.out.println(Tree.diameter(node(0, node(5, node(4, node(7))))) + "==0");
+		/*{"{0,1,{5,2,{8,0},{7,0}}}", 15},*/
+		System.out.println(Tree.diameter(node(0, node(5, node(8), node(7)))) + "==15");
+		/*{"{0,3,{1,2,{5,0},{7,0}},{1,2,{6,0},{5,0}},{1,2,{10,0},{9,0}}}", 19},*/
+		System.out.println(Tree.diameter(node(0, node(1, node(5), node(7)), node(1, node(6), node(5)), node(1, node(10), node(9)))) + "==19");
+		/*{"{0,3,{5,2,{8,0},{7,0}},{5,2,{9,0},{8,0}},{5,2,{10,0}, {9,0}}}", 29},*/
+		System.out.println(Tree.diameter(node(0,node(5, node(8), node(7)), node(5, node(9), node(8)), node(5, node(10), node(9))))  + "==29");
 	}
 }

@@ -2,6 +2,14 @@ package org.ip;
 
 public class Matrix {
 	public static void main(String[] s) {
+		testFind();
+	}
+	public static void testFind() {
+		System.out.println(find(new int[][]{{0,3,6,9},{1,4,7,10},{2,5,8,11}},0));
+		System.out.println(find(new int[][]{{0,3,6,9},{1,4,7,10},{2,5,8,11}},2));
+		System.out.println(find(new int[][]{{0,3,6,9},{1,4,7,10},{2,5,8,11}},12));
+	}
+	public static void testMaximizer() {
 		SubMatrixMaximizer[] maximizer = new SubMatrixMaximizer[]{new SubMatrixMaximizer1(),new SubMatrixMaximizer2()};
 		/*
 		 * 0 1 1 0 1
@@ -125,6 +133,14 @@ public class Matrix {
 			return cache[1][matrices.length-1];
 		}
 		
+	}
+	public static boolean find(int[][] sorted, int value) {
+		for (int l = 0, c = sorted[0].length-1; l < sorted.length && c >= 0;) {
+			if (sorted[l][c] == value) return true;
+			else if (value < sorted[l][c]) c--;
+			else l++;
+		}
+		return false;
 	}
 	
 }

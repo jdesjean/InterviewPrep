@@ -27,6 +27,11 @@ public class Prime {
             return (bits[i] & bitmask) != 0;
         }
         public long[] getBits() { return bits; }
+        public void setAll() {
+        	for (int i = 0; i < bits.length; i++) {
+        		bits[i] |= ~0L;
+        	}
+        }
         public void set(long index) {
             int wordNum = expandingWordNum(index);
             long bitmask = 1L << index;
@@ -44,6 +49,19 @@ public class Prime {
         public static int bits2words(long numBits) {
             return (int)(((numBits-1)>>>6)+1);
         }
+    }
+    public static BitSet generatePrimes(int n) {
+    	long size = (long)Math.floor(0.5 * (n-3))+1;
+        BitSet isPrime = new BitSet(size);
+        isPrime.setAll();
+        for (long i = 0; i < size; i++) {
+            if (!isPrime.get(i)) continue;
+            long p = ((i*2)+3);
+            for (long j = ((i*i) * 2) + 6*i+3; j < size; j+=p) {
+                isPrime.clear(j);
+            }
+        }
+        return isPrime;
     }
     public static int generatePrimes(long n, long first, long last) {
         long size = (long)Math.floor(0.5 * (n-3))+1;

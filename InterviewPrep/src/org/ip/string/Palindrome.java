@@ -3,11 +3,19 @@ package org.ip.string;
 import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
-import org.ip.Visitors;
 import org.ip.Visitors.StringVisitor;
 
 public class Palindrome {
 	public static void main(String[] s) {
+		testRotation();
+	}
+	public static void testRotation() {
+		System.out.println(isRotation("aab"));
+		System.out.println(isRotation("aba"));
+		System.out.println(isRotation("baa"));
+		System.out.println(isRotation("abc"));
+	}
+	public static void testDecomposer() {
 		/*
 		 * a|b|r|a|c|a|d|a|b|r|a|
 			a|b|r|a|c|ada|b|r|a|
@@ -143,6 +151,26 @@ public class Palindrome {
 		public void decompose(StringVisitor visitor, String palindrome) {
 			decompose(visitor, palindrome, new char[palindrome.length()*2],0,0,0);
 		}
+	}
+	public static int previous(int n, int length) {
+		n--;
+		return n < 0 ? length+n : n;
+	}
+	public static int next(int n, int length) {
+		return ++n % length;
+	}
+	public static boolean isPalindrome(String palindrome, int rotation) {
+		int l = palindrome.length();
+		for (int i = rotation, j = previous(rotation,l), k = 0; k < l;k++,i=next(i,l),j=previous(j,l)) {
+			if (palindrome.charAt(i) != palindrome.charAt(j)) return false;
+		}
+		return true;
+	}
+	public static boolean isRotation(String palindrome) {
+		for (int i = 0; i < palindrome.length(); i++) {
+			if (isPalindrome(palindrome,i)) return true;
+		}
+		return false;
 	}
 	public static boolean isPalindrome(String palindrome) {
 		return isPalindrome(palindrome,0,palindrome.length()-1);

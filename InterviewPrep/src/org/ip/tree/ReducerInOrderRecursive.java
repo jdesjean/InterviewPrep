@@ -3,10 +3,10 @@ package org.ip.tree;
 import org.ip.tree.Tree.BooleanReducer;
 import org.ip.tree.Tree.BooleanVisitor;
 
-public class RecursiveInOrderReducer<T extends Comparable<T>> implements BooleanReducer{
+public class ReducerInOrderRecursive<T extends Comparable<T>> implements BooleanReducer{
 	private BooleanVisitor<T> reducer;
 	private Node<T> root;
-	public RecursiveInOrderReducer(Tree<T> tree, BooleanVisitor<T> reducer) {
+	public ReducerInOrderRecursive(Tree<T> tree, BooleanVisitor<T> reducer) {
 		this.root = tree.root();
 		this.reducer = reducer;
 	}

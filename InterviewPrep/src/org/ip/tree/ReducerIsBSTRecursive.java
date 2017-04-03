@@ -2,9 +2,9 @@ package org.ip.tree;
 
 import org.ip.tree.Tree.BooleanReducer;
 
-public class RecursiveIsBSTReducer<T extends Comparable<T>> implements BooleanReducer {
+public class ReducerIsBSTRecursive<T extends Comparable<T>> implements BooleanReducer {
 	private Node<T> root;
-	public RecursiveIsBSTReducer(Tree<T> tree) {
+	public ReducerIsBSTRecursive(Tree<T> tree) {
 		this.root = tree.root();
 	}
 	@Override

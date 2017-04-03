@@ -4,13 +4,13 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class InOrderIterator<T extends Comparable<T>> implements Iterator<Node<T>> {
+public class IteratorInOrder<T extends Comparable<T>> implements Iterator<Node<T>> {
 	Deque<Node<T>> stack = new LinkedList<Node<T>>();
 	private int k;
-	public InOrderIterator(Tree<T> tree) {
+	public IteratorInOrder(Tree<T> tree) {
 		pushLeft(tree.root());
 	}
-	public InOrderIterator(Tree<T> tree, int k) {
+	public IteratorInOrder(Tree<T> tree, int k) {
 		pushLeft(tree.root());
 		this.k = k;
 	}

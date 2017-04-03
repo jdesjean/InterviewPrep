@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class BFSIterator<T extends Comparable<T>> implements Iterator<Node<T>> {
+public class IteratorBFS<T extends Comparable<T>> implements Iterator<Node<T>> {
 	Queue<Node<T>> queue = new LinkedList<Node<T>>();
-	public BFSIterator(Tree<T> tree) {
+	public IteratorBFS(Tree<T> tree) {
 		if (tree.root() == null) return;
 		queue.add(tree.root());
 	}

@@ -9,9 +9,6 @@ public class Tree {
 		public List<Node> childs;
 		public Node(int value, Node ...childs) {this.value=value;this.childs=Arrays.asList(childs);}
 	}
-	public static void main(String[] s) {
-		testCount();
-	}
 	public static void testDiameter() {
 		/*{"{0,1,{5,1,{4,1,{7,0}}}}", 0},*/
 		System.out.println(diameter(new Node(0, new Node(5, new Node(4, new Node(7))))) + "==0");
@@ -22,11 +19,7 @@ public class Tree {
 		/*{"{0,3,{5,2,{8,0},{7,0}},{5,2,{9,0},{8,0}},{5,2,{10,0}, {9,0}}}", 29},*/
 		System.out.println(diameter(new Node(0,new Node(5, new Node(8), new Node(7)), new Node(5, new Node(9), new Node(8)), new Node(5, new Node(10), new Node(9))))  + "==29");
 	}
-	public static void testCount() {
-		for (int i = 0; i < 5; i++) {
-			System.out.println(count(i) + "==" + catalan(i));
-		}
-	}
+	
 	public static int diameter(Node root) {
 		return diameterRecursive(root).child;
 	}
@@ -57,19 +50,5 @@ public class Tree {
 		max.child=Math.max(maxCurrent2 > 0 ? maxCurrent+maxCurrent2 : 0, maxDiameter);
 		
 		return max;
-	}
-	public static int catalan(int n) {
-		return ArrayUtils.factorial(2*n) / (ArrayUtils.factorial(n+1)*ArrayUtils.factorial(n));
-	}
-	public static int count(int n) {
-		if (n == 0 || n == 1) return 1;
-		
-		int count = 0;
-		n--;
-		for (int i = 0; i <= n; i++) {
-			count+=count(i)*count(n-i);
-		}
-		
-		return count;
 	}
 }

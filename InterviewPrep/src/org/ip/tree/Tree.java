@@ -47,7 +47,7 @@ public class Tree<T extends Comparable<T>> {
 	public void populateSibling() {
 		Node<T> prev = null;
 		int depth = 0;
-		for (Iterator<NodeWrapper<T>> it1 = new BFSWrapperIterator<T>(this); it1.hasNext();) {
+		for (Iterator<NodeWrapper<T>> it1 = new IteratorBFSWrapper<T>(this); it1.hasNext();) {
 			NodeWrapper<T> wrapper = it1.next();
 			Node<T> current = wrapper.node;
 			if (depth != wrapper.depth) prev = null;
@@ -77,7 +77,7 @@ public class Tree<T extends Comparable<T>> {
 	}
 	public int count() {
 		int count =0;
-		for (Iterator<Node<T>> iterator = new PreOrderIterator<T>(this); iterator.hasNext();) {
+		for (Iterator<Node<T>> iterator = new IteratorPreOrder<T>(this); iterator.hasNext();) {
 			iterator.next();
 			count++;
 		}
@@ -235,7 +235,7 @@ public class Tree<T extends Comparable<T>> {
 		public void visit(T[] visit, int length);
 	}
 	public void printAllPaths(ArrayVisitor<T> visitor) {
-		RecursivePreOrderReducer<T> executor = new RecursivePreOrderReducer<T>(this,new PrintBooleanVisitor(visitor));
+		ReducerPreOrderRecursive<T> executor = new ReducerPreOrderRecursive<T>(this,new PrintBooleanVisitor(visitor));
 		executor.execute();
 	}
 	public int height() {
@@ -247,6 +247,51 @@ public class Tree<T extends Comparable<T>> {
 		for (Node<T> child : root.childs) {
 			max = Math.max(max, height(child)+1);
 		}
+		return max;
+	}
+	public static int catalan(int n) {
+		return ArrayUtils.factorial(2*n) / (ArrayUtils.factorial(n+1)*ArrayUtils.factorial(n));
+	}
+	public static int count(int n) {
+		if (n == 0 || n == 1) return 1;
+		
+		int count = 0;
+		n--;
+		for (int i = 0; i <= n; i++) {
+			count+=count(i)*count(n-i);
+		}
+		
+		return count;
+	}
+	private static class Diameter {
+		public static final Diameter EMPTY = new Diameter(0,0);
+		public int current;
+		public int child;
+		public Diameter(int current, int child) {this.current=current;this.child=child;}
+	}
+	public static int diameter(Node<Integer> root) {
+		return diameterRecursive(root).child;
+	}
+	public static Diameter diameterRecursive(Node<Integer> root) {
+		if (root == null) return Diameter.EMPTY;
+		
+		Diameter max = new Diameter(root.value,0);
+		int maxCurrent = 0;
+		int maxCurrent2 = 0;
+		int maxDiameter = 0;
+		for (Node<Integer> child : root.childs) {
+			Diameter current = diameterRecursive(child);
+			if (current.current >= maxCurrent2 && current.current > maxCurrent) {
+				maxCurrent2 = maxCurrent;
+				maxCurrent = current.current;
+			} else if (current.current >= maxCurrent2) {
+				maxCurrent2 = current.current;
+			}
+			maxDiameter = Math.max(current.child, maxDiameter);
+		}
+		max.current+=maxCurrent;
+		max.child=Math.max(maxCurrent2 > 0 ? maxCurrent+maxCurrent2 : 0, maxDiameter);
+		
 		return max;
 	}
 	private final class PrintBooleanVisitor implements BooleanVisitor<T>{
@@ -279,30 +324,30 @@ public class Tree<T extends Comparable<T>> {
 		public T get();
 	}
 	public Iterator<Node<T>> reverseOrderIterator(int k) {
-		return new ReverseOrderIterator<T>(this, k);
+		return new IteratorReverseOrder<T>(this, k);
 	}
 	public Iterator<Node<T>> reverseOrderIterator() {
-		return new ReverseOrderIterator<T>(this);
+		return new IteratorReverseOrder<T>(this);
 	}
 	public BooleanReducer iterativeIsBSTReducer() {
-		return new IterativeIsBSTReducer<T>(this);
+		return new ReducerIsBSTIterative<T>(this);
 	}
 	public BooleanReducer recursiveIsBSTReducer() {
-		return new RecursiveIsBSTReducer<T>(this);
+		return new ReducerIsBSTRecursive<T>(this);
 	}
 	public Iterator<Node<T>> postOrderIterator() {
-		return new PostOrderIterator<T>(this); 
+		return new IteratorPostOrder<T>(this); 
 	} 
 	public Iterator<Node<T>> preOrderIterator() {
-		return new PreOrderIterator<T>(this); 
+		return new IteratorPreOrder<T>(this); 
 	}
 	public Iterator<Node<T>> inOrderIterator(int k) {
-		return new InOrderIterator<T>(this,k);
+		return new IteratorInOrder<T>(this,k);
 	}
 	public Iterator<Node<T>> inOrderIterator() {
-		return new InOrderIterator<T>(this);
+		return new IteratorInOrder<T>(this);
 	}
 	public Iterator<Node<T>> bfsIterator() {
-		return new BFSIterator<T>(this);
+		return new IteratorBFS<T>(this);
 	}
 }

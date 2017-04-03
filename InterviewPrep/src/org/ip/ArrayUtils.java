@@ -2,91 +2,121 @@ package org.ip;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 public class ArrayUtils {
 	public static void main(String[] s) {
-		testToFile();
+		testSumZero();
 	}
+	public static void testSumZero() {
+		System.out.println(sumZero(new int[]{5,1,2,-3,7,-4}));
+	}
+	public static void testMinimumRotated() {
+		System.out.println(minimumRotated(new int[]{5,6,1,2,3,4}));
+		System.out.println(minimumRotated(new int[]{1,2,3,4,5,6}));
+		System.out.println(minimumRotated(new int[]{2,3,4,5,6,1}));
+		System.out.println(minimumRotated(new int[]{4,4,1,2,4,4}));
+		System.out.println(minimumRotated(new int[]{4,1,2,3,4,4}));
+	}
+	public static void testMaxArea() {
+		System.out.println(maxArea(new int[] { 6, 2, 5, 4, 5, 1, 6 }));
+	}
+
+	public static void testAlternate() {
+		int[] array = new int[] { 2, 3, -4, -9, -1, -7, 1, -5, -6 };
+		alternate(array);
+		System.out.println(Arrays.toString(array));
+	}
+
 	public static void testToFile() {
-		toFile(new long[]{1},1);
+		toFile(new long[] { 1 }, 1);
 	}
-	public static void testPartition() {
-		Partition[] partitions = new Partition[]{new RecursivePartition(), new DPPartition()};
-		
-		for (Partition partition : partitions) {
-			int[] array = new int[]{4,1,-5,6,-11,3};
-			partition.balance(array);
-			System.out.println(Arrays.toString(array));
-		}
-		
-	}
+
 	public static void testSum() {
-		System.out.println(isSum(new int[]{2,4,8},6) + "==true");
-		System.out.println(isSum(new int[]{2,-4,8},1) + "==false");
-		System.out.println(isSum(new int[]{2,4,8},14) + "==true");
-		System.out.println(isSum(new int[]{2,4,8},9) + "==false");
+		System.out.println(isSum(new int[] { 2, 4, 8 }, 6) + "==true");
+		System.out.println(isSum(new int[] { 2, -4, 8 }, 1) + "==false");
+		System.out.println(isSum(new int[] { 2, 4, 8 }, 14) + "==true");
+		System.out.println(isSum(new int[] { 2, 4, 8 }, 9) + "==false");
 	}
+
 	public static void reverse(char[] array) {
-		for (int i = 0, j = array.length-1; i < j; i++, j--) {
-			swap(array,i,j);
+		reverse(array, 0, array.length - 1);
+	}
+
+	public static void reverse(char[] array, int i, int j) {
+		for (; i < j; i++, j--) {
+			swap(array, i, j);
 		}
 	}
+
 	public static String reverse(String string) {
-		char[] array = string.toCharArray(); 
-		for (int i = 0, j = array.length-1; i < j; i++, j--) {
-			swap(array,i,j);
+		char[] array = string.toCharArray();
+		for (int i = 0, j = array.length - 1; i < j; i++, j--) {
+			swap(array, i, j);
 		}
 		return String.copyValueOf(array);
 	}
+
 	public static void swap(Object[] array, int i, int j) {
 		Object tmp = array[i];
 		array[i] = array[j];
 		array[j] = tmp;
 	}
+
 	public static void swap(char[] array, int i, int j) {
 		char tmp = array[i];
 		array[i] = array[j];
 		array[j] = tmp;
 	}
+
 	public static void swap(int[] array, int i, int j) {
 		int tmp = array[i];
 		array[i] = array[j];
 		array[j] = tmp;
 	}
+
 	public static void reverse(int[] array, int i, int j) {
-		for (; i < j ; i++,j--) {
-			swap(array,i,j);
+		for (; i < j; i++, j--) {
+			swap(array, i, j);
 		}
 	}
+
 	public static void reverse(Object[] array, int i, int j) {
-		for (; i < j ; i++,j--) {
-			swap(array,i,j);
+		for (; i < j; i++, j--) {
+			swap(array, i, j);
 		}
 	}
+
 	public interface PermutationVisitor {
 		public void visit(int[] array);
 	}
+
 	public interface Filter {
 		public boolean test(int[] array, int i);
 	}
+
 	public static int factorial(int n) {
-        int fact = 1;
-        for (int i = 1; i <= n; i++) {
-            fact *= i;
-        }
-        return fact;
-    }
+		int fact = 1;
+		for (int i = 1; i <= n; i++) {
+			fact *= i;
+		}
+		return fact;
+	}
+
 	public static void toFile(long[] array, int length) {
 		File file = new File("C:\\Users\\Jean-Francois\\Downloads\\prime.txt");
 		try {
 			PrintWriter out = new PrintWriter(file, "UTF-8");
 			int size = Math.min(array.length, length);
 			for (int i = 0; i < size; i++) {
-				if (i != 0) out.print(",");
+				if (i != 0)
+					out.print(",");
 				out.print(array[i]);
 			}
 			out.close();
@@ -97,40 +127,62 @@ public class ArrayUtils {
 			e.printStackTrace();
 		}
 	}
+
 	public static void println(long[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
-			if (i != 0) System.out.print(",");
+			if (i != 0)
+				System.out.print(",");
 			System.out.print(array[i]);
 		}
 		System.out.println("");
 	}
+
+	public static void println(int[] array, int left, int right) {
+		for (int i = left; i <= right; i++) {
+			if (i != left)
+				System.out.print(",");
+			System.out.print(array[i]);
+		}
+		System.out.println("");
+	}
+	
 	public static void println(int[] array, int length) {
-		int size = Math.min(array.length, length);
-		for (int i = 0; i < size; i++) {
-			if (i != 0) System.out.print(",");
+		println(array,0,Math.min(array.length, length));
+	}
+	
+	public static <T> void println(T[] array, int left, int right) {
+		for (int i = left; i <= right; i++) {
+			if (i != left)
+				System.out.print(",");
 			System.out.print(array[i]);
 		}
 		System.out.println("");
 	}
+
 	public static void println(char[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
-			if (i != 0) System.out.print(",");
+			if (i != 0)
+				System.out.print(",");
 			System.out.print(array[i]);
 		}
 		System.out.println("");
 	}
+
 	public static void print(char[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
-			if (i != 0) System.out.print(",");
+			if (i != 0)
+				System.out.print(",");
 			System.out.print(array[i]);
 		}
 	}
+
 	public static int min(int a, int b, int c) {
 		return Math.min(a, Math.min(b, c));
 	}
+
 	public static int min(int[] array, int length) {
 		int size = Math.min(array.length, length);
 		int min = Integer.MAX_VALUE;
@@ -139,42 +191,58 @@ public class ArrayUtils {
 		}
 		return min;
 	}
+
+	public static int indexOf(int[] a, int left, int right, int value) {
+		for (int i = left; i <= right; i++) {
+			if (a[i] == value) return i;
+		}
+		return -1;
+	}
+	
+	public static int sum(int[] array, int left, int right) {
+		int sum = 0;
+		for (int i = left; i <= right; i++) {
+			sum += array[i];
+		}
+		return sum;
+	}
+	
 	public static int sum(int[] array, int length) {
-		int size = Math.min(array.length, length);
+		return sum(array,0,Math.min(array.length, length)-1);
+	}
+
+	public static int sumNegatives(int[] array, int left, int right) {
 		int sum = 0;
-		for (int i = 0; i < size; i++) {
-			sum+=array[i];
+		for (int i = left; i <= right; i++) {
+			if (array[i] > 0)
+				continue;
+			sum += array[i];
 		}
 		return sum;
 	}
-	public static int sumNegatives(int[] array, int length) {
-		int size = Math.min(array.length, length);
+	
+	public static int sumPositives(int[] array, int left, int right) {
 		int sum = 0;
-		for (int i = 0; i < size; i++) {
-			if (array[i] > 0) continue;
-			sum+=array[i];
+		for (int i = left; i <= right; i++) {
+			if (array[i] < 0)
+				continue;
+			sum += array[i];
 		}
 		return sum;
 	}
-	public static int sumPositives(int[] array, int length) {
-		int size = Math.min(array.length, length);
-		int sum = 0;
-		for (int i = 0; i < size; i++) {
-			if (array[i] < 0) continue;
-			sum+=array[i];
-		}
-		return sum;
-	}
+
 	public static boolean isSum(int[] array, int target) {
 		return isSum(array, 0, new int[array.length], 0, target);
 	}
+
 	private static boolean isSum(int[] array, int read, int[] buffer, int write, int target) {
 		if (read == array.length) {
-			return sum(array,write) == target;
+			return sum(array, write) == target;
 		}
 		buffer[write] = buffer[read];
-		return isSum(array,read+1,buffer,write+1,target) || isSum(array,read+1,buffer,write,target);  
+		return isSum(array, read + 1, buffer, write + 1, target) || isSum(array, read + 1, buffer, write, target);
 	}
+
 	public static <T extends Comparable<T>> T max(T[] array) {
 		T max = null;
 		for (int i = 0; i < array.length; i++) {
@@ -182,6 +250,7 @@ public class ArrayUtils {
 		}
 		return max;
 	}
+
 	public static int max(int[] array) {
 		int max = Integer.MIN_VALUE;
 		for (int i = 0; i < array.length; i++) {
@@ -189,60 +258,117 @@ public class ArrayUtils {
 		}
 		return max;
 	}
-	public interface Partition {
-		public boolean balance(int[] array);
-	}
-	public static class DPPartition implements Partition {
 
-		@Override
-		public boolean balance(int[] array) {
-			int sum = sum(array,array.length);
-			if (sum % 2 != 0) return false; //impossible
-			int target = sum/2;
-			int sumNegatives = sumNegatives(array,array.length);
-			int sumPositives = sumPositives(array,array.length);
-			int total = Math.abs(sumNegatives) + sumPositives+1;
-			int indexZero = Math.abs(sumNegatives);
-			int indexTarget = indexZero+target;
-			int[] cache = new int[total];
-			cache[indexZero] = 1; // zero
-			
-			for (int i = 0; i < array.length; i++) {
-				if (array[i] > 0) {
-					for (int j = total-1, k = j-array[i]; k >= 0; j--,k--) {
-						if (cache[j] != 0 || cache[k] == 0) continue;
-						cache[j] = array[i];
-					}
-				} else if (array[i] < 0) {
-					for (int j = 0, k = j-array[i]; k < cache.length; j++,k++) {
-						if (cache[j] != 0 || cache[k] == 0) continue;
-						cache[j] = array[i]; 
-					}
-				}
-			}
-			if (cache[indexTarget] == 0) return false; //cannot partition
-			for (int i = indexTarget, j = 0; i != indexZero && j < array.length; i-=cache[i], j++) {
-				for (int k = 0; k < array.length; k++) {
-					if (array[k] != cache[i]) continue;
-					swap(array,k,j);
-					break;
-				}
-			}
-			return true;
+	public static void shift(int[] array, int i, int j) {
+		for (; j > i; j--) {
+			array[j] = array[j - 1];
 		}
-		
 	}
-	public static class RecursivePartition implements Partition {
 
+	public static int nextPositive(int[] array, int i) {
+		for (; i < array.length; i++) {
+			if (array[i] >= 0)
+				return i;
+		}
+		return -1;
+	}
+
+	public static int nextNegative(int[] array, int i) {
+		for (; i < array.length; i++) {
+			if (array[i] < 0)
+				return i;
+		}
+		return -1;
+	}
+
+	public static void alternate(int[] array) {
+		for (int i = 0; i < array.length; i++) {
+			boolean positive = i % 2 == 0;
+			if (positive && array[i] >= 0)
+				continue;
+			else if (!positive && array[i] <= 0)
+				continue;
+			else if (i + 1 >= array.length)
+				continue;
+			int k = positive ? nextPositive(array, i) : nextNegative(array, i);
+			if (k < 0)
+				return;
+			int tmp = array[k];
+			shift(array, i, k);
+			array[i] = tmp;
+		}
+	}
+
+	public static int maxArea(int[] a) {
+		Deque<Integer> stack = new LinkedList<Integer>();
+		int max = 0;
+		for (int i = 0; i < a.length;) {
+			if (stack.isEmpty() || a[i] > a[stack.peek()]) {
+				stack.push(i++);
+				continue;
+			}
+
+			int j = stack.pop();
+			int size = (stack.isEmpty() ? i : i - stack.peek() - 1);
+			max = Math.max(max, a[j] * size);
+		}
+
+		while (!stack.isEmpty()) {
+			int j = stack.pop();
+			int size = (stack.isEmpty() ? a.length - 1 : a.length - stack.peek() - 1);
+			max = Math.max(max, a[j] * size);
+		}
+
+		return max;
+	}
+	
+	public static int minimumRotated(int[] rotated) {
+		return minimumRotated(rotated,0,rotated.length-1,-1);
+	}
+	public static int minimumRotated(int[] rotated, int i, int j, int k) {
+		for (;i < j;) {
+			int mid = (j-i)/2+i;
+			if (rotated[i] < rotated[mid]) {
+				if (k == -1 || rotated[i] < rotated[k]) k = i;
+				i = mid+1;
+			} else if (rotated[mid] < rotated[j]) {
+				if (k == -1 || rotated[mid] < rotated[k]) k = mid;
+				j = mid-1;
+			} else {
+				int k1 = minimumRotated(rotated,i,mid,k);
+				int k2 = minimumRotated(rotated,mid+1,j,k);
+				if (k1 == -1) return k2;
+				else if (k2 == -1) return k1;
+				else if (rotated[k1] <= rotated[k2]) return k1;
+				else return k2;
+			}
+		}
+		if (i == j && (k == -1 || rotated[i] < rotated[k])) k = i; 
+		return k;
+	}
+	
+	public static class Pair {
+		int left;
+		public Pair(int left, int right) {
+			super();
+			this.left = left;
+			this.right = right;
+		}
+		int right;
 		@Override
-		public boolean balance(int[] array) {
-			int sum = sum(array,array.length);
-			return balance(array,sum/2,array.length);
+		public String toString() {
+			return "Pair [left=" + left + ", right=" + right + "]";
 		}
-		private static boolean balance(int[] array, int target, int depth) {
-			if (target == 0) return true;
-			if (depth == 0) return false;
-			return balance(array,target,depth-1) || balance(array,target-array[depth-1],depth-1);
+	}
+	public static Pair sumZero(int[] array) {
+		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+		int sum = 0;;
+		for (int i = 0; i < array.length; i++) {
+			sum+=array[i];
+			if (sum == 0) return new Pair(0,i);
+			else if  (map.containsKey(sum)) return new Pair(map.get(sum)+1,i);
+			map.put(sum, i);
 		}
+		return null;
 	}
 }

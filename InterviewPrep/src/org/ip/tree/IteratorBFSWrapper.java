@@ -4,12 +4,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class BFSWrapperIterator<T extends Comparable<T>> implements Iterator<NodeWrapper<T>> {
+public class IteratorBFSWrapper<T extends Comparable<T>> implements Iterator<NodeWrapper<T>> {
 	Queue queue = new LinkedList();
 	NodeWrapper<T> wrapper = new NodeWrapper<T>();
 	private final static Object EMPTY = new Object();
 	int depth = 0;
-	public BFSWrapperIterator(Tree<T> tree) {
+	public IteratorBFSWrapper(Tree<T> tree) {
 		if (tree.root() == null) return;
 		queue.add(tree.root());
 		queue.add(EMPTY);

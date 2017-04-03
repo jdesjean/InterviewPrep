@@ -5,12 +5,12 @@ import java.lang.reflect.Array;
 import org.ip.tree.Tree.Reducer;
 import org.ip.tree.Tree.Visitor;
 
-public class RecursivePostOrderReducer<T extends Comparable<T>, S> implements Reducer<S>{
+public class ReducerPostOrderRecursive<T extends Comparable<T>, S> implements Reducer<S>{
 	private Visitor<S,T> reducer;
 	private Node<T> root;
 	private S[] buffer;
 	private S previous = null;
-	public RecursivePostOrderReducer(Tree<T> tree, Visitor<S,T> reducer) {
+	public ReducerPostOrderRecursive(Tree<T> tree, Visitor<S,T> reducer) {
 		this.root = tree.root();
 		this.reducer = reducer;
 	}
