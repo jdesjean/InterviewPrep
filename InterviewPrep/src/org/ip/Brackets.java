@@ -1,6 +1,7 @@
 package org.ip;
 
 import org.ip.Visitors.CharArrayVisitor;
+import org.ip.primitives.ArrayUtils;
 
 public class Brackets {
 	public static void main(String[] s) {

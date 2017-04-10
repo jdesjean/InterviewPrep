@@ -1,10 +1,10 @@
 package org.ip;
 
-import org.ip.ArrayUtils.Filter;
-import org.ip.ArrayUtils.PermutationVisitor;
 import org.ip.Permutator.PermutatorFactoradicIterative;
 import org.ip.Permutator.PermutatorIterative;
 import org.ip.Permutator.PermutatorRecursive;
+import org.ip.primitives.ArrayUtils.Filter;
+import org.ip.primitives.ArrayUtils.PermutationVisitor;
 
 public class Queens {
 	public static void main(String[] s) {

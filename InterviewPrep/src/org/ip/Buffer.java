@@ -1,5 +1,7 @@
 package org.ip;
 
+import org.ip.primitives.ArrayUtils;
+
 public class Buffer {
 	public static void main(String[] s) {
 		Buffer buffer = new Buffer(new File(30));

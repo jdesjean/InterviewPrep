@@ -2,8 +2,8 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.ArrayUtils;
 import org.ip.IteratorInt;
+import org.ip.primitives.ArrayUtils;
 
 public class HeapInt {
 	public static void main(String[] s) {
@@ -16,6 +16,7 @@ public class HeapInt {
 	int[] a;
 	private int count = 0;
 	private Best compare;
+	private int left = 0;
 	public interface Best {
 		public boolean isBetter(int a);
 	}
@@ -31,6 +32,16 @@ public class HeapInt {
 			return a > 0;
 		}
 	}
+	public HeapInt(int[] a, int left, int right, Best compare) {
+		this.a = a;
+		this.compare = compare;
+		count = 1;
+		this.left  = left;
+		int size = right - left + 1;
+		for (; count < size; count++) {
+			siftUp();
+		}
+	}
 	public HeapInt(int size, Best compare) {
 		a = new int[size];
 		this.compare = compare;
@@ -41,20 +52,42 @@ public class HeapInt {
 	public static HeapInt createMax(int size) {
 		return new HeapInt(size, new Big());
 	}
+	protected int first() {
+		return left;
+	}
+	protected int last() {
+		return left+count;
+	}
+	protected int parent(int i) {
+		return left+(i-left-1) / 2;
+	}
+	protected int left(int i) {
+		return left+(i-left)*2+1;
+	}
+	protected int right(int i) {
+		return left+(i-left)*2+2;
+	}
 	public void add(int value) {
-		a[count] = value;
+		a[last()] = value;
 		siftUp();
 		count++;
 	}
 	public int remove() {
-		int current = a[0];
-		a[0] = a[--count]; 
+		int current = a[first()];
+		count--;
+		a[first()] = a[last()]; 
+		shiftDown();
+		return current;
+	}
+	public int replace(int value) {
+		int current = a[first()];
+		a[last()] = value;
 		shiftDown();
 		return current;
 	}
 	private void siftUp() {
-		for (int j = count; j > 0;) {
-			int mid = (j-1) / 2;
+		for (int j = last(); j > first();) {
+			int mid = parent(j);
 			//compare.isBetter(a[j], a[mid])
 			if (compare.isBetter(a[j]-a[mid])) {
 				ArrayUtils.swap(a, mid, j);
@@ -65,11 +98,11 @@ public class HeapInt {
 		}
 	}
 	private void shiftDown() {
-		for (int i = 0; i < count;) {
-			int j = i*2+1;
-			int k = j + 1;
+		for (int i = first(); i <= last();) {
+			int j = left(i);
+			int k = right(i);
 			if (j >= count && k >= count) break;
-			if (k >= count || compare.isBetter(a[k]-a[j])) {
+			if (k >= count || compare.isBetter(a[j] - a[k])) {
 				if (compare.isBetter(a[j] - a[i])) {
 					ArrayUtils.swap(a, i, j);
 					i = j;
@@ -80,21 +113,21 @@ public class HeapInt {
 			} else break;
 		}
 	}
-	public int peek() {return a[0];}
+	public int peek() {return a[first()];}
 	public int size() {return count;}
 	public boolean isEmpty(){return count == 0;}
 	public IteratorInt iterator() { 
 		return new IteratorInt(){
 			private final int size = count;
-			private int i = -1;
+			private int i = a.length;
 			@Override
 			public boolean hasNext() {
-				return i < size - 1;
+				return a.length-i < size;
 			}
 
 			@Override
 			public int next() {
-				return a[++i];
+				return a[--i];
 			}
 		
 		}; 

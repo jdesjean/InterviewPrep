@@ -1,11 +1,17 @@
-package org.ip;
+package org.ip.primitives;
+
+import java.util.BitSet;
 
 public class Number {
 	public static void main(String[] s) {
-		System.out.println(nextPalindrome(23545));
-		System.out.println(nextPalindrome(99));
-		System.out.println(nextPalindrome(6789876));
-		System.out.println(nextPalindrome(8998));
+		testNextPalindrome();
+	}
+	
+	public static void testNextPalindrome() {
+		int[] numbers = new int[]{23545, 99, 6789876, 8998};
+		for (int i = 0; i < numbers.length; i++) {
+			System.out.println(numbers[i] + " ->  " + nextPalindrome(numbers[i]));
+		}
 	}
 	public static int countDigit(int n) {
 		int count = 0;

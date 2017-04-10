@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Comparator;
 
-import org.ip.ArrayUtils;
+import org.ip.primitives.ArrayUtils;
 
 public class Neighbor {
 	public static void main(String args[]) {

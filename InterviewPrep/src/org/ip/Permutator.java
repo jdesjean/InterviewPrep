@@ -3,8 +3,9 @@ package org.ip;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.ip.ArrayUtils.Filter;
-import org.ip.ArrayUtils.PermutationVisitor;
+import org.ip.primitives.ArrayUtils;
+import org.ip.primitives.ArrayUtils.Filter;
+import org.ip.primitives.ArrayUtils.PermutationVisitor;
 
 public interface Permutator {
 	public void permute(PermutationVisitor visitor, int[] array);

@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.ArrayUtils;
+import org.ip.primitives.ArrayUtils;
 
 public class Permutation {
 	public static void main(String[] s) {

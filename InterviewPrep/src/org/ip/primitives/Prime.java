@@ -1,4 +1,4 @@
-package org.ip;
+package org.ip.primitives;
 
 import java.util.Arrays;
 

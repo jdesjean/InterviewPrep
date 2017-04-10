@@ -1,5 +1,7 @@
 package org.ip;
 
+import org.ip.primitives.ArrayUtils;
+
 public class Sets {
 	public static void main(String[] s) {
 		subsets(new SubsetVisitor(){

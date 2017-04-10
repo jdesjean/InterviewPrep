@@ -2,11 +2,12 @@ package org.ip;
 
 import java.util.Arrays;
 
-import org.ip.ArrayUtils.Filter;
-import org.ip.ArrayUtils.PermutationVisitor;
 import org.ip.Permutator.PermutatorFactoradicIterative;
 import org.ip.Permutator.PermutatorIterative;
 import org.ip.Permutator.PermutatorRecursive;
+import org.ip.primitives.ArrayUtils;
+import org.ip.primitives.ArrayUtils.Filter;
+import org.ip.primitives.ArrayUtils.PermutationVisitor;
 
 public class Garden {
 	public static void main(String[] s) {

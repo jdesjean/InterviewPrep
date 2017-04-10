@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.ip.primitives.ArrayUtils;
+
 public class Change {
 	public static void main(String[] s) {
 		ChangeMinimizer[] minimizers = new ChangeMinimizer[] { new RecursiveChangeMinimizer(),

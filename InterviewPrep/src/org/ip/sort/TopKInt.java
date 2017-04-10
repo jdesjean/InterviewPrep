@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.ArrayUtils;
+import org.ip.primitives.ArrayUtils;
 
 public interface TopKInt {
 	public static void main(String[] s) {

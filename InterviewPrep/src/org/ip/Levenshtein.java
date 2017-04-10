@@ -1,5 +1,7 @@
 package org.ip;
 
+import org.ip.primitives.ArrayUtils;
+
 public class Levenshtein {
 	public static void main(String[] s) {
 		Calculator[] calculators = new Calculator[]{new RecursiveCalculator(), new DPCalculator()};

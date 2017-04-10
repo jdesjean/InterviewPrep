@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.ip.ArrayUtils;
+import org.ip.primitives.ArrayUtils;
 
 public class PalindromeCombination {
 	public static void main(String[] s) {

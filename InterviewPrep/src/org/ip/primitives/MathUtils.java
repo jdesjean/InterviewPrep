@@ -1,4 +1,4 @@
-package org.ip;
+package org.ip.primitives;
 
 public class MathUtils {
 	public static void main(String[] s) {

@@ -1,6 +1,6 @@
 package org.ip.string;
 
-import org.ip.ArrayUtils;
+import org.ip.primitives.ArrayUtils;
 
 public class WordOrder {
 	public static void main(String[] s) {

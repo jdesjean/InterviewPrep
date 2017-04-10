@@ -1,4 +1,4 @@
-package org.ip;
+package org.ip.primitives;
 
 import java.io.File;
 import java.io.FileNotFoundException;

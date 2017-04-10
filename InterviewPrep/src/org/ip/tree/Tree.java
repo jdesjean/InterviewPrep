@@ -3,7 +3,7 @@ package org.ip.tree;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-import org.ip.ArrayUtils;
+import org.ip.primitives.ArrayUtils;
 
 public class Tree<T extends Comparable<T>> {
 	private Node<T> root;

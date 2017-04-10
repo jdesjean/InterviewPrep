@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.ip.Visitors.StringVisitor;
+import org.ip.primitives.NumberUtils;
 
 public class Expression {
 	private static class StateMachine {
