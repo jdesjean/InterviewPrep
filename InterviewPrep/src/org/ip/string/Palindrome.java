@@ -1,5 +1,6 @@
 package org.ip.string;
 
+import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
@@ -7,7 +8,11 @@ import org.ip.Visitors.StringVisitor;
 
 public class Palindrome {
 	public static void main(String[] s) {
-		testRotation();
+		testIsPalindromeIgnorePunctuation();
+	}
+	public static void testIsPalindromeIgnorePunctuation() {
+		System.out.println(isPalindromeIgnorePunctuationCase("A man, a plan, a canal, Panama"));
+		System.out.println(isPalindromeIgnorePunctuationCase("Ray a Ray"));
 	}
 	public static void testRotation() {
 		System.out.println(isRotation("aab"));
@@ -176,14 +181,43 @@ public class Palindrome {
 		return isPalindrome(palindrome,0,palindrome.length()-1);
 	}
 	public static boolean isPalindrome(String palindrome, int left, int right) {
-		for (int i = left, j = right; i < j; i++, j--) {
-			if (palindrome.charAt(i) != palindrome.charAt(j)) return false;
-		}
-		return true;
+		return isPalindrome(palindrome,left,right,SKIP_ALWAYS_FALSE,COMPARATOR_CASE);
 	}
 	public static boolean isPalindrome(char[] palindrome, int left, int right) {
 		for (int i = left, j = right; i < j; i++, j--) {
 			if (palindrome[i] != palindrome[j]) return false;
+		}
+		return true;
+	}
+	public interface ComparatorChar {
+		public int compare(char c1, char c2);
+	}
+	public static final IntPredicate SKIP_NON_LETTER = c -> !Character.isLetter((char)c);
+	public static final IntPredicate SKIP_ALWAYS_FALSE = c -> false;
+	public static final ComparatorChar COMPARATOR_CASE = new ComparatorChar(){
+
+		@Override
+		public int compare(char c1, char c2) {
+			return c1 - c2;
+		}
+		
+	};
+	public static final ComparatorChar COMPARATOR_LOWER_CASE = new ComparatorChar(){
+
+		@Override
+		public int compare(char c1, char c2) {
+			return Character.toLowerCase(c1) - Character.toLowerCase(c2);
+		}
+		
+	};
+	public static boolean isPalindromeIgnorePunctuationCase(String palindrome) {
+		return isPalindrome(palindrome,0,palindrome.length(),SKIP_NON_LETTER, COMPARATOR_LOWER_CASE);
+	}
+	public static boolean isPalindrome(String palindrome, int left, int right, IntPredicate fSkip, ComparatorChar comparator) {
+		for (int i = left, j = right; i < j;i++,j--) {
+			while(fSkip.test(palindrome.charAt(i))) i++;
+			while(fSkip.test(palindrome.charAt(j))) j--;
+			if (comparator.compare(palindrome.charAt(i), palindrome.charAt(j)) != 0) return false;
 		}
 		return true;
 	}

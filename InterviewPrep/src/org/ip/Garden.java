@@ -5,9 +5,9 @@ import java.util.Arrays;
 import org.ip.Permutator.PermutatorFactoradicIterative;
 import org.ip.Permutator.PermutatorIterative;
 import org.ip.Permutator.PermutatorRecursive;
-import org.ip.primitives.ArrayUtils;
-import org.ip.primitives.ArrayUtils.Filter;
-import org.ip.primitives.ArrayUtils.PermutationVisitor;
+import org.ip.array.ArrayUtils;
+import org.ip.array.ArrayUtils.Filter;
+import org.ip.array.ArrayUtils.PermutationVisitor;
 
 public class Garden {
 	public static void main(String[] s) {

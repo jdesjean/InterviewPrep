@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 import org.ip.sort.HeapInt.Small;
 
 public class SorterK implements Sorter{

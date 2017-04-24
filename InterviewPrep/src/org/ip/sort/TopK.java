@@ -3,7 +3,7 @@ package org.ip.sort;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public interface TopK<T> {
 	public final static Comparator<Integer> COMPARATOR_INTEGER = new Comparator<Integer>(){

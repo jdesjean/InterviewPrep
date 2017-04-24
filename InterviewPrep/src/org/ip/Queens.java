@@ -3,8 +3,8 @@ package org.ip;
 import org.ip.Permutator.PermutatorFactoradicIterative;
 import org.ip.Permutator.PermutatorIterative;
 import org.ip.Permutator.PermutatorRecursive;
-import org.ip.primitives.ArrayUtils.Filter;
-import org.ip.primitives.ArrayUtils.PermutationVisitor;
+import org.ip.array.ArrayUtils.Filter;
+import org.ip.array.ArrayUtils.PermutationVisitor;
 
 public class Queens {
 	public static void main(String[] s) {

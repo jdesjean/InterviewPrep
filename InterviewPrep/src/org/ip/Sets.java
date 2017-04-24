@@ -1,6 +1,6 @@
 package org.ip;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class Sets {
 	public static void main(String[] s) {

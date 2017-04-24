@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class NutsBolts {
 	private final static SelectorInt selection = new SelectorMidInt();

@@ -1,5 +1,7 @@
 package org.ip.sort;
 
+import org.ip.primitives.MathUtils;
+
 public class SorterIntro implements Sorter{
 	private final static SelectorInt selection = new SelectorMidInt();
 	private final static PartitionInt partition = new PartitionDutchFlagInt();
@@ -7,7 +9,7 @@ public class SorterIntro implements Sorter{
 	@Override
 	public void sort(int[] array, int left, int right) {
 		int length = right - left + 1;
-		int maxDepth = log2(length)*2;
+		int maxDepth = MathUtils.log2(length)*2;
 		sort(array,left,right,maxDepth);
 	}
 	private void sort(int[] array, int left, int right, int maxDepth) {
@@ -22,10 +24,5 @@ public class SorterIntro implements Sorter{
 		}
 	}
 	
-	public static int log2( int bits )
-	{
-	    if( bits == 0 )
-	        return 0; // or throw exception
-	    return 31 - Integer.numberOfLeadingZeros( bits );
-	}
+	
 }

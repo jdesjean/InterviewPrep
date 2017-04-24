@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public interface Sorter {
 	public static void main(String[] s) {

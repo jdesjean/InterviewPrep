@@ -1,5 +1,5 @@
 package org.ip.sort;
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class SorterSelection implements Sorter{
 	@Override

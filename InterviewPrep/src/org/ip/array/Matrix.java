@@ -1,8 +1,19 @@
-package org.ip;
+package org.ip.array;
 
 public class Matrix {
 	public static void main(String[] s) {
-		testFind();
+		testRotate();
+	}
+	public static void testRotate() {
+		int[][] array = new int[][]{{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+		rotate(array);
+		ArrayUtils.println(array);
+		array = new int[][]{{1,2,3},{4,5,6},{7,8,9}};
+		rotate(array);
+		ArrayUtils.println(array);
+		array = new int[][]{{1,2,3,4,5},{6,7,8,9,10},{11,12,13,14,15},{16,17,18,19,20},{21,22,23,24,25}};
+		rotate(array);
+		ArrayUtils.println(array);
 	}
 	public static void testFind() {
 		System.out.println(find(new int[][]{{0,3,6,9},{1,4,7,10},{2,5,8,11}},0));
@@ -10,7 +21,7 @@ public class Matrix {
 		System.out.println(find(new int[][]{{0,3,6,9},{1,4,7,10},{2,5,8,11}},12));
 	}
 	public static void testMaximizer() {
-		SubMatrixMaximizer[] maximizer = new SubMatrixMaximizer[]{new SubMatrixMaximizer1(),new SubMatrixMaximizer2()};
+		SubMatrixMaximizer[] maximizer = new SubMatrixMaximizer[]{new SubMatrixMaximizerDP1(),new SubMatrixMaximizerDP2()};
 		/*
 		 * 0 1 1 0 1
 		 * 1 1 0 1 0
@@ -33,7 +44,7 @@ public class Matrix {
 			t2 = System.currentTimeMillis();
 			System.out.println("t"+(t2-t1));
 		}
-		MatrixMultiplicationMinimizer[] minimizers = new MatrixMultiplicationMinimizer[]{new RecursiveMatrixMultiplicationMinimizer(), new DPMatrixMultiplicationMinimizer()};
+		MatrixMultiplicationMinimizer[] minimizers = new MatrixMultiplicationMinimizer[]{new MatrixMultiplicationMinimizerRecursive(), new MatrixMultiplicationMinimizerDP()};
 		int[] matrices = new int[]{40,20,30,10,30};
 		for (int i = 0; i < minimizers.length; i++) {
 			t1 = System.currentTimeMillis();
@@ -45,7 +56,7 @@ public class Matrix {
 	public interface SubMatrixMaximizer {
 		public int maximum(boolean[][] array);
 	}
-	public static class SubMatrixMaximizer1 implements SubMatrixMaximizer{
+	public static class SubMatrixMaximizerDP1 implements SubMatrixMaximizer{
 
 		@Override
 		public int maximum(boolean[][] array) {
@@ -63,7 +74,7 @@ public class Matrix {
 			return max;
 		}
 	}
-	public static class SubMatrixMaximizer2 implements SubMatrixMaximizer{
+	public static class SubMatrixMaximizerDP2 implements SubMatrixMaximizer{
 
 		@Override
 		public int maximum(boolean[][] array) {
@@ -93,7 +104,7 @@ public class Matrix {
 	public interface MatrixMultiplicationMinimizer {
 		public int minimum(int[] matrices);
 	}
-	public static class RecursiveMatrixMultiplicationMinimizer implements MatrixMultiplicationMinimizer {
+	public static class MatrixMultiplicationMinimizerRecursive implements MatrixMultiplicationMinimizer {
 
 		@Override
 		public int minimum(int[] matrices) {
@@ -116,7 +127,7 @@ public class Matrix {
 		}
 		
 	}
-	public static class DPMatrixMultiplicationMinimizer implements MatrixMultiplicationMinimizer {
+	public static class MatrixMultiplicationMinimizerDP implements MatrixMultiplicationMinimizer {
 
 		@Override
 		public int minimum(int[] matrices) {
@@ -141,6 +152,20 @@ public class Matrix {
 			else l++;
 		}
 		return false;
+	}
+	public static void rotate(int[][] matrix) {
+		for (int start = 0, end = matrix.length-1; start < Math.ceil(0.5*matrix.length); start++, end--) {
+			int length = end-start;
+			for (int i = 0; i < length; i++) {
+				int startCurrent = start + i;
+				int endCurrent = end - i;
+				int tmp = matrix[start][startCurrent];
+				matrix[start][startCurrent] = matrix[endCurrent][start];
+				matrix[endCurrent][start] = matrix[end][endCurrent];
+				matrix[end][endCurrent] = matrix[startCurrent][end];
+				matrix[startCurrent][end] = tmp;
+			}
+		}
 	}
 	
 }

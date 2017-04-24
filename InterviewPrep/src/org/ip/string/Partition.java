@@ -1,6 +1,6 @@
 package org.ip.string;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class Partition {
 	public static void main(String[] s) {

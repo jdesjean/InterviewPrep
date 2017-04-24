@@ -1,4 +1,4 @@
-package org.ip;
+package org.ip.array;
 
 import java.util.Arrays;
 import java.util.Comparator;

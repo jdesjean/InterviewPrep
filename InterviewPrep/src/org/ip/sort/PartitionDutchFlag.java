@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Comparator;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class PartitionDutchFlag<T> implements Partition<T>{
 

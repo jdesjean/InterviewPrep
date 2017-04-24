@@ -1,13 +1,11 @@
-package org.ip.primitives;
+package org.ip.array;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 
 public class ArrayUtils {
@@ -24,16 +22,6 @@ public class ArrayUtils {
 		System.out.println(minimumRotated(new int[]{4,4,1,2,4,4}));
 		System.out.println(minimumRotated(new int[]{4,1,2,3,4,4}));
 	}
-	public static void testMaxArea() {
-		System.out.println(maxArea(new int[] { 6, 2, 5, 4, 5, 1, 6 }));
-	}
-
-	public static void testAlternate() {
-		int[] array = new int[] { 2, 3, -4, -9, -1, -7, 1, -5, -6 };
-		alternate(array);
-		System.out.println(Arrays.toString(array));
-	}
-
 	public static void testToFile() {
 		toFile(new long[] { 1 }, 1);
 	}
@@ -101,14 +89,6 @@ public class ArrayUtils {
 		public boolean test(int[] array, int i);
 	}
 
-	public static int factorial(int n) {
-		int fact = 1;
-		for (int i = 1; i <= n; i++) {
-			fact *= i;
-		}
-		return fact;
-	}
-
 	public static void toFile(long[] array, int length) {
 		File file = new File("C:\\Users\\Jean-Francois\\Downloads\\prime.txt");
 		try {
@@ -169,6 +149,13 @@ public class ArrayUtils {
 		}
 		System.out.println("");
 	}
+	public static void println2(char[] array, int length) {
+		int size = Math.min(array.length, length);
+		for (int i = 0; i < size; i++) {
+			System.out.print(array[i]);
+		}
+		System.out.println("");
+	}
 
 	public static void print(char[] array, int length) {
 		int size = Math.min(array.length, length);
@@ -193,6 +180,12 @@ public class ArrayUtils {
 	}
 
 	public static int indexOf(int[] a, int left, int right, int value) {
+		for (int i = left; i <= right; i++) {
+			if (a[i] == value) return i;
+		}
+		return -1;
+	}
+	public static int indexOf(char[] a, int left, int right, char value) {
 		for (int i = left; i <= right; i++) {
 			if (a[i] == value) return i;
 		}
@@ -259,10 +252,12 @@ public class ArrayUtils {
 		return max;
 	}
 
-	public static void shift(int[] array, int i, int j) {
+	public static int shift(int[] array, int i, int j) {
+		int k = array[j];
 		for (; j > i; j--) {
 			array[j] = array[j - 1];
 		}
+		return k;
 	}
 
 	public static int nextPositive(int[] array, int i) {
@@ -281,47 +276,6 @@ public class ArrayUtils {
 		return -1;
 	}
 
-	public static void alternate(int[] array) {
-		for (int i = 0; i < array.length; i++) {
-			boolean positive = i % 2 == 0;
-			if (positive && array[i] >= 0)
-				continue;
-			else if (!positive && array[i] <= 0)
-				continue;
-			else if (i + 1 >= array.length)
-				continue;
-			int k = positive ? nextPositive(array, i) : nextNegative(array, i);
-			if (k < 0)
-				return;
-			int tmp = array[k];
-			shift(array, i, k);
-			array[i] = tmp;
-		}
-	}
-
-	public static int maxArea(int[] a) {
-		Deque<Integer> stack = new LinkedList<Integer>();
-		int max = 0;
-		for (int i = 0; i < a.length;) {
-			if (stack.isEmpty() || a[i] > a[stack.peek()]) {
-				stack.push(i++);
-				continue;
-			}
-
-			int j = stack.pop();
-			int size = (stack.isEmpty() ? i : i - stack.peek() - 1);
-			max = Math.max(max, a[j] * size);
-		}
-
-		while (!stack.isEmpty()) {
-			int j = stack.pop();
-			int size = (stack.isEmpty() ? a.length - 1 : a.length - stack.peek() - 1);
-			max = Math.max(max, a[j] * size);
-		}
-
-		return max;
-	}
-	
 	public static int minimumRotated(int[] rotated) {
 		return minimumRotated(rotated,0,rotated.length-1,-1);
 	}
@@ -370,5 +324,14 @@ public class ArrayUtils {
 			map.put(sum, i);
 		}
 		return null;
+	}
+	public static void println(int[][] array) {
+		for (int i = 0; i < array.length; i++) {
+			for (int j = 0; j < array[i].length; j++) {
+				if (j > 0) System.out.print(",");
+				System.out.print(array[i][j]);
+			}
+			System.out.println();
+		}
 	}
 }

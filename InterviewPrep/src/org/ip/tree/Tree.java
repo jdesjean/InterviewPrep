@@ -3,7 +3,7 @@ package org.ip.tree;
 import java.lang.reflect.Array;
 import java.util.Iterator;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class Tree<T extends Comparable<T>> {
 	private Node<T> root;
@@ -248,9 +248,6 @@ public class Tree<T extends Comparable<T>> {
 			max = Math.max(max, height(child)+1);
 		}
 		return max;
-	}
-	public static int catalan(int n) {
-		return ArrayUtils.factorial(2*n) / (ArrayUtils.factorial(n+1)*ArrayUtils.factorial(n));
 	}
 	public static int count(int n) {
 		if (n == 0 || n == 1) return 1;

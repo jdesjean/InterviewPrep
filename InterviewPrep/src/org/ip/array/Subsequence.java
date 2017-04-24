@@ -1,10 +1,14 @@
-package org.ip;
+package org.ip.array;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Subsequence {
 	public static void main(String[] s) {
+		testLongestNonDecreasing();
+	}
+	
+	public static void testLongestCommon() {
 		/*
 		 * LCS for input Sequences "ABCDGH" and "AEDFHR" is "ADH" of length 3.
 		 * LCS for input Sequences "AGGTAB" and "GXTXAYB" is "GTAB" of length 4.
@@ -12,12 +16,28 @@ public class Subsequence {
 		System.out.println(solve(new String[] { "ABCDGH", "AEDFHR" }) + " ADH");
 		System.out.println(solve(new String[] { "AGGTAB", "GXTXAYB" }) + " GTAB");
 	}
+	
+	public static void testLongestNonDecreasing() {
+		System.out.println(longestNonDecreasing(new int[]{0,8,4,12,2,10,6,14,1,9}));
+	}
+	
+	public static int longestNonDecreasing(int[] array) {
+		int[] cache = new int[array.length];
+		for (int i = 0; i < cache.length; i++) {
+			for (int j = 0; j < i; j++) {
+				if (array[j] > array[i]) continue;
+				cache[i] = Math.max(cache[j]+1, cache[i]);
+			}
+			cache[i] = Math.max(cache[i], 1);
+		}
+		return cache[array.length-1];
+	}
 
-	private static class Pair {
+	private static class PairLCS {
 		public int length;
 		public int location;
 
-		public Pair(int length, int location) {
+		public PairLCS(int length, int location) {
 			this.length = length;
 			this.location = location;
 		}
@@ -28,7 +48,7 @@ public class Subsequence {
 		}
 	}
 
-	public static String getLongestSubsequenceFromCache(String strX, Pair[] aCache) {
+	public static String getLongestSubsequenceFromCache(String strX, PairLCS[] aCache) {
 		int max = 0;
 		int maxIndex = -1;
 		for (int i = 0; i < aCache.length; i++) {
@@ -54,9 +74,9 @@ public class Subsequence {
 		for (int i = 0; i < sequences[1].length(); i++) {
 			locations[Character.getNumericValue(sequences[1].charAt(i)) - 10].add(i);
 		}
-		Pair[] cache = new Pair[sequences[0].length()];
+		PairLCS[] cache = new PairLCS[sequences[0].length()];
 		for (int i = 0; i < sequences[0].length(); i++) {
-			cache[i] = new Pair(0, -1);
+			cache[i] = new PairLCS(0, -1);
 			int locationIndex = Character.getNumericValue(sequences[0].charAt(i)) - 10;
 			for (int j = 0; j <= i; j++) {
 				for (Integer location : locations[locationIndex]) {

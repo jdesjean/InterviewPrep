@@ -1,6 +1,11 @@
 package org.ip.primitives;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
+
+import org.ip.array.ArrayUtils;
 
 public class Prime {
 
@@ -50,6 +55,22 @@ public class Prime {
             return (int)(((numBits-1)>>>6)+1);
         }
     }
+    public static List<Integer> generate(int n) {
+		int size = (n-3) / 2 + 1;
+		java.util.BitSet set = new java.util.BitSet(size);
+		List<Integer> primes = new ArrayList<Integer>();
+		primes.add(2);
+		set.set(0, size);
+		for (int i = 0; i < n; i++) {
+			if (!set.get(i)) continue;
+			int p = i*2+3;
+			primes.add(p);
+			for (long j = 2*i*i+6*i+3; j < n; j+=p) {
+				set.clear((int)j);
+			}
+		}
+		return primes;
+	}
     public static BitSet generatePrimes(int n) {
     	long size = (long)Math.floor(0.5 * (n-3))+1;
         BitSet isPrime = new BitSet(size);

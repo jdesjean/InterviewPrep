@@ -3,7 +3,7 @@ package org.ip.sort;
 import java.util.Arrays;
 
 import org.ip.IteratorInt;
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class HeapInt {
 	public static void main(String[] s) {

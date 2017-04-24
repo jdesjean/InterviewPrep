@@ -2,6 +2,7 @@ package org.ip.tree;
 
 import java.util.Iterator;
 
+import org.ip.primitives.Sequence;
 import org.ip.tree.Tree.ArrayVisitor;
 import org.ip.tree.Tree.BooleanReducer;
 
@@ -195,7 +196,7 @@ public class TreeTest {
 	
 	public static void testCount() {
 		for (int i = 0; i < 5; i++) {
-			System.out.println(Tree.count(i) + "==" + Tree.catalan(i));
+			System.out.println(Tree.count(i) + "==" + Sequence.catalan(i));
 		}
 	}
 	

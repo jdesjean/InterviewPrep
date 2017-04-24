@@ -3,7 +3,7 @@ package org.ip.sort;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.ip.primitives.ArrayUtils;
+import org.ip.array.ArrayUtils;
 
 public class SorterBucket<T> {
 	private LinkedList<T>[] buckets;
