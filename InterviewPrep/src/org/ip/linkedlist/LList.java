@@ -2,7 +2,19 @@ package org.ip.linkedlist;
 
 public class LList {
 	public static void main(String[] s) {
-		testRemoveDups();
+		testIsPalindrome();
+	}
+	public static void testIsPalindrome() {
+		System.out.println(isPalindrome(testList6()));
+		System.out.println(isPalindrome(testList7()));
+		System.out.println(isPalindrome(testList1()));
+	}
+	public static void testCyclingShift() {
+		for (int i = 0; i <= 5; i++) {
+			Node head = testList4();
+			head = cyclicShift(head,i);
+			println(head);
+		}
 	}
 	public static void testRemoveDups() {
 		Node h = testListDups();
@@ -61,6 +73,12 @@ public class LList {
 	}
 	public static Node testList4() {
 		return node(5,node(7,node(9,node(11))));
+	}
+	public static Node testList6() {
+		return node(2,node(3,node(4,node(3,node(2)))));
+	}
+	public static Node testList7() {
+		return node(2,node(3,node(3,node(2))));
 	}
 	public static Node testListDups() {
 		return node(2,node(2,node(3,node(5,node(7,node(11,node(11))))))); 
@@ -199,7 +217,41 @@ public class LList {
 		}
 	}
 	public static Node cyclicShift(Node h, int k) {
+		if (k == 0) return h;
+		int length = 1;
+		Node tail = h;
+		for (; tail != null && tail.next != null; tail = tail.next) {
+			length++;
+		}
+		k %= length;
+		if (k  == 0) return h;
+		tail.next = h;
+		int kth = length - k - 1;
+		Node tailNew = advance(h,kth);
+		Node headNew = tailNew.next;
+		tailNew.next = null;
 		
-		return null;
+		return headNew;
+	}
+	public static Node half(Node h) {
+		Node slow = h;
+		for (Node fast = h; fast != null && fast.next != null;) {
+			fast = fast.next.next;
+			slow = slow.next;
+		}
+		return slow;
+	}
+	public static boolean isPalindrome(Node h) {
+		int length = length(h);
+		Node half = advance(h, (length-1)/2);
+		Node reversed =  reverse(half.next);
+		half.next = reversed;
+		int itr = length / 2;
+		for (Node first = h, second = reversed; itr > 0; itr--) {
+			if (first.value !=second.value) return false;
+			first = first.next;
+			second = second.next;
+		}
+		return true;
 	}
 }
