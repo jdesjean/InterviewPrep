@@ -2,7 +2,11 @@ package org.ip.linkedlist;
 
 public class LList {
 	public static void main(String[] s) {
-		testIsPalindrome();
+		testPartition();
+	}
+	public static void testPartition() {
+		Node head = partition(testList6(),3);
+		println(head);
 	}
 	public static void testIsPalindrome() {
 		System.out.println(isPalindrome(testList6()));
@@ -253,5 +257,43 @@ public class LList {
 			second = second.next;
 		}
 		return true;
+	}
+	public static Node partition(Node h, int pivot) {
+		Node smallerHead = node(0), smallerTail = smallerHead;
+		Node equalHead = node(0), equalTail = equalHead;
+		Node largerHead = node(0), largerTail = largerHead;
+		for (Node current = h; current != null; current = current.next) {
+			if (current.value < pivot) {
+				smallerTail.next = current;
+				smallerTail = current;
+			} else if (current.value == pivot) {
+				equalTail.next = current;
+				equalTail = current;
+			} else {
+				largerTail.next = current;
+				largerTail = current;
+			}
+		}
+		Node head = firstNotNull(smallerHead.next,equalHead.next,largerHead.next);
+		if (smallerHead.next != null) {
+			head = smallerHead.next;
+			if (equalHead.next != null) {
+				smallerTail.next = equalHead.next;
+			} else if (largerHead.next != null) {
+				smallerTail.next = largerHead.next;
+			} else {
+				smallerTail.next = null;
+			}
+		}
+		if (equalHead.next != null && largerHead.next != null) {
+			equalTail.next = largerHead.next;
+		} else {
+			equalTail.next = null;
+		}
+		largerTail.next = null;
+		return head;
+	}
+	public static Node firstNotNull(Node h1, Node h2, Node h3) {
+		return h1 != null ? h1 : h2 != null ? h2 : h3;
 	}
 }
