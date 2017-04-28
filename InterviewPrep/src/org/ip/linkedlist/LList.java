@@ -2,7 +2,17 @@ package org.ip.linkedlist;
 
 public class LList {
 	public static void main(String[] s) {
-		testPartition();
+		testAddMsb();
+	}
+	public static void testAddMsb() {
+		Node head = addMsb(testList1(),testList6());
+		println(head);
+		head = addMsb(testList8(),testList9());
+		println(head);
+	}
+	public static void testAddLsb() {
+		Node head = addLsb(reverse(testList1()),reverse(testList6()));
+		println(head);
 	}
 	public static void testPartition() {
 		Node head = partition(testList6(),3);
@@ -94,6 +104,12 @@ public class LList {
 	}
 	public static Node testList5() {
 		return node(0,node(1,node(2,node(3,node(4,node(5, node(6))))))); 
+	}
+	public static Node testList8() {
+		return node(9,node(3,node(4,node(3))));
+	}
+	public static Node testList9() {
+		return node(9,node(5,node(7)));
 	}
 	public static Node testListCycle() {
 		Node node = testList4();
@@ -315,5 +331,64 @@ public class LList {
 			tailOdd = tailOdd.next;
 		}
 		tailEven.next = hOdd;
+	}
+	private static class NodeCarry {
+		public final Node node;
+		public final int carry;
+		public NodeCarry(Node node, int carry){this.node=node;this.carry=carry;}
+	}
+	public static Node addMsb(Node h1, Node h2) {
+		int l1 = length(h1);
+		int l2 = length(h2);
+		NodeCarry nodeCarry = getNodeCarry(l1,l2,h1,h2);
+		Node head = null;
+		if (nodeCarry.carry > 0) {
+			head = node(nodeCarry.carry,nodeCarry.node); 
+		} else {
+			head = nodeCarry.node;
+		}
+		return head;
+	}
+	private static NodeCarry getNodeCarry(int l1, int l2, Node h1, Node h2) {
+		if (h1 == null && h2 == null) return new NodeCarry(null,0);
+		else if (l1 <= 0 && l2 <= 0) return new NodeCarry(null,0);
+		NodeCarry nodeCarry = null;
+		int v1 = 0;
+		int v2 = 0;
+		if (l1 < l2) {
+			nodeCarry = getNodeCarry(l1,l2-1,h1,h2.next);
+			v2 = h2 != null ? h2.value : 0;
+		} else if (l1 > l2){
+			nodeCarry = getNodeCarry(l1-1,l2,h1.next,h2);
+			v1 = h1 != null ? h1.value : 0;
+		} else {
+			nodeCarry = getNodeCarry(l1-1,l2-1,h1.next,h2.next);
+			v1 = h1 != null ? h1.value : 0;
+			v2 = h2 != null ? h2.value : 0;
+		}
+		int value = nodeCarry.carry + v1 + v2;
+		int digit = value % 10;
+		int carry = value / 10;
+		return new NodeCarry(node(digit,nodeCarry.node),carry);
+	}
+	public static Node addLsb(Node h1, Node h2) {
+		int carry = 0;
+		Node head = node(0), tail = head;
+		for (Node n1 = h1, n2 = h2; n1 != null || n2 != null || carry > 0;) {
+			int value = carry;
+			if (n1 != null) {
+				value += n1.value;
+				n1 = n1.next;
+			}
+			if (n2 != null) {
+				value += n2.value;
+				n2 = n2.next;
+			}
+			int digit = value % 10;
+			carry = value / 10;
+			tail.next = node(digit);
+			tail = tail.next;
+		}
+		return head.next;
 	}
 }
