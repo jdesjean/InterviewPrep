@@ -20,6 +20,11 @@ public class LList {
 			println(head);
 		}
 	}
+	public static void testEvenOdd() {
+		Node h = testList5();
+		evenOdd(h);
+		println(h);
+	}
 	public static void testRemoveDups() {
 		Node h = testListDups();
 		removeDuplicate(h);
@@ -86,6 +91,9 @@ public class LList {
 	}
 	public static Node testListDups() {
 		return node(2,node(2,node(3,node(5,node(7,node(11,node(11))))))); 
+	}
+	public static Node testList5() {
+		return node(0,node(1,node(2,node(3,node(4,node(5, node(6))))))); 
 	}
 	public static Node testListCycle() {
 		Node node = testList4();
@@ -295,5 +303,17 @@ public class LList {
 	}
 	public static Node firstNotNull(Node h1, Node h2, Node h3) {
 		return h1 != null ? h1 : h2 != null ? h2 : h3;
+	}
+	public static void evenOdd(Node h) {
+		if (h == null) return;
+		Node hEven = h, tailEven = h;
+		Node hOdd = h.next, tailOdd = h.next;
+		for (;tailEven != null && tailEven.next != null && tailOdd != null && tailOdd.next != null;) {
+			tailEven.next = tailOdd.next;
+			tailEven = tailOdd.next;
+			tailOdd.next = tailEven.next;
+			tailOdd = tailOdd.next;
+		}
+		tailEven.next = hOdd;
 	}
 }
