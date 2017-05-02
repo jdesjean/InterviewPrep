@@ -6,7 +6,7 @@ import java.util.Iterator;
 import org.ip.array.ArrayUtils;
 
 public class Tree<T extends Comparable<T>> {
-	private Node<T> root;
+	Node<T> root;
 	public Tree(Node<T> root) {
 		this.root=root;
 	}
@@ -249,6 +249,66 @@ public class Tree<T extends Comparable<T>> {
 		}
 		return max;
 	}
+	public Node<T>[] sorted() {
+		int size = count();
+		Node<T>[] sorted = new Node[size];
+		int i = 0;
+		for (Iterator<Node<T>> iterator = inOrderIterator(); iterator.hasNext();) {
+			sorted[i++] = iterator.next();
+		}
+		return sorted;
+	}
+	public void replace(Node<T> node1, Node<T> node2) {
+		Node<T> parent = node1.parent;
+		if (parent == null) parent = root;
+		Node<T> left = parent.getLeft();
+		Node<T> right = parent.getRight();
+		
+		node2.childs[0] = left;
+		node2.childs[1] = right;
+		if (node1.parent == null) { //root
+			root = node2;
+		} else if (node1.parent.getRight() == node1){
+			parent.childs[1] = node2;
+		} else if (node1.parent.getLeft() == node1) {
+			parent.childs[0] = node2;
+		}
+	}
+	public static <T extends Comparable<T>>  void remove(Node<T> node) {
+		if (node.getLeft() != null) {
+			node.parent = node.childs[0];
+		} else if (node.getRight() != null) {
+			node.parent = node.childs[1];
+		} else if (node.parent.getLeft() == node) {
+			node.parent.childs[0] = null;
+		} else if (node.parent.getRight() == node) {
+			node.parent.childs[1] = null;
+		}
+		node.childs[0] = null;
+		node.childs[1] = null;
+	}
+	public static <T extends Comparable<T>>  Node<T> successorChild(Node<T> node) {
+		if (node.getRight() == null) return null;
+		Node<T> current = node.getRight();
+		Node<T> parent = node;
+		while (current.getLeft() != null) {
+			parent = current;
+			current = current.getLeft();
+		}
+		current.parent = parent;
+		return current;
+	}
+	public static <T extends Comparable<T>>  Node<T> predecessorChild(Node<T> node) {
+		if (node.getLeft() == null) return null;
+		Node<T> current = node.getLeft();
+		Node<T> parent = node;
+		while (current.getRight() != null) {
+			parent = current;
+			current = current.getRight();
+		}
+		current.parent = parent;
+		return current;
+	}
 	public static int count(int n) {
 		if (n == 0 || n == 1) return 1;
 		
@@ -310,8 +370,11 @@ public class Tree<T extends Comparable<T>> {
 	public interface BooleanVisitor<T extends Comparable<T>> {
 		public boolean visit(Node<T> node, int depth);
 	}
-	public interface Visitor<S, T extends Comparable<T>> {
+	public interface ObjectVisitor<S, T extends Comparable<T>> {
 		public S visit(Node<T> node, int depth, S[] s, S previous);
+	}
+	public interface Visitor<T extends Comparable<T>> {
+		public void visit(Node<T> node);
 	}
 	public interface BooleanReducer {
 		public boolean execute();

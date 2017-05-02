@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 	public final T value;
+	public Node<T> parent;
 	public final Node<T>[] childs;
 	public Node<T> sibling;
 	public Node(T value){this.value=value;childs = new Node[2];}
@@ -17,9 +18,9 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 	@Override
 	public String toString() {
 		if (sibling != null) {
-			return "Node [value=" + value + ", nextRight="+sibling.toString()+", childs=" + Arrays.toString(childs) + "]";
+			return "Node [value=" + value + "]";
 		} else {
-			return "Node [value=" + value + ", childs=" + Arrays.toString(childs) + "]";
+			return "Node [value=" + value + "]";
 		}
 		
 	}
