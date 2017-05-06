@@ -2,7 +2,7 @@ package org.ip.stack;
 
 import java.util.Deque;
 import java.util.LinkedList;
-
+//EPI 9.1
 public class StackMax {
 	public static void main(String[] s) {
 		StackMax stack = new StackMax();

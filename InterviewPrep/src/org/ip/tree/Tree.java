@@ -1,7 +1,11 @@
 package org.ip.tree;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.ip.array.ArrayUtils;
 
@@ -350,6 +354,17 @@ public class Tree<T extends Comparable<T>> {
 		max.child=Math.max(maxCurrent2 > 0 ? maxCurrent+maxCurrent2 : 0, maxDiameter);
 		
 		return max;
+	}
+	public List<List<Node<T>>> bfs() {
+		List<List<Node<T>>> list = new ArrayList<List<Node<T>>>();
+		for (Iterator<Iterator<Node<T>>> levelIterator = new IteratorBFSIterator<T>(this); levelIterator.hasNext(); ) {
+			List<Node<T>> siblings = new ArrayList<Node<T>>();
+			for (Iterator<Node<T>> siblingsIterator = levelIterator.next(); siblingsIterator.hasNext();) {
+				siblings.add(siblingsIterator.next());
+			}
+			list.add(siblings);
+		}
+		return list;
 	}
 	private final class PrintBooleanVisitor implements BooleanVisitor<T>{
 		private ArrayVisitor<T> visitor;

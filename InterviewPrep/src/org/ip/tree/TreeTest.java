@@ -1,6 +1,7 @@
 package org.ip.tree;
 
 import java.util.Iterator;
+import java.util.List;
 
 import org.ip.primitives.Sequence;
 import org.ip.tree.Tree.ArrayVisitor;
@@ -8,7 +9,7 @@ import org.ip.tree.Tree.BooleanReducer;
 
 public class TreeTest {
 	public static void main(String[] s) {
-		testHeight();
+		testBfs();
 	}
 
 	public static Tree<Integer> small() {
@@ -44,6 +45,11 @@ public class TreeTest {
 	}
 	public static Tree<Integer> unival() {
 		Node<Integer> root = node(5, node(5, node(5), node(5)), node(5, null, node(5)));
+		return tree(root);
+	}
+	//EPI 10.1
+	public static Tree<Integer> nonBST3() {
+		Node<Integer> root = node(314,node(6,node(271,node(28),node(0)),node(561,null,node(3,node(17)))),node(6,node(2,null,node(1,node(401,node(641)),node(257))),node(271,null,node(28))));
 		return tree(root);
 	}
 	public static <T extends Comparable<T>> Node<T> node(T t) {
@@ -209,5 +215,18 @@ public class TreeTest {
 		System.out.println(Tree.diameter(node(0, node(1, node(5), node(7)), node(1, node(6), node(5)), node(1, node(10), node(9)))) + "==19");
 		/*{"{0,3,{5,2,{8,0},{7,0}},{5,2,{9,0},{8,0}},{5,2,{10,0}, {9,0}}}", 29},*/
 		System.out.println(Tree.diameter(node(0,node(5, node(8), node(7)), node(5, node(9), node(8)), node(5, node(10), node(9))))  + "==29");
+	}
+	public static void testBfs() {
+		Tree<Integer> tree = nonBST3();
+		List<List<Node<Integer>>> list = tree.bfs();
+		for (int i = 0; i < list.size(); i++) {
+			List<Node<Integer>> siblings = list.get(i);
+			if (i > 0) System.out.println();
+			for (int j = 0; j < siblings.size(); j++) {
+				if (j > 0) System.out.print(',');
+				System.out.print(siblings.get(j).value);
+			}
+		}
+		
 	}
 }
