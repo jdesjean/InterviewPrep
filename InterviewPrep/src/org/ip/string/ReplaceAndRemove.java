@@ -1,12 +1,12 @@
 package org.ip.string;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class ReplaceAndRemove {
 	public static void main(String[] s) {
 		char[] array = new char[]{'a','c','d','b','b','c','a'};
 		solve(array);
-		ArrayUtils.println(array,array.length);
+		Utils.println(array,array.length);
 	}
 	public static void solve(char[] c) {
 		int lengthB = 0;

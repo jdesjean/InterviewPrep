@@ -5,9 +5,9 @@ import java.util.Arrays;
 import org.ip.Permutator.PermutatorFactoradicIterative;
 import org.ip.Permutator.PermutatorIterative;
 import org.ip.Permutator.PermutatorRecursive;
-import org.ip.array.ArrayUtils;
-import org.ip.array.ArrayUtils.Filter;
-import org.ip.array.ArrayUtils.PermutationVisitor;
+import org.ip.array.Utils;
+import org.ip.array.Utils.Filter;
+import org.ip.array.Utils.PermutationVisitor;
 
 public class Garden {
 	public static void main(String[] s) {
@@ -137,7 +137,7 @@ public class Garden {
 					k = j;
 				}
 			}
-			ArrayUtils.swap(pairs, i, k);
+			Utils.swap(pairs, i, k);
 			distance = minDistance;
 		}
 		return distance;
@@ -201,11 +201,11 @@ public class Garden {
 				return visitor.visit(array, distance);
 			}
 			for (int i = index; i < array.length; i++) {
-				ArrayUtils.swap(array,i,index);
+				Utils.swap(array,i,index);
 				if (filter.test(array,index)) {
 					if (permute(visitor,filter,array,index+1,garden,distance+garden[array[i].x+12][array[i].y+12])) return true;
 				}
-				ArrayUtils.swap(array,i,index);
+				Utils.swap(array,i,index);
 			}
 			return false;
 		}

@@ -1,7 +1,6 @@
 package org.ip.string;
 
-import org.ip.Visitors;
-import org.ip.Visitors.CharArrayVisitor;
+import org.ip.string.Visitors.CharArrayVisitor;
 
 public class IPAddress {
 	public static void main(String[] s) {

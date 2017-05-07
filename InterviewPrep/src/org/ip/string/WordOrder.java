@@ -1,6 +1,6 @@
 package org.ip.string;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class WordOrder {
 	public static void main(String[] s) {
@@ -17,10 +17,10 @@ public class WordOrder {
 		System.out.println(buffer);
 	}
 	public static void reverse(char[] buffer) {
-		ArrayUtils.reverse(buffer);
+		Utils.reverse(buffer);
 		for (int i = 0, j = 0; i < buffer.length; i++) {
 			if (buffer[i] == ' ' || i == buffer.length-1) {
-				ArrayUtils.reverse(buffer,j,i-1);
+				Utils.reverse(buffer,j,i-1);
 				j = i+1;
 			}
 		}

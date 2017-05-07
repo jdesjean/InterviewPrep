@@ -1,7 +1,7 @@
 package org.ip;
 
-import org.ip.Visitors.CharArrayVisitor;
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
+import org.ip.string.Visitors.CharArrayVisitor;
 
 public class Brackets {
 	public static void main(String[] s) {
@@ -15,7 +15,7 @@ public class Brackets {
 			@Override
 			public void visit(char[] array, int length) {
 				if (started) System.out.print(",");
-				ArrayUtils.print(array, length);
+				Utils.print(array, length);
 				started = true;
 			}}, 3);
 	}

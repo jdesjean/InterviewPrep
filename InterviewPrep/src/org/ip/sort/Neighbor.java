@@ -2,14 +2,14 @@ package org.ip.sort;
 
 import java.util.Comparator;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Neighbor {
 	public static void main(String args[]) {
 		Point[] points = new Point[] { point(1, 1), point(2, 2), point(4, 1), point(-1, -1), point(3, 3), point(-1, 2) };
 		int k = 2;
 		neareast(points, point(0, 0), k);
-		ArrayUtils.println(points,0,k-1);
+		Utils.println(points,0,k-1);
 	}
 	
 	public static Point point(int x, int y) {

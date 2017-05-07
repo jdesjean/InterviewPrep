@@ -2,12 +2,10 @@ package org.ip.tree;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Tree<T extends Comparable<T>> {
 	Node<T> root;
@@ -63,6 +61,25 @@ public class Tree<T extends Comparable<T>> {
 	public int countUnival() {
 		return countUnival(root,null).max;
 	}
+	//Time: H, Space: 1
+	public Node<T> findBST(T v, Visitor<T> visitor) {
+		Node<T> parent = null;
+		Node<T> node = root;
+		while (node != null) {
+			node.parent = parent;
+			visitor.visit(node);
+			if (node.value.compareTo(v) == 0) {
+				return node;
+			} else if (node.value.compareTo(v) < 0) {
+				parent = node;
+				node = node.getRight();
+			} else {
+				parent = node;
+				node = node.getLeft();
+			}
+		}
+		return null;
+	}
 	private SizeWrapper countUnival(Node<T> current, T value) {
 		if (current == null) return new SizeWrapper();
 		//if (value.equals(current.value))
@@ -81,7 +98,7 @@ public class Tree<T extends Comparable<T>> {
 	}
 	public int count() {
 		int count =0;
-		for (Iterator<Node<T>> iterator = new IteratorPreOrder<T>(this); iterator.hasNext();) {
+		for (Iterator<Node<T>> iterator = new IteratorOrderPre<T>(this); iterator.hasNext();) {
 			iterator.next();
 			count++;
 		}
@@ -126,7 +143,7 @@ public class Tree<T extends Comparable<T>> {
 	public Tree<T> clone() {
 		return new Tree<T>(clone(root));
 	}
-	public Node<T> clone(Node<T> node) {
+	private Node<T> clone(Node<T> node) {
 		if (node == null) return null;
 		Node<T>[] childs = new Node[node.childs.length];
 		for (int i = 0; i < node.childs.length; i++) {
@@ -157,39 +174,40 @@ public class Tree<T extends Comparable<T>> {
 		public Node<T> node;
 		public BstifyWrapper(Node<T> node){this.node=node;}
 	}
-	public final LcaWrapper EMPTY = new LcaWrapper(null);
-	public class LcaWrapper {
-		public Node<T> node;
-		int count = 0;
-		public LcaWrapper(Node<T> node){this.node=node;}
+	
+	public Node<T> lcaParentfull(T v1, T v2) {
+		return new LCAParentfull(this).lca(v1, v2);
 	}
-	public Node<T> lca(T v1, T v2) {
-		LcaWrapper wrapper = lca(root,v1,v2);
-		return wrapper.count >= 2 ? wrapper.node : null;
+	public Node<T> lcaParentless(T v1, T v2) {
+		return new LCAParentless<T>(this).lca(v1, v2);
 	}
-	public LcaWrapper lca(Node<T> current, T v1, T v2) {
-		if (current == null) return new LcaWrapper(null);
-		//4 cases
-		//1) 1 left & 1 right: Return current
-		//2) 1 current & (1 left | right) : Return current;
-		//3) 2 left | 2 right : Return left or right
-		//4) Can't find both : Return left or right
-		LcaWrapper wrapper = lca(current.getLeft(),v1,v2);
-		if (wrapper.count >= 2) return wrapper;
-		if (current.value == v1 || current.value == v2) wrapper.count++;
-		if (wrapper.count < 2) {
-			LcaWrapper wrapper2 = lca(current.getRight(),v1,v2);
-			if (wrapper2.count >= 2) return wrapper2;
-			wrapper.count += wrapper2.count;
-			if (wrapper2.count > 0) wrapper.node = wrapper2.node; 
-		}
-		if (wrapper.count >= 2) wrapper.node = current;
-		return wrapper;
+	//EPI 10.5
+	//Time: n, Space: H
+	public static int sumRootToLeaf(Tree<Integer> tree) {
+		return sumRootToLeaf(tree.root,0);
+	}
+	private static int sumRootToLeaf(Node<Integer> node, int previous) {
+		if (node == null) return 0;
+		int next = previous*2+node.value;
+		if (node.getLeft() == null && node.getRight() == null) return next;
+		
+		return sumRootToLeaf(node.getLeft(), next) + sumRootToLeaf(node.getRight(),next); 
+	}
+	//EPI 10.6
+	//Time: n, Space: H
+	public static boolean hasTargetSum(Tree<Integer> tree, int target) {
+		return hasTargetSum(tree.root, target, 0);
+	}
+	private static boolean hasTargetSum(Node<Integer> node, int target, int previous) {
+		if (node == null) return false;
+		int next = previous + node.value;
+		if (node.getLeft() == null && node.getRight() == null) return next == target;
+		return hasTargetSum(node.getLeft(),target,next) || hasTargetSum(node.getRight(),target,next);
 	}
 	public void flip() {
 		for (Iterator<Node<T>> iterator = this.inOrderIterator(); iterator.hasNext();) {
 			Node<T> current = iterator.next();
-			ArrayUtils.reverse(current.childs, 0, current.childs.length-1);
+			Utils.reverse(current.childs, 0, current.childs.length-1);
 		}
 	}
 	private Node<T> bstify(BstifyWrapper head, int size) {
@@ -239,9 +257,27 @@ public class Tree<T extends Comparable<T>> {
 		public void visit(T[] visit, int length);
 	}
 	public void printAllPaths(ArrayVisitor<T> visitor) {
-		ReducerPreOrderRecursive<T> executor = new ReducerPreOrderRecursive<T>(this,new PrintBooleanVisitor(visitor));
+		ReducerOrderPreRecursive<T> executor = new ReducerOrderPreRecursive<T>(this,new ReducerBooleanPrint(visitor));
 		executor.execute();
 	}
+	/*public int height() {
+		ReducerOrderPost<Integer,T> reducer = new ReducerOrderPost<Integer,T>(){
+			@Override
+			public Integer visit(Node<T> node, int depth, Integer previous) {
+				return previous + 1;
+			}
+		};
+		Reducer<Integer,Integer> reducerChild = new Reducer<Integer,Integer>(){
+
+			@Override
+			public Integer visit(Integer current, Integer init) {
+				return Math.max(current, init);
+			}
+			
+		};
+		ReducerOrderPostRecursive<T,Integer> rec = new ReducerOrderPostRecursive<T,Integer>(this,reducer,reducerChild);
+		return rec.execute(0);
+	}*/
 	public int height() {
 		return height(root);
 	}
@@ -366,10 +402,56 @@ public class Tree<T extends Comparable<T>> {
 		}
 		return list;
 	}
-	private final class PrintBooleanVisitor implements BooleanVisitor<T>{
+	//EPI 10.1
+	public boolean isBalanced() {
+		ReducerOrderPost<Integer,T> reducer = new ReducerOrderPost<Integer,T>(){
+			@Override
+			public Integer visit(Node<T> node, int depth, Integer previous) {
+				return previous == null ? 0 : previous >= 0 ? previous + 1 : -1;
+			}
+		};
+		Reducer<Integer,Integer> reducerChild = new Reducer<Integer,Integer>(){
+
+			@Override
+			public Integer visit(Integer current, Integer previous) {
+				return previous == null ? current : previous != -1 && Math.abs(current - previous) <= 1 ? Math.max(previous, current) : -1;
+			}
+			
+		};
+		ReducerOrderPostRecursive<T,Integer> rec = new ReducerOrderPostRecursive<T,Integer>(this,reducer,reducerChild);
+		return rec.execute(null) >= 0;
+	}
+	//EPI 10.2
+	public boolean isSymmetric() {
+		return isSymetric(root.getLeft(),root.getRight());
+	}
+	private boolean isSymetric(Node<T> node1, Node<T> node2) {
+		return ((node1 == null && node2 == null) || 
+				(node1 != null && node2 != null && node1.value == node2.value)) && 
+				(node1 == null || (isSymetric(node1.getLeft(),node2.getRight()) && isSymetric(node1.getRight(),node2.getLeft())));
+	}
+	
+	//EPI 10.9
+	//Time: H, Space: 1
+	public static Node<Integer> inOrderKth(Tree<Integer> tree, int k) {
+		
+		Node<Integer> node = tree.root;
+		while (node != null) {
+			int nextK = k - node.value;
+			if (nextK == 1) return node;
+			else if (nextK <= 0) {
+				node = node.getLeft();
+			} else {
+				node = node.getRight();
+				k = nextK - 1;
+			}
+		}
+		return null;
+	}
+	private final class ReducerBooleanPrint implements ReducerBoolean<T>{
 		private ArrayVisitor<T> visitor;
 		private T[] path;
-		public PrintBooleanVisitor(ArrayVisitor<T> visitor) {
+		public ReducerBooleanPrint(ArrayVisitor<T> visitor) {
 			if (root == null) return;
 			this.visitor = visitor;
 			int height = height();
@@ -382,45 +464,30 @@ public class Tree<T extends Comparable<T>> {
 			return true;
 		}
 	}
-	public interface BooleanVisitor<T extends Comparable<T>> {
-		public boolean visit(Node<T> node, int depth);
-	}
-	public interface ObjectVisitor<S, T extends Comparable<T>> {
-		public S visit(Node<T> node, int depth, S[] s, S previous);
-	}
-	public interface Visitor<T extends Comparable<T>> {
-		public void visit(Node<T> node);
-	}
-	public interface BooleanReducer {
-		public boolean execute();
-	}
-	public interface Reducer<T> {
-		public T execute(T init);
-		public T get();
-	}
+	
 	public Iterator<Node<T>> reverseOrderIterator(int k) {
-		return new IteratorReverseOrder<T>(this, k);
+		return new IteratorOrderReverse<T>(this, k);
 	}
 	public Iterator<Node<T>> reverseOrderIterator() {
-		return new IteratorReverseOrder<T>(this);
+		return new IteratorOrderReverse<T>(this);
 	}
-	public BooleanReducer iterativeIsBSTReducer() {
+	public ReducerBooleanVoid iterativeIsBSTReducer() {
 		return new ReducerIsBSTIterative<T>(this);
 	}
-	public BooleanReducer recursiveIsBSTReducer() {
+	public ReducerBooleanVoid recursiveIsBSTReducer() {
 		return new ReducerIsBSTRecursive<T>(this);
 	}
 	public Iterator<Node<T>> postOrderIterator() {
-		return new IteratorPostOrder<T>(this); 
+		return new IteratorOrderPost<T>(this); 
 	} 
 	public Iterator<Node<T>> preOrderIterator() {
-		return new IteratorPreOrder<T>(this); 
+		return new IteratorOrderPre<T>(this); 
 	}
 	public Iterator<Node<T>> inOrderIterator(int k) {
-		return new IteratorInOrder<T>(this,k);
+		return new IteratorOrderIn<T>(this,k);
 	}
 	public Iterator<Node<T>> inOrderIterator() {
-		return new IteratorInOrder<T>(this);
+		return new IteratorOrderIn<T>(this);
 	}
 	public Iterator<Node<T>> bfsIterator() {
 		return new IteratorBFS<T>(this);

@@ -1,13 +1,13 @@
 package org.ip;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Sets {
 	public static void main(String[] s) {
 		subsets(new SubsetVisitor(){
 			@Override
 			public void visit(int[] subset, int length) {
-				ArrayUtils.println(subset,length);
+				Utils.println(subset,length);
 			}
 		},new int[]{1,2,3});
 	}

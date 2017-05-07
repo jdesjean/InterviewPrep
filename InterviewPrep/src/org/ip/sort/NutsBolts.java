@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class NutsBolts {
 	private final static SelectorInt selection = new SelectorMidInt();
@@ -20,7 +20,7 @@ public class NutsBolts {
 		if (left >= right) return;
 		int indexPivot = selection.select(nuts, left, right);
 		int indexPartition = partition.partition(nuts,left,right,indexPivot);
-		partition.partition(bolts,left,right,ArrayUtils.indexOf(bolts,left,right,nuts[indexPartition]));
+		partition.partition(bolts,left,right,Utils.indexOf(bolts,left,right,nuts[indexPartition]));
 		quicksort(nuts,bolts,left,indexPartition-1, partition);
 		quicksort(nuts,bolts,indexPartition+1,right, partition);
 	}

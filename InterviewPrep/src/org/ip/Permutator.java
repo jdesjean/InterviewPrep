@@ -6,9 +6,9 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import org.ip.array.ArrayUtils;
-import org.ip.array.ArrayUtils.Filter;
-import org.ip.array.ArrayUtils.PermutationVisitor;
+import org.ip.array.Utils;
+import org.ip.array.Utils.Filter;
+import org.ip.array.Utils.PermutationVisitor;
 import org.ip.primitives.Sequence;
 
 public interface Permutator {
@@ -29,7 +29,7 @@ public interface Permutator {
 	public static final PermutationVisitor PERMUTATION_VISITOR_PRINT = new PermutationVisitor(){
 		@Override
 		public void visit(int[] array) {
-			ArrayUtils.println(array, 0, array.length-1);
+			Utils.println(array, 0, array.length-1);
 		}
 	};
 	public void permute(PermutationVisitor visitor, int[] array);
@@ -68,7 +68,7 @@ public interface Permutator {
 		public void permute(PermutationVisitor visitor, int[] array) {
 			for (int i = 0; i < k; i++) { 
 				int next = random.nextInt(array.length-i);
-				ArrayUtils.swap(array, i, i+next);
+				Utils.swap(array, i, i+next);
 			}
 			visitor.visit(array);
 		}
@@ -83,8 +83,8 @@ public interface Permutator {
 		public void permute(PermutationVisitor visitor, int[] array) {
 			for (int i = 0; i < permutation.length;i++) {
 				while (permutation[i] != i) {
-					ArrayUtils.swap(array, i, permutation[i]);
-					ArrayUtils.swap(permutation, i, permutation[i]);
+					Utils.swap(array, i, permutation[i]);
+					Utils.swap(permutation, i, permutation[i]);
 				}
 			}
 			visitor.visit(array);
@@ -103,11 +103,11 @@ public interface Permutator {
 				return;
 			}
 			for (int i = index; i < array.length; i++) {
-				ArrayUtils.swap(array,i,index);
+				Utils.swap(array,i,index);
 				if (filter.test(array,index)) {
 					permute(visitor,filter,array,index+1);
 				}
-				ArrayUtils.swap(array,i,index);
+				Utils.swap(array,i,index);
 			}
 			return;
 		}
@@ -135,12 +135,12 @@ public interface Permutator {
                     //TODO: Check if we can filter here
                     for (int j = N - 1; j > pivotIndex; j--) {
                         if (array[j] > array[pivotIndex]) {
-                            ArrayUtils.swap(array, j, pivotIndex);
+                            Utils.swap(array, j, pivotIndex);
                             return true;
                         }
                     }
                     
-                    ArrayUtils.reverse(array, pivotIndex + 1, N - 1);
+                    Utils.reverse(array, pivotIndex + 1, N - 1);
                     return true;
                 }
             }
@@ -180,7 +180,7 @@ public interface Permutator {
 				int factorial = Sequence.factorial(i);
 				int value = current / factorial;
 				current -= value*factorial;
-				buffer[j] = ArrayUtils.shift(buffer,j,j+value);
+				buffer[j] = Utils.shift(buffer,j,j+value);
 				if (!filter.test(buffer, j)) {
 					return left+factorial;
 				}

@@ -1,12 +1,9 @@
 package org.ip.tree;
 
-import org.ip.tree.Tree.BooleanReducer;
-import org.ip.tree.Tree.BooleanVisitor;
-
-public class ReducerPreOrderRecursive<T extends Comparable<T>> implements BooleanReducer{
-	private BooleanVisitor<T> reducer;
+public class ReducerOrderPreRecursive<T extends Comparable<T>> implements ReducerBooleanVoid{
+	private ReducerBoolean<T> reducer;
 	private Node<T> root;
-	public ReducerPreOrderRecursive(Tree<T> tree, BooleanVisitor<T> reducer) {
+	public ReducerOrderPreRecursive(Tree<T> tree, ReducerBoolean<T> reducer) {
 		this.root = tree.root();
 		this.reducer = reducer;
 	}
@@ -15,7 +12,7 @@ public class ReducerPreOrderRecursive<T extends Comparable<T>> implements Boolea
 		if (root == null) return true;
 		return inOrder(reducer,root,0);
 	}
-	private boolean inOrder(BooleanVisitor<T> visitor, Node<T> current, int depth) {
+	private boolean inOrder(ReducerBoolean<T> visitor, Node<T> current, int depth) {
 		if (!visitor.visit(current,depth)) return false;
 		for (Node<T> child : current.childs) {
 			if (child == null) continue;

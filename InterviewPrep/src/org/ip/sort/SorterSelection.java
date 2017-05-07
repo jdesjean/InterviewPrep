@@ -1,5 +1,5 @@
 package org.ip.sort;
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class SorterSelection implements Sorter{
 	@Override
@@ -10,7 +10,7 @@ public class SorterSelection implements Sorter{
 				if (array[j] >= array[min]) continue;
 				min = j;
 			}
-			ArrayUtils.swap(array,i,min);
+			Utils.swap(array,i,min);
 		}
 	}
 }

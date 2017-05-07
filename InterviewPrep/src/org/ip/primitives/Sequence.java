@@ -3,8 +3,7 @@ package org.ip.primitives;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.ip.Visitors.IntArrayVisitor;
-import org.ip.array.ArrayUtils;
+import org.ip.array.Visitors.IntArrayVisitor;
 
 public class Sequence {
 	public static void main(String[] s) {
@@ -90,7 +89,7 @@ public class Sequence {
 	}
 	public static int random(int[] numbers, int[] distribution) {
 		int[] cumulativeDistribution = getCumulativeDistribution(distribution);
-		int sum = ArrayUtils.sum(distribution, distribution.length);
+		int sum = org.ip.array.Utils.sum(distribution, distribution.length);
 		Random random = new Random();
 		int next = random.nextInt(sum);
 		int index = Arrays.binarySearch(cumulativeDistribution, next);
@@ -100,7 +99,7 @@ public class Sequence {
 		int range = b - a;
 		if (range <= 0) return a;
 		Random random = new Random();
-		int length = MathUtils.log2(range);
+		int length = Number.log2(range);
 		int value;
 		while (true) {
 			value = 0;

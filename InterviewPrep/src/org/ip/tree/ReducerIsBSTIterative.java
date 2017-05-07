@@ -2,9 +2,7 @@ package org.ip.tree;
 
 import java.util.Iterator;
 
-import org.ip.tree.Tree.BooleanReducer;
-
-public class ReducerIsBSTIterative<T extends Comparable<T>> implements BooleanReducer {
+public class ReducerIsBSTIterative<T extends Comparable<T>> implements ReducerBooleanVoid {
 	private Tree<T> tree;
 	public ReducerIsBSTIterative(Tree<T> tree) {
 		this.tree=tree;

@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 import org.ip.sort.HeapInt.Small;
 
 public class SorterK implements Sorter{
@@ -9,7 +9,7 @@ public class SorterK implements Sorter{
 		int k = 3;
 		SorterK sorter = new SorterK(k);
 		sorter.sort(array, 0, array.length-1);
-		ArrayUtils.println(array,0,array.length-1);
+		Utils.println(array,0,array.length-1);
 	}
 	private int k;
 	public SorterK(int k) {

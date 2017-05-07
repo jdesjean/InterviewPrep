@@ -2,8 +2,7 @@ package org.ip.string;
 
 import java.util.Arrays;
 
-import org.ip.Visitors;
-import org.ip.Visitors.StringVisitor;
+import org.ip.string.Visitors.StringVisitor;
 
 public class Numeronyms {
 	public static void main(String[] s) {

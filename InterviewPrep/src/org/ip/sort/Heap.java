@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Heap<T extends Comparable<T>> {
 	public static void main(String[] s) {
@@ -61,7 +61,7 @@ public class Heap<T extends Comparable<T>> {
 		for (int j = count; j > 0;) {
 			int mid = (j-1) / 2;
 			if (compare.isBetter(a[j].compareTo(a[mid]))) {
-				ArrayUtils.swap(a, mid, j);
+				Utils.swap(a, mid, j);
 				j = mid;
 			} else {
 				break;
@@ -75,11 +75,11 @@ public class Heap<T extends Comparable<T>> {
 			if (j >= count && k >= count) break;
 			if (k >= count || compare.isBetter(a[j].compareTo(a[k]))) {
 				if (compare.isBetter(a[j].compareTo(a[i]))) {
-					ArrayUtils.swap(a, i, j);
+					Utils.swap(a, i, j);
 					i = j;
 				} else break;
 			} else if (compare.isBetter(a[k].compareTo(a[i]))){
-				ArrayUtils.swap(a, i, k);
+				Utils.swap(a, i, k);
 				i = k;
 			} else break;
 		}

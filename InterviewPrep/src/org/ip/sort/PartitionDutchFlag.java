@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Comparator;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class PartitionDutchFlag<T> implements Partition<T>{
 
@@ -12,9 +12,9 @@ public class PartitionDutchFlag<T> implements Partition<T>{
 		int i = left, j = left, k = right;
 		for (;j <= k;) {
 			if (comparator.compare(array[j], pivot) < 0) {
-				ArrayUtils.swap(array, i++, j++);
+				Utils.swap(array, i++, j++);
 			} else if (comparator.compare(array[j], pivot) > 0) {
-				ArrayUtils.swap(array, j, k--);
+				Utils.swap(array, j, k--);
 			} else j++;
 		}
 		return i;

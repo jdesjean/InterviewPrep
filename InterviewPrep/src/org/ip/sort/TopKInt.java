@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public interface TopKInt {
 	public static void main(String[] s) {
@@ -12,7 +12,7 @@ public interface TopKInt {
 		for (int i = 0;i < tops.length; i++) {
 			int[] copy = Arrays.copyOf(array, array.length);
 			tops[i].solve(copy, k);
-			ArrayUtils.println(copy, copy.length-k, copy.length-1);
+			Utils.println(copy, copy.length-k, copy.length-1);
 		}
 	}
 	public void solve(int[] array, int k);

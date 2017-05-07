@@ -1,6 +1,6 @@
 package org.ip;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Buffer {
 	public static void main(String[] s) {
@@ -11,7 +11,7 @@ public class Buffer {
 		do {
 			size = buffer.read(output,n);
 			if (size == 0) break;
-			ArrayUtils.print(output, size);
+			Utils.print(output, size);
 			System.out.println("");
 		} while (size == n);
 	}

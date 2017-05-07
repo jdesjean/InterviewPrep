@@ -2,7 +2,7 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class PartitionAlternate implements PartitionInt{
 	public static void testAlternate() {
@@ -21,11 +21,11 @@ public class PartitionAlternate implements PartitionInt{
 				continue;
 			else if (i + 1 >= array.length)
 				continue;
-			int k = positive ? ArrayUtils.nextPositive(array, i) : ArrayUtils.nextNegative(array, i);
+			int k = positive ? Utils.nextPositive(array, i) : Utils.nextNegative(array, i);
 			if (k < 0)
 				return i;
 			int tmp = array[k];
-			ArrayUtils.shift(array, i, k);
+			Utils.shift(array, i, k);
 			array[i] = tmp;
 		}
 		return right;

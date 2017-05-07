@@ -4,17 +4,20 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class IteratorReverseOrder<T extends Comparable<T>> implements Iterator<Node<T>> {
+public class IteratorOrderReverse<T extends Comparable<T>> implements Iterator<Node<T>> {
 	Deque<Node<T>> stack = new LinkedList<Node<T>>();
 	private int k;
 	private boolean hasCount;
-	public IteratorReverseOrder(Tree<T> tree) {
+	public IteratorOrderReverse(Tree<T> tree) {
 		pushRight(tree.root());
 	}
-	public IteratorReverseOrder(Tree<T> tree, int k) {
+	public IteratorOrderReverse(Tree<T> tree, int k) {
 		pushRight(tree.root());
 		this.hasCount = true;
 		this.k = k;
+	}
+	public IteratorOrderReverse(Deque<Node<T>> stack) {
+		this.stack=stack;
 	}
 	@Override
 	public boolean hasNext() {

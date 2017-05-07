@@ -3,7 +3,7 @@ package org.ip.sort;
 import java.util.Arrays;
 
 import org.ip.IteratorInt;
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class HeapInt {
 	public static void main(String[] s) {
@@ -90,7 +90,7 @@ public class HeapInt {
 			int mid = parent(j);
 			//compare.isBetter(a[j], a[mid])
 			if (compare.isBetter(a[j]-a[mid])) {
-				ArrayUtils.swap(a, mid, j);
+				Utils.swap(a, mid, j);
 				j = mid;
 			} else {
 				break;
@@ -104,11 +104,11 @@ public class HeapInt {
 			if (j >= count && k >= count) break;
 			if (k >= count || compare.isBetter(a[j] - a[k])) {
 				if (compare.isBetter(a[j] - a[i])) {
-					ArrayUtils.swap(a, i, j);
+					Utils.swap(a, i, j);
 					i = j;
 				} else break;
 			} else if (compare.isBetter(a[k] - a[i])){
-				ArrayUtils.swap(a, i, k);
+				Utils.swap(a, i, k);
 				i = k;
 			} else break;
 		}

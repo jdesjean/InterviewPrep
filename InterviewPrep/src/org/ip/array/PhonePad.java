@@ -1,7 +1,7 @@
 package org.ip.array;
 
-import org.ip.Visitors;
-import org.ip.Visitors.CharArrayVisitor;
+import org.ip.string.Visitors;
+import org.ip.string.Visitors.CharArrayVisitor;
 
 public class PhonePad {
 	public static final String[] KEY_PAD = new String[]{"","","ABC","DEF","GHI","JKL","MNO","PQRS","TUV","WXYZ"};

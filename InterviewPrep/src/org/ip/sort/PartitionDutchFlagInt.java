@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class PartitionDutchFlagInt implements PartitionInt{
 
@@ -10,9 +10,9 @@ public class PartitionDutchFlagInt implements PartitionInt{
 		int i = left, j = left, k = right;
 		for (;j <= k;) {
 			if (array[j] < pivot) {
-				ArrayUtils.swap(array, i++, j++);
+				Utils.swap(array, i++, j++);
 			} else if (array[j] > pivot) {
-				ArrayUtils.swap(array, j, k--);
+				Utils.swap(array, j, k--);
 			} else j++;
 		}
 		return i;

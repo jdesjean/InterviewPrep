@@ -1,6 +1,6 @@
 package org.ip;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Levenshtein {
 	public static void main(String[] s) {
@@ -35,7 +35,7 @@ public class Levenshtein {
 					int prei = cache[j];
 					int prej = cache[j-1];
 					boolean equal = word1.charAt(i-1) == word2.charAt(j-1); 
-					cache[j] = equal ? preij : 1 + ArrayUtils.min(prei, preij, prej);
+					cache[j] = equal ? preij : 1 + Utils.min(prei, preij, prej);
 					preij = prei;
 				}
 			}
@@ -56,7 +56,7 @@ public class Levenshtein {
 			int nRemove = distance(word1,n1-1,word2,n2);
 			int nAdd = distance(word1,n1,word2,n2-1);
 			int nEdit = distance(word1,n1-1,word2,n2-1);
-			return ArrayUtils.min(nRemove, nAdd, nEdit) + 1;
+			return Utils.min(nRemove, nAdd, nEdit) + 1;
 		}
 	}
 	

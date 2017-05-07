@@ -4,17 +4,22 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class IteratorInOrder<T extends Comparable<T>> implements Iterator<Node<T>> {
+//EPI 10.7
+//Time: n, Space: H
+public class IteratorOrderIn<T extends Comparable<T>> implements Iterator<Node<T>> {
 	Deque<Node<T>> stack = new LinkedList<Node<T>>();
 	private int k;
 	private boolean hasCount;
-	public IteratorInOrder(Tree<T> tree) {
+	public IteratorOrderIn(Tree<T> tree) {
 		pushLeft(tree.root());
 	}
-	public IteratorInOrder(Tree<T> tree, int k) {
+	public IteratorOrderIn(Tree<T> tree, int k) {
 		pushLeft(tree.root());
 		this.hasCount = true;
 		this.k = k;
+	}
+	public IteratorOrderIn(Deque<Node<T>> stack) {
+		this.stack = stack;
 	}
 	@Override
 	public boolean hasNext() {

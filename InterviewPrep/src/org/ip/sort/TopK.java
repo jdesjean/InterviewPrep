@@ -3,7 +3,7 @@ package org.ip.sort;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public interface TopK<T> {
 	public final static Comparator<Integer> COMPARATOR_INTEGER = new Comparator<Integer>(){
@@ -21,7 +21,7 @@ public interface TopK<T> {
 		for (int i = 0;i < tops.length; i++) {
 			Integer[] copy = Arrays.copyOf(array, array.length);
 			tops[i].solve(copy, k,COMPARATOR_INTEGER);
-			ArrayUtils.println(copy, copy.length-k, copy.length-1);
+			Utils.println(copy, copy.length-k, copy.length-1);
 		}
 	}
 	public void solve(T[] array, int k, Comparator<T> comparator);

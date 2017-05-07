@@ -1,12 +1,12 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Sorted {
 	public static void main(String[] s) {
 		int[] array = new int[]{2,3,5,5,7,11,11,11,13};
 		System.out.println(dedup(array));
-		ArrayUtils.println(array, 0, array.length-1);
+		Utils.println(array, 0, array.length-1);
 	}
 	public static int dedup(int[] a) {
 		int l = a.length  > 0 ? 1 : 0;

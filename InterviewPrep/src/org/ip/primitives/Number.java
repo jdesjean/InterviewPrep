@@ -2,7 +2,9 @@ package org.ip.primitives;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -214,5 +216,18 @@ public class Number {
 			prev = digit;
 		}
 		return value;
+	}
+	public static int log2( int bits )
+	{
+	    if( bits == 0 ) return 0;
+	    return 32 - Integer.numberOfLeadingZeros( bits - 1 );
+	}
+	public static Deque<Integer> convertToBase(int value, int base, int digits) {
+		Deque<Integer> list = new LinkedList<Integer>();
+		for (int i = 0; i < digits; i++) {
+			list.push(value % base);
+			value /= base;
+		}
+		return list;
 	}
 }

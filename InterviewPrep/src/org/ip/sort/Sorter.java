@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public interface Sorter {
 	public static void main(String[] s) {
@@ -8,7 +8,7 @@ public interface Sorter {
 		for (Sorter sorter : sorters) {
 			int[] array = new int[]{1,6,8,2,7,3,7,9,4,2,7,0,1,4,7};
 			sorter.sort(array,0,array.length-1);
-			ArrayUtils.println(array, 0, array.length-1);
+			Utils.println(array, 0, array.length-1);
 		}
 	}
 	public void sort(int[] array, int left, int right);

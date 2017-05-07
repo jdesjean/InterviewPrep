@@ -1,12 +1,12 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class PartitionBalancedRecursive implements PartitionInt {
 
 	@Override
 	public int partition(int[] array, int left, int right, int pivotIndex) {
-		int sum = ArrayUtils.sum(array, left, right);
+		int sum = Utils.sum(array, left, right);
 		return balance(array, sum / 2, left, right + 1) ? 1 : 0;
 	}
 

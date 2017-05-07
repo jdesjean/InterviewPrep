@@ -3,8 +3,8 @@ package org.ip.string;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.ip.Visitors.StringVisitor;
 import org.ip.string.Trie.Node;
+import org.ip.string.Visitors.StringVisitor;
 
 public class Boggle {
 	public static void main(String[] s) {

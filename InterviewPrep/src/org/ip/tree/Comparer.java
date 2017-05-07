@@ -1,10 +1,11 @@
 package org.ip.tree;
 
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
-import org.ip.tree.Tree.Visitor;
 /*
  * BST, V, k
    k nodes in the tree which are closest to V
@@ -24,7 +25,7 @@ import org.ip.tree.Tree.Visitor;
 public interface Comparer {
 	public static void main(String[] s){
 		Tree<Integer> tree = TreeTest.bst1();
-		Comparer[] closest = new Comparer[]{new ClosestHeapAll(), new ClosestInOrder(), new ClosestInOrderReverse(), new ClosestMutable()};
+		Comparer[] closest = new Comparer[]{new ClosestHeapAll(), new ClosestInOrder(), new ClosestInOrderReverse(), new ClosestK(), new ClosestMutable()};
 		for (int i = 0; i < closest.length; i++) {
 			closest[i].closest(tree, PRINT_VISITOR, 4, 3);
 			System.out.println();
@@ -126,41 +127,87 @@ public interface Comparer {
 	
 	//Time: klog(n), Space: log(n)
 	public static class ClosestMutable implements Comparer {
-
-		//
-		public Node<Integer> closest(Tree<Integer> tree, int v) {
-			return closest(null, tree.root(),v,Integer.MAX_VALUE);
-		}
-		public Node<Integer> closest(Node<Integer> parent, Node<Integer> node, int v, int minDiff) {
-			if (node == null) return null;
-			int diff = Math.abs(node.value - v);
-			Node<Integer> candidate = null;
-			if (node.value < v) {
-				candidate = closest(node,node.getRight(),v,Math.min(diff, minDiff));
-			} else if (node.value > v){
-				candidate = closest(node,node.getLeft(),v,Math.min(diff, minDiff));
-			}
-			if (candidate != null) return candidate;
-			else if (diff < minDiff) {
-				node.parent = parent;
-				return node;
-			}
-			else return null;
-		}
 		public void replace(Tree<Integer> tree, Node<Integer> node) {
 			Node<Integer> successor = Tree.successorChild(node);
 			if (successor == null) successor = Tree.predecessorChild(node);
 			Tree.remove(successor);
 			tree.replace(node, successor);
 		}
+		public static class VisitorClosest implements Visitor<Integer>{
+			private int v;
+			private int minDiff = Integer.MAX_VALUE;
+			Node<Integer> closest;
+			public VisitorClosest(int v) {
+				this.v = v;
+			}
+			@Override
+			public void visit(Node<Integer> node) {
+				int diff = Math.abs(node.value - v);
+				if (diff < minDiff) {
+					closest = node;
+					minDiff = diff;
+				}
+			}
+			
+		}
 		@Override
 		public void closest(Tree<Integer> tree, Visitor<Integer> visitor, int v, int k) {
 			for (int i = 0; i < k; i++) {
-				Node<Integer> closest = closest(tree,v);
+				//Node<Integer> closest = closest(tree,v, new Visitor<Integer>(){ public void visit(Node<Integer> node) {}});
+				VisitorClosest visitorClosest = new VisitorClosest(v);
+				tree.findBST(v, visitorClosest);
+				Node<Integer> closest = visitorClosest.closest;
 				visitor.visit(closest);
 				replace(tree, closest);
 			}
 		}
+	}
+	//Time: log(n) + k, Space: log(n)
+	public static class ClosestK implements Comparer {
+		public static class VisitorClosest implements Visitor<Integer>{
+			private int v;
+			private int minDiff = Integer.MAX_VALUE;
+			Deque<Node<Integer>> stack = new LinkedList<Node<Integer>>();
+			Node<Integer> closest;
+			public VisitorClosest(int v) {
+				this.v = v;
+			}
+			@Override
+			public void visit(Node<Integer> node) {
+				stack.push(node);
+				int diff = Math.abs(node.value - v);
+				if (diff < minDiff) {
+					closest = node;
+					minDiff = diff;
+				}
+			}
+			
+		}
+		@Override
+		public void closest(Tree<Integer> tree, Visitor<Integer> visitor, int v, int k) {
+			VisitorClosest visitorClosest = new VisitorClosest(v);
+			tree.findBST(v, visitorClosest);
+			Node<Integer> closest = visitorClosest.closest;
+			Deque<Node<Integer>> stack = visitorClosest.stack;
+			while (closest != stack.peek()) {
+				stack.pop();
+			}
+			Iterator<Node<Integer>> iteratorForward = new IteratorOrderIn<Integer>((Deque<Node<Integer>>)((LinkedList)stack).clone());
+			Iterator<Node<Integer>> iteratorBackward = new IteratorOrderReverse<Integer>(stack);
+			Node<Integer> forward = iteratorForward.next();
+			iteratorBackward.next();//closest
+			Node<Integer> backward = iteratorBackward.next();
+			for (int i = 0; i < k; i++) {
+				if (forward != null && (backward == null || Math.abs(forward.value - v) <= Math.abs(backward.value - v) )) {
+					visitor.visit(forward);
+					forward = iteratorForward.hasNext() ? iteratorForward.next() : null;
+				} else {
+					visitor.visit(backward);
+					backward = iteratorBackward.hasNext() ? iteratorBackward.next() : null; 
+				}
+			}
+		}
+		
 	}
 	
 }

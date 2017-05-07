@@ -2,7 +2,7 @@ package org.ip.string;
 
 import java.util.Arrays;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class StringUtil {
 	public static void main(String[] s) {
@@ -19,12 +19,12 @@ public class StringUtil {
 	}
 	public static String reverseSentence(String s) {
 		char[] array = s.toCharArray();
-		ArrayUtils.reverse(array);
+		Utils.reverse(array);
 		for (int i = 0, right = array.length-1; i <= right; i++) {
-			int index = ArrayUtils.indexOf(array, i, right, ' ');
+			int index = Utils.indexOf(array, i, right, ' ');
 			if (index == i) continue;
 			else if (index < 0) index = array.length;
-			ArrayUtils.reverse(array,i,index-1);
+			Utils.reverse(array,i,index-1);
 			i = index;
 		}
 		return String.copyValueOf(array);
@@ -36,7 +36,7 @@ public class StringUtil {
 			n/=10;
 			buffer[left++] = Character.forDigit(digit, 10);
 		} while (n > 0);
-		ArrayUtils.reverse(buffer,begin,left-1);
+		Utils.reverse(buffer,begin,left-1);
 		return left;
 	}
 	public static String runLengthEncoding(String s) {

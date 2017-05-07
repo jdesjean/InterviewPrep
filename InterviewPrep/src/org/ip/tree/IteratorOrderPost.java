@@ -4,10 +4,10 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class IteratorPostOrder<T extends Comparable<T>> implements Iterator<Node<T>> {
+public class IteratorOrderPost<T extends Comparable<T>> implements Iterator<Node<T>> {
 	Deque<Node<T>> stack = new LinkedList<Node<T>>();
 	Node<T> prev;
-	public IteratorPostOrder(Tree<T> tree){
+	public IteratorOrderPost(Tree<T> tree){
 		pushLeft(tree.root());
 	}
 	public void pushLeft(Node<T> start) {

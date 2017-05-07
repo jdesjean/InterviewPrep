@@ -4,9 +4,11 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class IteratorPreOrder<T extends Comparable<T>>  implements Iterator<Node<T>> {
+//EPI 10.8
+//Time: n, Space: H
+public class IteratorOrderPre<T extends Comparable<T>>  implements Iterator<Node<T>> {
 	Deque<Node<T>> stack = new LinkedList<Node<T>>();
-	public IteratorPreOrder(Tree<T> tree){
+	public IteratorOrderPre(Tree<T> tree){
 		if (tree.root() != null) stack.push(tree.root());
 	}
 	@Override

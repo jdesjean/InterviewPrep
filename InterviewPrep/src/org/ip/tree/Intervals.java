@@ -1,4 +1,4 @@
-package org.ip;
+package org.ip.tree;
 
 import java.util.ArrayList;
 import java.util.Arrays;

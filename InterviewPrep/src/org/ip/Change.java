@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Change {
 	public static void main(String[] s) {
@@ -15,7 +15,7 @@ public class Change {
 
 				@Override
 				public void visit(int[] value, int l) {
-					ArrayUtils.println(value, l);
+					Utils.println(value, l);
 				}
 			}, 4, new int[] { 1, 2, 3 });
 			System.out.println("**");

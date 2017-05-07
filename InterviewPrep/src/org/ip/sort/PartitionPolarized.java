@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class PartitionPolarized implements PartitionInt{
 
@@ -10,7 +10,7 @@ public class PartitionPolarized implements PartitionInt{
 		for (int j = right; i < j;) {
 			if (array[i] >= 0) i++;
 			else if (array[j] < 0) j--;
-			else ArrayUtils.swap(array, i++, j--);
+			else Utils.swap(array, i++, j--);
 		}
 		return i;
 	}

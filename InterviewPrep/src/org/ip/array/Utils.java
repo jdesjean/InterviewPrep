@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ArrayUtils {
+public class Utils {
 	public static void main(String[] s) {
 		testSumZero();
 	}
@@ -146,6 +146,14 @@ public class ArrayUtils {
 			if (i != 0)
 				System.out.print(",");
 			System.out.print(array[i]);
+		}
+		System.out.println("");
+	}
+	public static void println(CharSequence array) {
+		for (int i = 0; i < array.length(); i++) {
+			if (i != 0)
+				System.out.print(",");
+			System.out.print(array.charAt(i));
 		}
 		System.out.println("");
 	}

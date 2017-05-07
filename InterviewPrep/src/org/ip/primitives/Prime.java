@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Prime {
 
@@ -100,7 +100,7 @@ public class Prime {
                 isPrime.clear(j);
             }
         }
-        ArrayUtils.toFile(isPrime.getBits(), isPrime.getBits().length);
+        Utils.toFile(isPrime.getBits(), isPrime.getBits().length);
         return primes;
     }
     public static boolean isMegaprime(long value) {

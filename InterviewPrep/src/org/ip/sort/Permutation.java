@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Permutation {
 	public static void main(String[] s) {
@@ -17,7 +17,7 @@ public class Permutation {
 			if (hasFoundDuplicate(isInPlace,isTargetInPlace(array,indexTarget))) {
 				return array[i];
 			} else if (!isInPlace) {
-				ArrayUtils.swap(array, indexTarget, i);
+				Utils.swap(array, indexTarget, i);
 			}
 			else i++;
 		}

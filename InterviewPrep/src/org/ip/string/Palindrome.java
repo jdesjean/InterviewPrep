@@ -4,7 +4,7 @@ import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
 import java.util.stream.IntStream;
 
-import org.ip.Visitors.StringVisitor;
+import org.ip.string.Visitors.StringVisitor;
 
 public class Palindrome {
 	public static void main(String[] s) {

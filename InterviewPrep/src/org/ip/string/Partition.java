@@ -1,6 +1,6 @@
 package org.ip.string;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class Partition {
 	public static void main(String[] s) {
@@ -20,7 +20,7 @@ public class Partition {
 		for (int i = 1, j = 0; i < buffer.length; i++) {
 			if (Character.isLetter(buffer[j])) i = ++j;
 			else if (Character.isLetter(buffer[i])) {
-				ArrayUtils.swap(buffer, i, j++);
+				Utils.swap(buffer, i, j++);
 			}
 		}
 	}

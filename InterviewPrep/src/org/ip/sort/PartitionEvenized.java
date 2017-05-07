@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class PartitionEvenized implements PartitionInt{
 
@@ -10,7 +10,7 @@ public class PartitionEvenized implements PartitionInt{
 		for (int j = right; i < j;) {
 			if (array[i] % 2 == 0) i++;
 			else if (array[j] % 2 == 1) j--;
-			else ArrayUtils.swap(array, i++, j--);
+			else Utils.swap(array, i++, j--);
 		}
 		return i;
 	}

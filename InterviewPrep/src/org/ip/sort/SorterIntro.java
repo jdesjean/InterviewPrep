@@ -1,6 +1,6 @@
 package org.ip.sort;
 
-import org.ip.primitives.MathUtils;
+import org.ip.primitives.Number;
 
 public class SorterIntro implements Sorter{
 	private final static SelectorInt selection = new SelectorMidInt();
@@ -9,7 +9,7 @@ public class SorterIntro implements Sorter{
 	@Override
 	public void sort(int[] array, int left, int right) {
 		int length = right - left + 1;
-		int maxDepth = MathUtils.log2(length)*2;
+		int maxDepth = Number.log2(length)*2;
 		sort(array,left,right,maxDepth);
 	}
 	private void sort(int[] array, int left, int right, int maxDepth) {

@@ -1,7 +1,5 @@
 package org.ip.tree;
 
-import java.util.Arrays;
-
 public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 	public final T value;
 	public Node<T> parent;

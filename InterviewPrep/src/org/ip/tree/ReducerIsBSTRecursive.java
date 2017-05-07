@@ -1,8 +1,6 @@
 package org.ip.tree;
 
-import org.ip.tree.Tree.BooleanReducer;
-
-public class ReducerIsBSTRecursive<T extends Comparable<T>> implements BooleanReducer {
+public class ReducerIsBSTRecursive<T extends Comparable<T>> implements ReducerBooleanVoid {
 	private Node<T> root;
 	public ReducerIsBSTRecursive(Tree<T> tree) {
 		this.root = tree.root();

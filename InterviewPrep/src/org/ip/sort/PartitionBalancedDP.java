@@ -1,17 +1,17 @@
 package org.ip.sort;
 
-import org.ip.array.ArrayUtils;
+import org.ip.array.Utils;
 
 public class PartitionBalancedDP implements PartitionInt {
 
 	@Override
 	public int partition(int[] array, int left, int right, int pivotIndex) {
-		int sum = ArrayUtils.sum(array, left, right);
+		int sum = Utils.sum(array, left, right);
 		if (sum % 2 != 0)
 			return 0; // impossible
 		int target = sum / 2;
-		int sumNegatives = ArrayUtils.sumNegatives(array, left, right);
-		int sumPositives = ArrayUtils.sumPositives(array, left, right);
+		int sumNegatives = Utils.sumNegatives(array, left, right);
+		int sumPositives = Utils.sumPositives(array, left, right);
 		int total = Math.abs(sumNegatives) + sumPositives + 1;
 		int indexZero = Math.abs(sumNegatives);
 		int indexTarget = indexZero + target;
@@ -39,7 +39,7 @@ public class PartitionBalancedDP implements PartitionInt {
 			for (int k = 0; k < array.length; k++) {
 				if (array[k] != cache[i])
 					continue;
-				ArrayUtils.swap(array, k, j);
+				Utils.swap(array, k, j);
 				break;
 			}
 		}

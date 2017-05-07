@@ -5,11 +5,10 @@ import java.util.List;
 
 import org.ip.primitives.Sequence;
 import org.ip.tree.Tree.ArrayVisitor;
-import org.ip.tree.Tree.BooleanReducer;
 
 public class TreeTest {
 	public static void main(String[] s) {
-		testBfs();
+		testInOrderKth();
 	}
 
 	public static Tree<Integer> small() {
@@ -24,6 +23,23 @@ public class TreeTest {
 
 	public static Tree<Integer> bst1() {
 		Node<Integer> root = node(5,node(2,node(1),null),node(7, node(6), node(8, null, node(9))));
+		return tree(root);
+	}
+	
+	public static Tree<Integer> balanced() {
+		return bst1();
+	}
+	public static Tree<Integer> symetric() {
+		Node<Integer> root = node(5,node(2,node(1),null),node(2, null, node(1)));
+		return tree(root);
+	}
+	public static Tree<Integer> nonSymetric() {
+		Node<Integer> root = node(5,node(2,node(1),null),node(2, node(1), null));
+		return tree(root);
+	}
+	
+	public static Tree<Integer> nonBalanced() {
+		Node<Integer> root = node(5,node(2,node(1),null),node(7, node(6), node(8, null, node(9,null,node(10)))));
 		return tree(root);
 	}
 
@@ -112,9 +128,13 @@ public class TreeTest {
 
 	public static void testLCA() {
 		Tree<Integer> tree = bst2();
-		System.out.println(tree.lca(10, 20));
-		System.out.println(tree.lca(50, 80));
-		System.out.println(tree.lca(20, 60));
+		System.out.println(tree.lcaParentfull(10, 20));
+		System.out.println(tree.lcaParentfull(50, 80));
+		System.out.println(tree.lcaParentfull(20, 60));
+		
+		System.out.println(tree.lcaParentless(10, 20));
+		System.out.println(tree.lcaParentless(50, 80));
+		System.out.println(tree.lcaParentless(20, 60));
 	}
 
 	public static void testPopulateSibling() {
@@ -158,7 +178,7 @@ public class TreeTest {
 	public static void testBST() {
 		Tree<Integer>[] trees = new Tree[] { bst1(), nonBST1() };
 		for (Tree<Integer> tree : trees) {
-			BooleanReducer[] executors = new BooleanReducer[] { tree.recursiveIsBSTReducer(),
+			ReducerBooleanVoid[] executors = new ReducerBooleanVoid[] { tree.recursiveIsBSTReducer(),
 					tree.iterativeIsBSTReducer() };
 			for (int i = 0; i < executors.length; i++) {
 				System.out.println(executors[i].execute());
@@ -187,7 +207,7 @@ public class TreeTest {
 		Integer[] pre = new Integer[count];
 		Integer[] in = new Integer[count];
 		int index = 0;
-		for (Iterator<Node<Integer>> iterator = new IteratorPreOrder<Integer>(bst); iterator.hasNext();) {
+		for (Iterator<Node<Integer>> iterator = new IteratorOrderPre<Integer>(bst); iterator.hasNext();) {
 			pre[index++] = iterator.next().value;
 		}
 		index = 0;
@@ -195,7 +215,7 @@ public class TreeTest {
 			in[index++] = iterator.next().value;
 		}
 		Tree<Integer> copy = Tree.fromPreIn(pre, in);
-		for (Iterator<Node<Integer>> iterator = new IteratorPreOrder<Integer>(copy); iterator.hasNext();) {
+		for (Iterator<Node<Integer>> iterator = new IteratorOrderPre<Integer>(copy); iterator.hasNext();) {
 			System.out.println(iterator.next());
 		}
 	}
@@ -228,5 +248,29 @@ public class TreeTest {
 			}
 		}
 		
+	}
+	public static void testBalanced() {
+		System.out.println(balanced().isBalanced());
+		System.out.println(nonBalanced().isBalanced());
+	}
+	public static void testSymetric() {
+		System.out.println(symetric().isSymmetric());
+		System.out.println(nonSymetric().isSymmetric());
+	}
+	public static void testSumRootToLeaf() {
+		//1000, 1001, 10110, 1100, 11000 
+		//EPI Figure 10.4
+		Tree<Integer> tree = tree(node(1,node(0,node(0,node(0),node(1)), node(1,null,node(1,node(0)))),node(1,node(0,node(0)),node(0,node(0,node(0))))));
+		System.out.println(Tree.sumRootToLeaf(tree));
+	}
+	public static void testHasTargetSum() {
+		System.out.println(Tree.hasTargetSum(nonBST3(),591));
+		System.out.println(Tree.hasTargetSum(nonBST3(),592));
+	}
+	public static void testInOrderKth() {
+		Tree<Integer> tree = tree(node(3,node(1,node(0),node(0)),node(2,node(1,node(0)))));
+		for (int i = 1; i <= 7; i++) {
+			System.out.println(Tree.inOrderKth(tree, i));
+		}
 	}
 }

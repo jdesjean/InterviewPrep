@@ -1,4 +1,4 @@
-package org.ip;
+package org.ip.sort;
 
 import java.util.ArrayList;
 import java.util.Arrays;
