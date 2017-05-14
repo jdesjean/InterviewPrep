@@ -1,6 +1,8 @@
 package org.ip.array;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Subsequence {
@@ -13,8 +15,8 @@ public class Subsequence {
 		 * LCS for input Sequences "ABCDGH" and "AEDFHR" is "ADH" of length 3.
 		 * LCS for input Sequences "AGGTAB" and "GXTXAYB" is "GTAB" of length 4.
 		 */
-		System.out.println(solve(new String[] { "ABCDGH", "AEDFHR" }) + " ADH");
-		System.out.println(solve(new String[] { "AGGTAB", "GXTXAYB" }) + " GTAB");
+		System.out.println(lcs(new String[] { "ABCDGH", "AEDFHR" }) + " ADH");
+		System.out.println(lcs(new String[] { "AGGTAB", "GXTXAYB" }) + " GTAB");
 	}
 	
 	public static void testLongestNonDecreasing() {
@@ -31,6 +33,22 @@ public class Subsequence {
 			cache[i] = Math.max(cache[i], 1);
 		}
 		return cache[array.length-1];
+	}
+	public interface Sizer<T> {
+		public int size(T t);
+	}
+	public static <T> int longestIncreasing(T[] array, Comparator<T> comparator, Sizer<T> sizer) {
+		int[] cache = new int[array.length];
+		int max = 0;
+		for (int i = 0; i < cache.length; i++) {
+			cache[i] = sizer.size(array[i]);
+			for (int j = 0; j < i; j++) {
+				if (comparator.compare(array[j], array[i]) >= 0) continue;
+				cache[i] = Math.max(cache[i], cache[j] + sizer.size(array[i]));
+			}
+			max = Math.max(max, cache[i]);
+		}
+		return max;
 	}
 
 	private static class PairLCS {
@@ -66,7 +84,7 @@ public class Subsequence {
 		return new String(aChar);
 	}
 
-	public static String solve(String[] sequences) {
+	public static String lcs(String[] sequences) {
 		List<Integer>[] locations = new ArrayList[26];
 		for (int i = 0; i < 26; i++) {
 			locations[i] = new ArrayList<Integer>();

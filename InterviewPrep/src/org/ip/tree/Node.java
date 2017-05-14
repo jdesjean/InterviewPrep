@@ -1,10 +1,11 @@
 package org.ip.tree;
 
-public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
+public class Node<T> implements Comparable<Node<T>>{
 	public final T value;
 	public Node<T> parent;
 	public final Node<T>[] childs;
 	public Node<T> sibling;
+	private boolean isRoot;
 	public Node(T value){this.value=value;childs = new Node[2];}
 	public Node(T value, Node<T> left, Node<T> right){this.value=value;childs=new Node[]{left,right};}
 	public Node(T value, Node<T>[] childs){this.value=value;this.childs=childs;}
@@ -47,13 +48,18 @@ public class Node<T extends Comparable<T>> implements Comparable<Node<T>>{
 	}
 	@Override
 	public int compareTo(Node<T> obj) {
+		if (!(this.value instanceof Comparable)) return 0;
 		if (this == obj) return 0;
 		if (obj == null) return -1;
 		if (this.value == null) {
 			if (obj.value == null) return 0;
 			return 1;
 		}
-		return this.value.compareTo(obj.value);
+		return ((Comparable<T>)this.value).compareTo(obj.value);
+	}
+	public void setRoot(boolean b) {this.isRoot = b;}
+	public boolean isRoot() {
+		return isRoot;
 	}
 	
 }

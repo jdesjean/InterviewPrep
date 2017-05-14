@@ -2,7 +2,6 @@ package org.ip.sort;
 
 import java.util.Arrays;
 
-import org.ip.IteratorInt;
 import org.ip.array.Utils;
 
 public class HeapInt {

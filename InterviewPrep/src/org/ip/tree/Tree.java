@@ -1,31 +1,52 @@
 package org.ip.tree;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.ip.array.Utils;
+import org.ip.tree.Tree.SizeWrapper;
+import org.ip.tree.iterator.BFS;
+import org.ip.tree.iterator.BFSIterator;
+import org.ip.tree.iterator.BFSWrapper;
+import org.ip.tree.iterator.NodeWrapper;
+import org.ip.tree.iterator.OrderIn;
+import org.ip.tree.iterator.OrderInLeaves;
+import org.ip.tree.iterator.OrderPost;
+import org.ip.tree.iterator.OrderPre;
+import org.ip.tree.iterator.OrderReverse;
+import org.ip.tree.reducer.BooleanVoid;
+import org.ip.tree.reducer.IsBSTIterative;
+import org.ip.tree.reducer.IsBSTRecursive;
+import org.ip.tree.reducer.Object;
+import org.ip.tree.reducer.OrderPostRecursive;
+import org.ip.tree.reducer.OrderPreRecursive;
+import org.ip.tree.reducer.ReducerBooleanPrint;
 
-public class Tree<T extends Comparable<T>> {
+public class Tree<T> {
 	Node<T> root;
 	public Tree(Node<T> root) {
 		this.root=root;
+		root.setRoot(true);
 	}
-	public static <T extends Comparable<T>> Tree<T> tree(Node<T> root) {
+	public static <T> Tree<T> tree(Node<T> root) {
 		return new Tree<T>(root);
 	}
-	public static <T extends Comparable<T>> Node<T> node(T t) {
+	public static <T> Node<T> node(T t) {
 		return new Node<T>(t);
 	} 
-	public static <T extends Comparable<T>> Node<T> node(T t, Node<T> c1, Node<T> c2) {
+	public static <T> Node<T> node(T t, Node<T> c1, Node<T> c2) {
 		return new Node<T>(t,c1,c2);
 	}
-	public static <T extends Comparable<T>> Tree<T> fromPreIn(T[] preOrder, T[] inOrder) {
+	//EPI: 10.12
+	//Time: O(n^2), can improve complexity to O(n) with hashtable for inorder
+	//Space: H
+	public static <T> Tree<T> fromPreIn(T[] preOrder, T[] inOrder) {
 		Node<T> node = fromPreIn(preOrder,0,preOrder.length-1,inOrder,0,inOrder.length-1);
 		return tree(node);
 	}
-	private static <T extends Comparable<T>> Node<T> fromPreIn(T[] pre, int leftPre, int rightPre, T[] in, int leftIn, int rightIn) {
+	private static <T> Node<T> fromPreIn(T[] pre, int leftPre, int rightPre, T[] in, int leftIn, int rightIn) {
 		if (leftPre > rightPre || leftIn > rightIn) return null;
 		T current = pre[leftPre];
 		int indexIn;
@@ -49,7 +70,7 @@ public class Tree<T extends Comparable<T>> {
 	public void populateSibling() {
 		Node<T> prev = null;
 		int depth = 0;
-		for (Iterator<NodeWrapper<T>> it1 = new IteratorBFSWrapper<T>(this); it1.hasNext();) {
+		for (Iterator<NodeWrapper<T>> it1 = new BFSWrapper<T>(this); it1.hasNext();) {
 			NodeWrapper<T> wrapper = it1.next();
 			Node<T> current = wrapper.node;
 			if (depth != wrapper.depth) prev = null;
@@ -61,24 +82,25 @@ public class Tree<T extends Comparable<T>> {
 	public int countUnival() {
 		return countUnival(root,null).max;
 	}
-	//Time: H, Space: 1
-	public Node<T> findBST(T v, Visitor<T> visitor) {
-		Node<T> parent = null;
-		Node<T> node = root;
-		while (node != null) {
-			node.parent = parent;
-			visitor.visit(node);
-			if (node.value.compareTo(v) == 0) {
-				return node;
-			} else if (node.value.compareTo(v) < 0) {
-				parent = node;
-				node = node.getRight();
-			} else {
-				parent = node;
-				node = node.getLeft();
-			}
-		}
-		return null;
+	public static <T extends Comparable<T>> int largestBst(Tree<T> tree) {
+		return largestBst(tree.root(),null,null).max;
+	}
+	private static <T extends Comparable<T>> SizeWrapper largestBst(Node<T> current, T bottom, T top) {
+		if (current == null) return new SizeWrapper();
+		int max = 0;
+		boolean bst = (bottom == null && top == null)
+				|| (bottom == null && current.value.compareTo(top) < 0)
+				|| (top == null && bottom.compareTo(current.value) < 0)
+				|| (bottom.compareTo(current.value) < 0 && current.value.compareTo(top) < 0);
+		int size = 1;
+		SizeWrapper wrapper = largestBst(current.getLeft(),bst ? bottom : null,current.value);
+		max = Math.max(max, wrapper.max);
+		if (wrapper.bst) size+=wrapper.current;
+		wrapper = largestBst(current.getRight(),current.value,bst ? top : null);
+		max = Math.max(max, wrapper.max);
+		if (wrapper.bst) size+=wrapper.current;
+		max = Math.max(max, size);
+		return new SizeWrapper(size,max,bst);
 	}
 	private SizeWrapper countUnival(Node<T> current, T value) {
 		if (current == null) return new SizeWrapper();
@@ -98,45 +120,27 @@ public class Tree<T extends Comparable<T>> {
 	}
 	public int count() {
 		int count =0;
-		for (Iterator<Node<T>> iterator = new IteratorOrderPre<T>(this); iterator.hasNext();) {
+		for (Iterator<Node<T>> iterator = new OrderPre<T>(this); iterator.hasNext();) {
 			iterator.next();
 			count++;
 		}
 		return count;
 	}
-	public class SizeWrapper {
+	public static class SizeWrapper {
 		int current;
 		int max;
 		boolean bst;
 		public SizeWrapper(){}
 		public SizeWrapper(int current, int max, boolean bst){this.current=current;this.max=max;this.bst=bst;}
 	}
-	public int largestBst() {
-		return largestBst(root,null,null).max;
-	}
-	private SizeWrapper largestBst(Node<T> current, T bottom, T top) {
-		if (current == null) return new SizeWrapper();
-		int max = 0;
-		boolean bst = (bottom == null && top == null)
-				|| (bottom == null && current.value.compareTo(top) < 0)
-				|| (top == null && bottom.compareTo(current.value) < 0)
-				|| (bottom.compareTo(current.value) < 0 && current.value.compareTo(top) < 0);
-		int size = 1;
-		SizeWrapper wrapper = largestBst(current.getLeft(),bst ? bottom : null,current.value);
-		max = Math.max(max, wrapper.max);
-		if (wrapper.bst) size+=wrapper.current;
-		wrapper = largestBst(current.getRight(),current.value,bst ? top : null);
-		max = Math.max(max, wrapper.max);
-		if (wrapper.bst) size+=wrapper.current;
-		max = Math.max(max, size);
-		return new SizeWrapper(size,max,bst);
-	}
 	public boolean equals(Tree<T> tree) {
-		for (Iterator<Node<T>> it1 = this.inOrderIterator(), it2 = tree.inOrderIterator(); it1.hasNext() && it2.hasNext();) {
-			if (!it1.next().equals(it2.next())) return false;
-		}
-		for (Iterator<Node<T>> it1 = this.preOrderIterator(), it2 = tree.preOrderIterator(); it1.hasNext() && it2.hasNext();) {
-			if (!it1.next().equals(it2.next())) return false;
+		for (Iterator<Node<T>> it1 = new OrderPre<T>(this,true), it2 = new OrderPre<T>(tree,true); it1.hasNext() || it2.hasNext();) {
+			if (!it1.hasNext() || !it2.hasNext()) return false;
+			Node<T> n1 = it1.next();
+			Node<T> n2 = it2.next();
+			if (n1 == null && n2 == null) continue;
+			else if (n1 == null || n2 == null) return false;
+			else if (!n1.equals(n2)) return false;
 		}
 		return true;
 	}
@@ -210,6 +214,15 @@ public class Tree<T extends Comparable<T>> {
 			Utils.reverse(current.childs, 0, current.childs.length-1);
 		}
 	}
+	public void setupParent(){
+		setupParent(null,root());
+	}
+	public void setupParent(Node<T> parent, Node<T> node) {
+		if (node == null) return;
+		node.parent = parent;
+		setupParent(node,node.getLeft());
+		setupParent(node,node.getRight());
+	}
 	private Node<T> bstify(BstifyWrapper head, int size) {
 		if (size <= 0) return null;
 		if (size == 1) {
@@ -253,11 +266,11 @@ public class Tree<T extends Comparable<T>> {
 		if (b == null || (a != null && a.compareTo(b) <= 0)) return a;
 		else return b;
 	}
-	public interface ArrayVisitor<T extends Comparable<T>> {
+	public interface ArrayVisitor<T> {
 		public void visit(T[] visit, int length);
 	}
 	public void printAllPaths(ArrayVisitor<T> visitor) {
-		ReducerOrderPreRecursive<T> executor = new ReducerOrderPreRecursive<T>(this,new ReducerBooleanPrint(visitor));
+		OrderPreRecursive<T> executor = new OrderPreRecursive<T>(this,new ReducerBooleanPrint(this,visitor));
 		executor.execute();
 	}
 	/*public int height() {
@@ -314,7 +327,7 @@ public class Tree<T extends Comparable<T>> {
 			parent.childs[0] = node2;
 		}
 	}
-	public static <T extends Comparable<T>>  void remove(Node<T> node) {
+	public static <T>  void remove(Node<T> node) {
 		if (node.getLeft() != null) {
 			node.parent = node.childs[0];
 		} else if (node.getRight() != null) {
@@ -327,8 +340,33 @@ public class Tree<T extends Comparable<T>> {
 		node.childs[0] = null;
 		node.childs[1] = null;
 	}
-	public static <T extends Comparable<T>>  Node<T> successorChild(Node<T> node) {
-		if (node.getRight() == null) return null;
+	//EPI: 10.10
+	//Time: H, Space: H
+	public static <T> Node<T> successor(Node<T> node) {
+		if (node == null) return null;
+		Node<T> right = successorChild(node);
+		if (right != null) return right;
+		
+		Node<T> current = node;
+		if (current.parent == null) {
+			return successorChild(node);
+		} else if (isLeftChild(current)) {
+			return current.parent;
+		} else {
+			do {
+				current = current.parent;
+			} while (isRightChild(current));
+			return successorChild(current);
+		}
+	}
+	public static <T> boolean isLeftChild(Node<T> node) {
+		return node != null && node.parent != null && node.parent.getLeft() == node;
+	}
+	public static <T> boolean isRightChild(Node<T> node) {
+		return node != null && (node.parent == null || node.parent.getRight() == node);
+	}
+	public static <T>  Node<T> successorChild(Node<T> node) {
+		if (node == null || node.getRight() == null) return null;
 		Node<T> current = node.getRight();
 		Node<T> parent = node;
 		while (current.getLeft() != null) {
@@ -338,7 +376,7 @@ public class Tree<T extends Comparable<T>> {
 		current.parent = parent;
 		return current;
 	}
-	public static <T extends Comparable<T>>  Node<T> predecessorChild(Node<T> node) {
+	public static <T>  Node<T> predecessorChild(Node<T> node) {
 		if (node.getLeft() == null) return null;
 		Node<T> current = node.getLeft();
 		Node<T> parent = node;
@@ -393,7 +431,7 @@ public class Tree<T extends Comparable<T>> {
 	}
 	public List<List<Node<T>>> bfs() {
 		List<List<Node<T>>> list = new ArrayList<List<Node<T>>>();
-		for (Iterator<Iterator<Node<T>>> levelIterator = new IteratorBFSIterator<T>(this); levelIterator.hasNext(); ) {
+		for (Iterator<Iterator<Node<T>>> levelIterator = new BFSIterator<T>(this); levelIterator.hasNext(); ) {
 			List<Node<T>> siblings = new ArrayList<Node<T>>();
 			for (Iterator<Node<T>> siblingsIterator = levelIterator.next(); siblingsIterator.hasNext();) {
 				siblings.add(siblingsIterator.next());
@@ -404,13 +442,13 @@ public class Tree<T extends Comparable<T>> {
 	}
 	//EPI 10.1
 	public boolean isBalanced() {
-		ReducerOrderPost<Integer,T> reducer = new ReducerOrderPost<Integer,T>(){
+		org.ip.tree.reducer.OrderPost<Integer,T> reducer = new org.ip.tree.reducer.OrderPost<Integer,T>(){
 			@Override
 			public Integer visit(Node<T> node, int depth, Integer previous) {
 				return previous == null ? 0 : previous >= 0 ? previous + 1 : -1;
 			}
 		};
-		Reducer<Integer,Integer> reducerChild = new Reducer<Integer,Integer>(){
+		Object<Integer,Integer> reducerChild = new Object<Integer,Integer>(){
 
 			@Override
 			public Integer visit(Integer current, Integer previous) {
@@ -418,7 +456,7 @@ public class Tree<T extends Comparable<T>> {
 			}
 			
 		};
-		ReducerOrderPostRecursive<T,Integer> rec = new ReducerOrderPostRecursive<T,Integer>(this,reducer,reducerChild);
+		OrderPostRecursive<T,Integer> rec = new OrderPostRecursive<T,Integer>(this,reducer,reducerChild);
 		return rec.execute(null) >= 0;
 	}
 	//EPI 10.2
@@ -448,48 +486,34 @@ public class Tree<T extends Comparable<T>> {
 		}
 		return null;
 	}
-	private final class ReducerBooleanPrint implements ReducerBoolean<T>{
-		private ArrayVisitor<T> visitor;
-		private T[] path;
-		public ReducerBooleanPrint(ArrayVisitor<T> visitor) {
-			if (root == null) return;
-			this.visitor = visitor;
-			int height = height();
-			this.path = (T[])Array.newInstance(root.value.getClass(), height);
+	//EPI: 10.14
+	//Time: O(n), Space: O(H);
+	public LinkedList<Node<T>> toLinkedListLeaves() {
+		LinkedList<Node<T>> list = new LinkedList<Node<T>>();
+		for (Iterator<Node<T>> iterator = new OrderInLeaves<T>(this); iterator.hasNext();) {
+			list.add(iterator.next());
 		}
-		@Override
-		public boolean visit(Node<T> node, int depth) {
-			path[depth] = node.value;
-			if (node.isLeaf()) visitor.visit(path, depth+1);
-			return true;
-		}
+		return list;
 	}
-	
 	public Iterator<Node<T>> reverseOrderIterator(int k) {
-		return new IteratorOrderReverse<T>(this, k);
+		return new OrderReverse<T>(this, k);
 	}
 	public Iterator<Node<T>> reverseOrderIterator() {
-		return new IteratorOrderReverse<T>(this);
-	}
-	public ReducerBooleanVoid iterativeIsBSTReducer() {
-		return new ReducerIsBSTIterative<T>(this);
-	}
-	public ReducerBooleanVoid recursiveIsBSTReducer() {
-		return new ReducerIsBSTRecursive<T>(this);
+		return new OrderReverse<T>(this);
 	}
 	public Iterator<Node<T>> postOrderIterator() {
-		return new IteratorOrderPost<T>(this); 
+		return new OrderPost<T>(this); 
 	} 
 	public Iterator<Node<T>> preOrderIterator() {
-		return new IteratorOrderPre<T>(this); 
+		return new OrderPre<T>(this); 
 	}
 	public Iterator<Node<T>> inOrderIterator(int k) {
-		return new IteratorOrderIn<T>(this,k);
+		return new OrderIn<T>(this,k);
 	}
 	public Iterator<Node<T>> inOrderIterator() {
-		return new IteratorOrderIn<T>(this);
+		return new OrderIn<T>(this);
 	}
 	public Iterator<Node<T>> bfsIterator() {
-		return new IteratorBFS<T>(this);
+		return new BFS<T>(this);
 	}
 }

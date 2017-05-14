@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import org.ip.tree.iterator.OrderIn;
+import org.ip.tree.iterator.OrderReverse;
+
 /*
  * BST, V, k
    k nodes in the tree which are closest to V
@@ -155,7 +158,7 @@ public interface Comparer {
 			for (int i = 0; i < k; i++) {
 				//Node<Integer> closest = closest(tree,v, new Visitor<Integer>(){ public void visit(Node<Integer> node) {}});
 				VisitorClosest visitorClosest = new VisitorClosest(v);
-				tree.findBST(v, visitorClosest);
+				new FinderBST<Integer>(tree, visitorClosest).find(v);
 				Node<Integer> closest = visitorClosest.closest;
 				visitor.visit(closest);
 				replace(tree, closest);
@@ -186,14 +189,14 @@ public interface Comparer {
 		@Override
 		public void closest(Tree<Integer> tree, Visitor<Integer> visitor, int v, int k) {
 			VisitorClosest visitorClosest = new VisitorClosest(v);
-			tree.findBST(v, visitorClosest);
+			new FinderBST<Integer>(tree,visitorClosest).find(v);
 			Node<Integer> closest = visitorClosest.closest;
 			Deque<Node<Integer>> stack = visitorClosest.stack;
 			while (closest != stack.peek()) {
 				stack.pop();
 			}
-			Iterator<Node<Integer>> iteratorForward = new IteratorOrderIn<Integer>((Deque<Node<Integer>>)((LinkedList)stack).clone());
-			Iterator<Node<Integer>> iteratorBackward = new IteratorOrderReverse<Integer>(stack);
+			Iterator<Node<Integer>> iteratorForward = new OrderIn<Integer>((Deque<Node<Integer>>)((LinkedList)stack).clone());
+			Iterator<Node<Integer>> iteratorBackward = new OrderReverse<Integer>(stack);
 			Node<Integer> forward = iteratorForward.next();
 			iteratorBackward.next();//closest
 			Node<Integer> backward = iteratorBackward.next();

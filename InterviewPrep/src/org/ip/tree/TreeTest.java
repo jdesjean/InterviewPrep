@@ -1,14 +1,25 @@
 package org.ip.tree;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.ip.primitives.Sequence;
 import org.ip.tree.Tree.ArrayVisitor;
+import org.ip.tree.iterator.BFS;
+import org.ip.tree.iterator.OrderExterior;
+import org.ip.tree.iterator.OrderInLeaves;
+import org.ip.tree.iterator.OrderInParent;
+import org.ip.tree.iterator.OrderPre;
+import org.ip.tree.reducer.BooleanVoid;
+import org.ip.tree.reducer.IsBSTIterative;
+import org.ip.tree.reducer.IsBSTRecursive;
 
 public class TreeTest {
 	public static void main(String[] s) {
-		testInOrderKth();
+		testOrderExteriorIterator();
 	}
 
 	public static Tree<Integer> small() {
@@ -24,6 +35,13 @@ public class TreeTest {
 	public static Tree<Integer> bst1() {
 		Node<Integer> root = node(5,node(2,node(1),null),node(7, node(6), node(8, null, node(9))));
 		return tree(root);
+	}
+	
+	public static Tree<Integer> bst1Parent() {
+		Node<Integer> root = node(5,node(2,node(1),null),node(7, node(6), node(8, null, node(9))));
+		Tree<Integer> tree = tree(root);
+		tree.setupParent();
+		return tree;
 	}
 	
 	public static Tree<Integer> balanced() {
@@ -111,7 +129,7 @@ public class TreeTest {
 	}
 	public static void testLargestBst(){
 		Tree<Integer> tree = nonBST2();
-		System.out.println(tree.largestBst());
+		System.out.println(Tree.largestBst(tree));
 	}
 	public static void testFlip() {
 		Tree<Integer> tree = bst1();
@@ -140,7 +158,7 @@ public class TreeTest {
 	public static void testPopulateSibling() {
 		Tree<Integer> tree = bst1();
 		tree.populateSibling();
-		for (Iterator<Node<Integer>> it1 = new IteratorBFS<Integer>(tree); it1.hasNext();) {
+		for (Iterator<Node<Integer>> it1 = new BFS<Integer>(tree); it1.hasNext();) {
 			System.out.println(it1.next());
 		}
 	}
@@ -172,14 +190,14 @@ public class TreeTest {
 			}
 			System.out.println("***");
 		}
-		System.out.println(tree.iterativeIsBSTReducer().execute());
+		System.out.println(new IsBSTIterative<Integer>(tree).execute());
 	}
 
 	public static void testBST() {
 		Tree<Integer>[] trees = new Tree[] { bst1(), nonBST1() };
 		for (Tree<Integer> tree : trees) {
-			ReducerBooleanVoid[] executors = new ReducerBooleanVoid[] { tree.recursiveIsBSTReducer(),
-					tree.iterativeIsBSTReducer() };
+			BooleanVoid[] executors = new BooleanVoid[] { new IsBSTRecursive<Integer>(tree),
+					new IsBSTIterative<Integer>(tree) };
 			for (int i = 0; i < executors.length; i++) {
 				System.out.println(executors[i].execute());
 			}
@@ -207,7 +225,7 @@ public class TreeTest {
 		Integer[] pre = new Integer[count];
 		Integer[] in = new Integer[count];
 		int index = 0;
-		for (Iterator<Node<Integer>> iterator = new IteratorOrderPre<Integer>(bst); iterator.hasNext();) {
+		for (Iterator<Node<Integer>> iterator = new OrderPre<Integer>(bst); iterator.hasNext();) {
 			pre[index++] = iterator.next().value;
 		}
 		index = 0;
@@ -215,7 +233,7 @@ public class TreeTest {
 			in[index++] = iterator.next().value;
 		}
 		Tree<Integer> copy = Tree.fromPreIn(pre, in);
-		for (Iterator<Node<Integer>> iterator = new IteratorOrderPre<Integer>(copy); iterator.hasNext();) {
+		for (Iterator<Node<Integer>> iterator = new OrderPre<Integer>(copy); iterator.hasNext();) {
 			System.out.println(iterator.next());
 		}
 	}
@@ -273,4 +291,46 @@ public class TreeTest {
 			System.out.println(Tree.inOrderKth(tree, i));
 		}
 	}
+	public static void testSerializeOrder() {
+		Serializer[] serializers = new Serializer[]{new SerializerOrderPre(), new SerializerOrderPost()};
+		Tree<Integer> tree = nonBST1();
+		for (int i = 0; i < serializers.length; i++) {
+			Serializer serializer = serializers[i];
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream(tree.count()*3/2*4);//3/2 times the size for null nodes; 4 bytes per integer 
+			serializer.serialize(tree, outputStream);
+			ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+			Tree<Integer> copy = serializer.deserialize(inputStream);
+			System.out.println(tree.equals(copy));
+		}
+	}
+	public static void testSuccessor() {
+		Tree<Integer> tree = bst1();
+		for (int i = 1; i <= 9; i++) {
+			System.out.println(i + ":" + tree.successor(new FinderComparable<Integer>(tree).find(i)));
+		}
+	}
+	public static void testOrderInParent() {
+		Tree<Integer> tree = bst1Parent();
+		for (Iterator<Node<Integer>> iterator = new OrderInParent<Integer>(tree); iterator.hasNext();) {
+			System.out.print(iterator.next());
+			System.out.print(',');
+		} 
+	}
+	public static void testInOrderLeaves() {
+		Tree<Integer> tree = bst1();
+		for (Iterator<Node<Integer>> iterator = new OrderInLeaves<Integer>(tree); iterator.hasNext();) {
+			System.out.print(iterator.next() + ",");
+		}
+	}
+	public static void testToLinkedListLeaves() {
+		LinkedList<Node<Integer>> list = bst1().toLinkedListLeaves();
+		System.out.print(list);
+	}
+	public static void testOrderExteriorIterator() {
+		Tree<Integer> tree = bst1();
+		for (Iterator<Node<Integer>> iterator = new OrderExterior<Integer>(tree); iterator.hasNext();) {
+			System.out.print(iterator.next() + ",");
+		}
+	}
+	
 }

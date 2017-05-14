@@ -4,7 +4,7 @@ package org.ip.tree;
 //Time: n to find nodes v1 & v2
 //Time: H to find LCA
 //Space: H
-public class LCAParentless<T extends Comparable<T>> implements LCA<T> {
+public class LCAParentless<T> implements LCA<T> {
 	public final LcaWrapper EMPTY = new LcaWrapper(null);
 	private Tree<T> tree;
 
