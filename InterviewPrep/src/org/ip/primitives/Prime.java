@@ -1,5 +1,9 @@
 package org.ip.primitives;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -15,6 +19,9 @@ public class Prime {
         // your code goes here
         System.out.println(generatePrimes(last,first,last));
     }
+    public static void testToFile() {
+		toFile(new long[] { 1 }, 1);
+	}
     public static class BitSet {
         public long value;
         public long[] bits;
@@ -100,9 +107,27 @@ public class Prime {
                 isPrime.clear(j);
             }
         }
-        Utils.toFile(isPrime.getBits(), isPrime.getBits().length);
+        toFile(isPrime.getBits(), isPrime.getBits().length);
         return primes;
     }
+    public static void toFile(long[] array, int length) {
+		File file = new File("C:\\Users\\Jean-Francois\\Downloads\\prime.txt");
+		try {
+			PrintWriter out = new PrintWriter(file, "UTF-8");
+			int size = Math.min(array.length, length);
+			for (int i = 0; i < size; i++) {
+				if (i != 0)
+					out.print(",");
+				out.print(array[i]);
+			}
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
     public static boolean isMegaprime(long value) {
         for (long i = value; i > 0; i= i / 10L) {
             long digit = i % 10L;

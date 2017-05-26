@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+//EPI: 11.7
+//Time: O(log(n)), Space: O(n)
 public class StackHeap {
 	public static void main(String[] s) {
 		StackHeap stack = new StackHeap();

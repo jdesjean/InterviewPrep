@@ -1,10 +1,5 @@
 package org.ip.array;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,18 +7,9 @@ public class Utils {
 	public static void main(String[] s) {
 		testSumZero();
 	}
+
 	public static void testSumZero() {
-		System.out.println(sumZero(new int[]{5,1,2,-3,7,-4}));
-	}
-	public static void testMinimumRotated() {
-		System.out.println(minimumRotated(new int[]{5,6,1,2,3,4}));
-		System.out.println(minimumRotated(new int[]{1,2,3,4,5,6}));
-		System.out.println(minimumRotated(new int[]{2,3,4,5,6,1}));
-		System.out.println(minimumRotated(new int[]{4,4,1,2,4,4}));
-		System.out.println(minimumRotated(new int[]{4,1,2,3,4,4}));
-	}
-	public static void testToFile() {
-		toFile(new long[] { 1 }, 1);
+		System.out.println(sumZero(new int[] { 5, 1, 2, -3, 7, -4 }));
 	}
 
 	public static void testSum() {
@@ -89,25 +75,6 @@ public class Utils {
 		public boolean test(int[] array, int i);
 	}
 
-	public static void toFile(long[] array, int length) {
-		File file = new File("C:\\Users\\Jean-Francois\\Downloads\\prime.txt");
-		try {
-			PrintWriter out = new PrintWriter(file, "UTF-8");
-			int size = Math.min(array.length, length);
-			for (int i = 0; i < size; i++) {
-				if (i != 0)
-					out.print(",");
-				out.print(array[i]);
-			}
-			out.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public static void println(long[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
@@ -126,11 +93,11 @@ public class Utils {
 		}
 		System.out.println("");
 	}
-	
+
 	public static void println(int[] array, int length) {
-		println(array,0,Math.min(array.length, length));
+		println(array, 0, Math.min(array.length, length));
 	}
-	
+
 	public static <T> void println(T[] array, int left, int right) {
 		for (int i = left; i <= right; i++) {
 			if (i != left)
@@ -149,6 +116,7 @@ public class Utils {
 		}
 		System.out.println("");
 	}
+
 	public static void println(CharSequence array) {
 		for (int i = 0; i < array.length(); i++) {
 			if (i != 0)
@@ -157,6 +125,7 @@ public class Utils {
 		}
 		System.out.println("");
 	}
+
 	public static void println2(char[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
@@ -189,17 +158,20 @@ public class Utils {
 
 	public static int indexOf(int[] a, int left, int right, int value) {
 		for (int i = left; i <= right; i++) {
-			if (a[i] == value) return i;
+			if (a[i] == value)
+				return i;
 		}
 		return -1;
 	}
+
 	public static int indexOf(char[] a, int left, int right, char value) {
 		for (int i = left; i <= right; i++) {
-			if (a[i] == value) return i;
+			if (a[i] == value)
+				return i;
 		}
 		return -1;
 	}
-	
+
 	public static int sum(int[] array, int left, int right) {
 		int sum = 0;
 		for (int i = left; i <= right; i++) {
@@ -207,9 +179,9 @@ public class Utils {
 		}
 		return sum;
 	}
-	
+
 	public static int sum(int[] array, int length) {
-		return sum(array,0,Math.min(array.length, length)-1);
+		return sum(array, 0, Math.min(array.length, length) - 1);
 	}
 
 	public static int sumNegatives(int[] array, int left, int right) {
@@ -221,7 +193,7 @@ public class Utils {
 		}
 		return sum;
 	}
-	
+
 	public static int sumPositives(int[] array, int left, int right) {
 		int sum = 0;
 		for (int i = left; i <= right; i++) {
@@ -284,59 +256,64 @@ public class Utils {
 		return -1;
 	}
 
-	public static int minimumRotated(int[] rotated) {
-		return minimumRotated(rotated,0,rotated.length-1,-1);
-	}
-	public static int minimumRotated(int[] rotated, int i, int j, int k) {
-		for (;i < j;) {
-			int mid = (j-i)/2+i;
-			if (rotated[i] < rotated[mid]) {
-				if (k == -1 || rotated[i] < rotated[k]) k = i;
-				i = mid+1;
-			} else if (rotated[mid] < rotated[j]) {
-				if (k == -1 || rotated[mid] < rotated[k]) k = mid;
-				j = mid-1;
-			} else {
-				int k1 = minimumRotated(rotated,i,mid,k);
-				int k2 = minimumRotated(rotated,mid+1,j,k);
-				if (k1 == -1) return k2;
-				else if (k2 == -1) return k1;
-				else if (rotated[k1] <= rotated[k2]) return k1;
-				else return k2;
+	public static void rotate(int[] array, int d) {
+		int i, j, k, temp;
+		int n = array.length;
+		int gcd = org.ip.primitives.Utils.gcd(n, d);
+		for (i = 0; i < gcd; i++) {
+			/* move i-th values of blocks */
+			temp = array[i];
+			j = i;
+			while (true) {
+				k = j + d;
+				if (k >= n)
+					k = k - n;
+				if (k == i)
+					break;
+				array[j] = array[k];
+				j = k;
 			}
+			array[j] = temp;
 		}
-		if (i == j && (k == -1 || rotated[i] < rotated[k])) k = i; 
-		return k;
 	}
-	
+
 	public static class Pair {
 		int left;
+
 		public Pair(int left, int right) {
 			super();
 			this.left = left;
 			this.right = right;
 		}
+
 		int right;
+
 		@Override
 		public String toString() {
 			return "Pair [left=" + left + ", right=" + right + "]";
 		}
 	}
+
 	public static Pair sumZero(int[] array) {
-		Map<Integer,Integer> map = new HashMap<Integer,Integer>();
-		int sum = 0;;
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		int sum = 0;
+		;
 		for (int i = 0; i < array.length; i++) {
-			sum+=array[i];
-			if (sum == 0) return new Pair(0,i);
-			else if  (map.containsKey(sum)) return new Pair(map.get(sum)+1,i);
+			sum += array[i];
+			if (sum == 0)
+				return new Pair(0, i);
+			else if (map.containsKey(sum))
+				return new Pair(map.get(sum) + 1, i);
 			map.put(sum, i);
 		}
 		return null;
 	}
+
 	public static void println(int[][] array) {
 		for (int i = 0; i < array.length; i++) {
 			for (int j = 0; j < array[i].length; j++) {
-				if (j > 0) System.out.print(",");
+				if (j > 0)
+					System.out.print(",");
 				System.out.print(array[i][j]);
 			}
 			System.out.println();

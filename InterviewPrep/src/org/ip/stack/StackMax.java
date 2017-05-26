@@ -3,6 +3,7 @@ package org.ip.stack;
 import java.util.Deque;
 import java.util.LinkedList;
 //EPI 9.1
+//Time: O(1), Space: O(n) 
 public class StackMax {
 	public static void main(String[] s) {
 		StackMax stack = new StackMax();
