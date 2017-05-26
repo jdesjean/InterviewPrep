@@ -33,6 +33,8 @@ public class Utils {
 	    int min = Math.min(u, v);
 	    return gcd((max - min) >> 1, min);
 	}
+	//EPI: 12.4
+	//Time: O(log(n)), Space: O(1)
 	public static int sqrt(int u) {
 		int left = 0;
 		int right = u;
