@@ -1,11 +1,12 @@
 package org.ip.sort;
 
-public class TopKPartitionIntMax implements TopKInt{
+public class IteratorArrayTopKPartitionInt implements IteratorInt{
 	private final static PartitionInt partition = new PartitionDutchFlagInt();
 	private final static SelectorInt selector = new SelectorMidInt();
+	private int k;
+	private int[] array;
 
-	@Override
-	public void solve(int[] array, int k) {
+	public IteratorArrayTopKPartitionInt(int[] array, int k) {
 		for (int left = 0, right = array.length-1; left < right;) {
 			int pivotIndex = partition.partition(array, left, right, selector.select(array, left, right));
 			int size = array.length-pivotIndex;
@@ -14,5 +15,17 @@ public class TopKPartitionIntMax implements TopKInt{
 			else if (size > k) left = pivotIndex+1;
 			else break;
 		}
+		this.k = array.length-k;
+		this.array = array;
+	}
+	
+	@Override
+	public boolean hasNext() {
+		return k < array.length;
+	}
+
+	@Override
+	public int next() {
+		return array[k++];
 	}
 }

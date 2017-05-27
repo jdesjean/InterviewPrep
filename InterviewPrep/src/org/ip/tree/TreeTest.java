@@ -19,7 +19,7 @@ import org.ip.tree.reducer.IsBSTRecursive;
 
 public class TreeTest {
 	public static void main(String[] s) {
-		testOrderExteriorIterator();
+		testSibling();
 	}
 
 	public static Tree<Integer> small() {
@@ -40,7 +40,7 @@ public class TreeTest {
 	public static Tree<Integer> bst1Parent() {
 		Node<Integer> root = node(5,node(2,node(1),null),node(7, node(6), node(8, null, node(9))));
 		Tree<Integer> tree = tree(root);
-		tree.setupParent();
+		tree.assignParent();
 		return tree;
 	}
 	
@@ -330,6 +330,13 @@ public class TreeTest {
 		Tree<Integer> tree = bst1();
 		for (Iterator<Node<Integer>> iterator = new OrderExterior<Integer>(tree); iterator.hasNext();) {
 			System.out.print(iterator.next() + ",");
+		}
+	}
+	public static void testSibling() {
+		Tree<Integer> tree = bst1();
+		tree.assignSibling();
+		for (Iterator<Node<Integer>> iterator = tree.bfsIterator(); iterator.hasNext();) {
+			System.out.println(iterator.next().sibling);
 		}
 	}
 	

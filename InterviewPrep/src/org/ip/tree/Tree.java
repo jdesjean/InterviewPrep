@@ -28,7 +28,6 @@ public class Tree<T> {
 	Node<T> root;
 	public Tree(Node<T> root) {
 		this.root=root;
-		root.setRoot(true);
 	}
 	public static <T> Tree<T> tree(Node<T> root) {
 		return new Tree<T>(root);
@@ -214,14 +213,55 @@ public class Tree<T> {
 			Utils.reverse(current.childs, 0, current.childs.length-1);
 		}
 	}
-	public void setupParent(){
-		setupParent(null,root());
+	public void assignParent(){
+		assignParent(null,root());
 	}
-	public void setupParent(Node<T> parent, Node<T> node) {
+	//Time: O(n), Space: O(H)
+	private void assignParent(Node<T> parent, Node<T> node) {
 		if (node == null) return;
 		node.parent = parent;
-		setupParent(node,node.getLeft());
-		setupParent(node,node.getRight());
+		assignParent(node,node.getLeft());
+		assignParent(node,node.getRight());
+	}
+	//EPI: 10.17
+	//Time: O(n), Space: O(W)
+	public void assignSibling() {
+		for (Iterator<Iterator<Node<T>>> iteratorDepth = new BFSIterator<T>(this); iteratorDepth.hasNext();) {
+			Node<T> prev = null;
+			for (Iterator<Node<T>> iteratorBreath = iteratorDepth.next(); iteratorBreath.hasNext();) {
+				Node<T> current = iteratorBreath.next();
+				if (prev != null) prev.sibling = current;
+				prev = current;
+			}
+		}
+	}
+	//EPI: 10.18
+	//Time: O(H), Space: O(n)
+	public static <T> boolean unlock(Node<T> node) {
+		if (node == null || !node.locked) return false;
+		node.locked = false;
+		Node<T> current = node.parent;
+		while (current != null) {
+			current.lockCount-=1;
+			current = current.parent;
+		}
+		return true;
+	}
+	//Time: O(H), Space: O(n)
+	public static <T> boolean lock(Node<T> node) {
+		if (node == null || node.locked || node.lockCount > 0) return false;
+		Node<T> current = node.parent;
+		while (current != null) {
+			if (current.locked) return false;
+			current = current.parent;
+		}
+		node.locked = true;
+		current = node.parent;
+		while (current != null) {
+			current.lockCount+=1;
+			current = current.parent;
+		}
+		return true;
 	}
 	private Node<T> bstify(BstifyWrapper head, int size) {
 		if (size <= 0) return null;

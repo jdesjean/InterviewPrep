@@ -1,15 +1,18 @@
 package org.ip.sort;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
-import org.ip.array.Utils;
-
+//EPI: 11.5
+//Time: O(nlog(k)), Space: O(k)
 public class Neighbor {
 	public static void main(String args[]) {
 		Point[] points = new Point[] { point(1, 1), point(2, 2), point(4, 1), point(-1, -1), point(3, 3), point(-1, 2) };
 		int k = 2;
-		neareast(points, point(0, 0), k);
-		Utils.println(points,0,k-1);
+		for (Iterator<Point> iterator = new IteratorArraTopKPartitionMin<Point>(points,k,new PointPairComparator(point(0,0))); iterator.hasNext();) {
+			System.out.print(iterator.next());
+			if (iterator.hasNext()) System.out.print(",");
+		}
 	}
 	
 	public static Point point(int x, int y) {
@@ -47,11 +50,5 @@ public class Neighbor {
 		public int compare(Point o1, Point o2) {
 			return (int)(point.distanceTo(o1) - point.distanceTo(o2));
 		}
-	}
-
-	public static void neareast(Point[] points, Point point, int k) {
-		PointPairComparator comparator = new PointPairComparator(point);
-		TopK<Point> topk = new TopKPartitionMin<Point>();
-		topk.solve(points, k, comparator);
 	}
 }

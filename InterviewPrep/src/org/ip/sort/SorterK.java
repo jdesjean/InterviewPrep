@@ -2,7 +2,8 @@ package org.ip.sort;
 
 import org.ip.array.Utils;
 import org.ip.sort.HeapInt.Small;
-
+//EPI: 11.3
+//Time: O(nlog(k)), Space; log(k)
 public class SorterK implements Sorter{
 	public static void main(String[] s) {
 		int[] array = new int[]{1,2,0,4,5,4,6,7,8,9,7};

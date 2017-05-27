@@ -5,12 +5,13 @@ public class Node<T> implements Comparable<Node<T>>{
 	public Node<T> parent;
 	public final Node<T>[] childs;
 	public Node<T> sibling;
-	private boolean isRoot;
 	public Node(T value){this.value=value;childs = new Node[2];}
 	public Node(T value, Node<T> left, Node<T> right){this.value=value;childs=new Node[]{left,right};}
 	public Node(T value, Node<T>[] childs){this.value=value;this.childs=childs;}
 	public Node<T> getLeft(){return childs[0];}
 	public Node<T> getRight(){return childs[1];}
+	public int lockCount = 0;
+	public boolean locked = false;
 	public boolean isLeaf() {
 		return childs[0] == null && childs[1] == null;
 	}
@@ -57,9 +58,4 @@ public class Node<T> implements Comparable<Node<T>>{
 		}
 		return ((Comparable<T>)this.value).compareTo(obj.value);
 	}
-	public void setRoot(boolean b) {this.isRoot = b;}
-	public boolean isRoot() {
-		return isRoot;
-	}
-	
 }

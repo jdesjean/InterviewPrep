@@ -1,15 +1,21 @@
 package org.ip.sort;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
-public class KArray {
+//EPI: 11.1
+//Time: O(nlog(k)), Space: O(k)
+public class IteratorSortedKArray implements IteratorInt{
 	public static void main(String[] s) {
 		//Output: 0 1 2 3 4 5 6 7 8 9 10 11
-		System.out.println(Arrays.toString(merge(new int[][]{ {1, 3, 5, 7},
+		for (IteratorInt iterator = new IteratorSortedKArray(new int[][]{ {1, 3, 5, 7},
 			{2, 4, 6, 8},
-			{0, 9, 10, 11}})));
+			{0, 9, 10, 11}}); iterator.hasNext();) {
+			System.out.print(iterator.next());
+			if (iterator.hasNext()) System.out.print(",");
+		}
+		
 	}
+	private Heap<KArrayReference> heap;
 	private static Heap<KArrayReference> init(int[][] ka) {
 		Heap<KArrayReference> heap = Heap.createMin(ka.length);
 		for (int i = 0; i < ka.length; i++) {
@@ -18,24 +24,23 @@ public class KArray {
 		}
 		return heap;
 	}
-	private static int size(int[][] ka) {
-		int size = 0;
-		for (int i = 0; i < ka.length; i++) {
-			size+=ka[i].length;
-		}
-		return size;
+	public IteratorSortedKArray(int[][] ka) {
+		this.heap = init(ka);
 	}
-	public static int[] merge(int[][] ka) {
-		Heap<KArrayReference> heap = init(ka);
-		int[] merged = new int[size(ka)];
-		for (int i = 0; !heap.isEmpty(); i++) {
-			KArrayReference current = heap.remove();
-			merged[i] = current.current();
-			if (current.hasNext()) {
-				heap.add(current.next());
-			}
+
+	@Override
+	public boolean hasNext() {
+		return !heap.isEmpty();
+	}
+
+	@Override
+	public int next() {
+		KArrayReference current = heap.remove();
+		int nCurrent = current.current();
+		if (current.hasNext()) {
+			heap.add(current.next());
 		}
-		return merged;
+		return nCurrent;
 	}
 	public static class KArrayReference implements Comparable<KArrayReference>, Iterator<KArrayReference>{
 		public final int[][] ka;
