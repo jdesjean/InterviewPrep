@@ -95,7 +95,7 @@ public class Utils {
 	}
 
 	public static void println(int[] array, int length) {
-		println(array, 0, Math.min(array.length, length));
+		println(array, 0, Math.min(array.length, length) - 1);
 	}
 
 	public static <T> void println(T[] array, int left, int right) {

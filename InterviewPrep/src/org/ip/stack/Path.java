@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+// EPI 9.4
 public class Path {
 	public static void main(String[] s) {
 		System.out.println(shortestEquivalent("/usr/lib/../bin/gcc"));

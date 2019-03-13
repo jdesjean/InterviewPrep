@@ -19,14 +19,15 @@ public class PalindromeCombination {
 		for (String string : strings) {
 			set.add(string);
 		}
+		PalindromeChecker checker = new PalindromeChecker();
 		for (String string: strings) {
 			for (int i = 0; i < string.length(); i++) {
 				String s1 = i > 0 ? string.substring(0, i) : "";
 				String s2 = i < string.length() ? string.substring(i) : "";
 				String s3 = Utils.reverse(s1);
 				String s4 = Utils.reverse(s2);
-				if (Palindrome.isPalindrome(s1) && set.contains(s4)) return new String[]{string,s4};
-				else if (set.contains(s3) && Palindrome.isPalindrome(s2)) return new String[]{s3,string};
+				if (checker.check(s1, 0, s1.length() - 1) && set.contains(s4)) return new String[]{string,s4};
+				else if (set.contains(s3) && checker.check(s2, 0, s2.length() - 1)) return new String[]{s3,string};
 			}
 		}
 		return null;

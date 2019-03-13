@@ -1,5 +1,6 @@
 package org.ip.array;
 
+// EPI: 6.4
 public class Advance {
 	public static void main(String[] s) {
 		System.out.println(isWinable(new int[]{3,3,1,0,2,0,1}));

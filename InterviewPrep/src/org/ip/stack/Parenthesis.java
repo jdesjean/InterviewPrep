@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+// EPI: 9.3
 public class Parenthesis {
 	public static void main(String[] s) {
-		System.out.println(isWellFormed("[()[]{()()}]"));
-		System.out.println(isWellFormed("([]){()}"));
-		System.out.println(isWellFormed("{)"));
-		System.out.println(isWellFormed("[()[]{()()"));
+		Parenthesis parenthesis = new Parenthesis();
+		System.out.println(parenthesis.isWellFormed("[()[]{()()}]"));
+		System.out.println(parenthesis.isWellFormed("([]){()}"));
+		System.out.println(parenthesis.isWellFormed("{)"));
+		System.out.println(parenthesis.isWellFormed("[()[]{()()"));
 	}
 	static Map<Character,Character> open = new HashMap<Character,Character>();
 	static Map<Character,Character> close = new HashMap<Character,Character>();
@@ -25,8 +27,7 @@ public class Parenthesis {
 		close.put(valueOf(')'),valueOf('('));
 		close.put(valueOf('}'),valueOf('{'));
 	}
-	//EPI 9.3
-	public static boolean isWellFormed(String s) {
+	public boolean isWellFormed(String s) {
 		Deque<Character> stack = new LinkedList<Character>();
 		for (int i = 0; i < s.length(); i++) {
 			Character c = valueOf(s.charAt(i));

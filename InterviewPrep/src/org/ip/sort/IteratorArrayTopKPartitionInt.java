@@ -1,5 +1,7 @@
 package org.ip.sort;
 
+//EPI: 12.8
+//Time: O(n), Worst case: O(n^2), Space: O(1)
 public class IteratorArrayTopKPartitionInt implements IteratorInt{
 	private final static PartitionInt partition = new PartitionDutchFlagInt();
 	private final static SelectorInt selector = new SelectorMidInt();

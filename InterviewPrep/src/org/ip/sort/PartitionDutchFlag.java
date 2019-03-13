@@ -4,6 +4,7 @@ import java.util.Comparator;
 
 import org.ip.array.Utils;
 
+// EPI: 6.1
 public class PartitionDutchFlag<T> implements Partition<T>{
 
 	@Override

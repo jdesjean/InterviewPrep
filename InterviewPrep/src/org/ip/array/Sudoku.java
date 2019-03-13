@@ -1,82 +1,49 @@
 package org.ip.array;
 
-import org.ip.primitives.Bit;
+import java.util.BitSet;
 
+
+// EPI: 6.16
 public class Sudoku {
 	public static void main(String[] s) {
-		int[][] board = new int[][]{
-			{5,3,0,0,7,0,0,0,0},
-			{6,0,0,1,9,5,0,0,0},
-			{0,9,8,0,0,0,0,0,0},
-			{8,0,0,0,6,0,0,0,3},
-			{4,0,0,8,0,3,0,0,1},
-			{7,0,0,0,2,0,0,0,6},
-			{0,6,0,0,0,0,2,8,0},
-			{0,0,0,4,1,9,0,0,5},
-			{0,0,0,0,8,0,0,7,9}};
-		System.out.println(isValid(board));
-		board = new int[][]{
-			{5,3,0,0,7,0,0,0,0},
-			{6,0,0,1,9,5,0,0,0},
-			{0,9,8,0,0,0,0,0,0},
-			{8,0,0,0,6,0,0,0,3},
-			{4,0,0,8,0,3,0,0,1},
-			{7,0,0,0,2,0,0,0,6},
-			{0,6,0,0,0,0,2,8,0},
-			{0,0,0,4,1,9,4,0,5},
-			{0,0,0,0,8,0,0,7,9}};
-		System.out.println(isValid(board));
-		board = new int[][]{
-			{5,3,0,0,7,0,0,0,0},
-			{6,0,0,1,9,5,0,0,0},
-			{0,9,8,0,0,0,0,0,0},
-			{8,0,0,0,6,0,0,0,3},
-			{4,0,0,8,0,3,0,0,1},
-			{7,0,0,0,2,0,0,0,6},
-			{0,6,0,0,0,0,2,8,3},
-			{0,0,0,4,1,9,0,0,5},
-			{0,0,0,0,8,0,0,7,9}};
-		System.out.println(isValid(board));
-		board = new int[][]{
-			{5,3,0,0,7,0,0,0,0},
-			{6,0,0,1,9,5,0,0,0},
-			{0,9,8,0,0,0,0,0,0},
-			{8,0,0,0,6,0,0,0,3},
-			{4,0,0,8,0,3,0,0,1},
-			{7,0,0,0,2,0,0,0,6},
-			{0,6,0,0,0,0,2,8,0},
-			{0,0,0,4,1,9,7,0,5},
-			{0,0,0,0,8,0,0,7,9}};
-		System.out.println(isValid(board));
+		Sudoku sudoku = new Sudoku(new int[][] {
+			{5,3,4,6,7,8,9,1,2},
+			{6,7,2,1,9,5,3,4,8},
+			{1,9,8,3,4,2,5,6,7},
+			{8,5,9,7,6,1,4,2,3},
+			{4,2,6,8,5,3,7,9,1},
+			{7,1,3,9,2,4,8,5,6},
+			{9,6,1,5,3,7,2,8,4},
+			{2,8,7,4,1,9,6,3,5},
+			{3,4,5,2,8,6,1,7,9}});
+		System.out.println(sudoku.check());
 	}
-	public static boolean isValid(int[][] board) {
-		for (int row = 0; row < board.length; row++) if (!isValidRow(board,row)) return false;
-		for (int column = 0; column < board[0].length; column++) if (!isValidColumn(board,column)) return false;
-		for (int row = 0; row < board.length; row+=3) {
-			for (int column = 0; column < board[0].length; column+=3) {
-				if (!isValidGrid(board,row,column)) return false;
-			}
+	private int[][] board;
+	private BitSet set = new BitSet(8);
+	public Sudoku(int[][] board) {
+		this.board=board;
+	}
+	public boolean check() {
+		for (int l = 0; l < 9; l++) {
+			if (!checkRegion(l, 0, l, 8)) return false;
+		}
+		for (int c = 0; c < 9; c++) {
+			if (!checkRegion(0, c, 8, c)) return false;
+		}
+		for (int i = 0; i < 9; i++) {
+			int l = i / 3 * 3; //0, 3, 6
+			int c = i % 3 * 3; // 0, 3, 6
+			if (!checkRegion(l, c, l+2, c+2)) return false;
 		}
 		return true;
 	}
-	public static boolean isValidRow(int[][] board, int row) {
-		return isValidRect(board,row,row,0,board[0].length-1);
-	}
-	public static boolean isValidColumn(int[][] board, int column) {
-		return isValidRect(board,0,board.length-1,column,column);
-	}
-	public static boolean isValidGrid(int[][] board, int row, int column) {
-		return isValidRect(board,row,row+2,column,column+2);
-	}
-	
-	public static boolean isValidRect(int[][] board, int rowStart, int rowEnd, int columnStart, int columnEnd) {
-		int set = 0;
-		for (int i = rowStart; i <= rowEnd; i++) {
-			for (int j = columnStart; j <= columnEnd; j++) {
-				int square = board[i][j];
-				if (square == 0) continue;
-				if (Bit.getBit(set, square)) return false;
-				set = Bit.setBit(set, square);
+	public boolean checkRegion(int l, int c, int ll, int cc) {
+		set.clear();
+		for (int i = l; i <= ll; i++) {
+			for (int j = c; j <= cc; j++) {
+				if (board[i][j] < 0) continue;
+				if (set.get(board[i][j])) return false;
+				set.set(board[i][j]);
 			}
 		}
 		return true;

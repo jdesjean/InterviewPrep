@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
+// EPI: 9.2
 public class RPN {
 	public static void main(String[] s) {
-		System.out.println(evaluate("1729"));
-		System.out.println(evaluate("3,4,+,2,x,1,+"));
-		System.out.println(evaluate("1,1,+,-2,x"));
-		System.out.println(evaluate("-641,6,/,28,/"));
+		RPN rpn = new RPN();
+		System.out.println(rpn.evaluate("1729"));
+		System.out.println(rpn.evaluate("3,4,+,2,x,1,+"));
+		System.out.println(rpn.evaluate("1,1,+,-2,x"));
+		System.out.println(rpn.evaluate("-641,6,/,28,/"));
 	}
 	static Map<Character,Operator> operators = new HashMap<Character,Operator>(); 
 	static {
@@ -20,7 +22,7 @@ public class RPN {
 		operators.put(Character.valueOf('-'), new Remove());
 	}
 	//EPI 9.2
-	public static int evaluate(String s) {
+	public int evaluate(String s) {
 		Deque<Integer> stack = new LinkedList<Integer>();
 		String[] aTokens = s.split(",");
 		for (int i = 0; i < aTokens.length; i++) {

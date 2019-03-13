@@ -36,12 +36,6 @@ public class Sequence {
 			
 		});
 	}
-	public static void testRandom() {
-		System.out.println(random(1,2));
-		System.out.println(random(1,3));
-		System.out.println(random(1,4));
-		System.out.println(random(2,5));
-	}
 	public static void pascalTriangle(int n, IntArrayVisitor visitor) {
 		int[] buffer = new int[n];
 		buffer[0] = 1;
@@ -94,22 +88,6 @@ public class Sequence {
 		int next = random.nextInt(sum);
 		int index = Arrays.binarySearch(cumulativeDistribution, next);
 		return index>=0 ? numbers[index] : numbers[Math.abs(index)-1];
-	}
-	public static int random(int a, int b) {
-		int range = b - a;
-		if (range <= 0) return a;
-		Random random = new Random();
-		int length = Number.log2(range);
-		int value;
-		while (true) {
-			value = 0;
-			for (int i = 0; i < length; i++) {
-				value <<= 1;
-				value |= random.nextBoolean() ? 1 : 0;
-			}
-			if (a + value <= b) break;
-		}
-		return a + value;
 	}
 	public static int lookAndSay(int n) {
 		if (n < 1) return 0;//throw

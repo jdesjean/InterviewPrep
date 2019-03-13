@@ -2,35 +2,28 @@ package org.ip.string;
 
 import org.ip.array.Utils;
 
+//EPI: 7.4
 public class ReplaceAndRemove {
 	public static void main(String[] s) {
-		char[] array = new char[]{'a','c','d','b','b','c','a'};
-		solve(array);
-		Utils.println(array,array.length);
+		ReplaceAndRemove rr = new ReplaceAndRemove();
+		char[] array = new char[] {'a','c','d','b','b','c','a'};
+		rr.execute(array, array.length);
+		Utils.print(array, array.length);
 	}
-	public static void solve(char[] c) {
-		int lengthB = 0;
-		int lengthA = 0;
-		//remove b
-		for (int i = 0; i < c.length; i++) {
-			c[lengthB] = c[i];
-			if (c[i] == 'a') {
-				lengthA++;
-			}
-			if (c[i] != 'b') {
-				lengthA++;
-				lengthB++;
+	public void execute(char[] s, int length) {
+		int i = 0, j = 0;
+		for (; i < length; i++) {
+			if (s[i] != 'b') {
+				s[j++] = s[i];
 			}
 		}
-		
-		if (lengthA == lengthB) return;
-		
-		for (int i = lengthA-1, j = lengthB-1; j >= 0; j--,i--) {
-			if (c[j] != 'a') {
-				c[i] = c[j];
+		length = length - (i - j);
+		for (i = length - 1, j = s.length - 1; i >= 0; i--) {
+			if (s[i] == 'a') {
+				s[j--] = 'd';
+				s[j--] = 'd';
 			} else {
-				c[i--] = 'd';
-				c[i] = 'd';
+				s[j--] = s[i];
 			}
 		}
 	}

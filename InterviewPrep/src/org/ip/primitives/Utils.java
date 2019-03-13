@@ -2,7 +2,7 @@ package org.ip.primitives;
 
 public class Utils {
 	public static void main(String[] s) {
-		testSqrt();
+		testSqrtD();
 	}
 	public static void testGcd() {
 		System.out.println(gcd(12,3));
@@ -13,6 +13,11 @@ public class Utils {
 	}
 	public static void testSqrt() {
 		for (int i = 0; i <= 25; i++) {
+			System.out.println(i + ":"+ sqrt(i));
+		}
+	}
+	public static void testSqrtD() {
+		for (double i = 24; i <= 25; i++) {
 			System.out.println(i + ":"+ sqrt(i));
 		}
 	}
@@ -35,14 +40,14 @@ public class Utils {
 	}
 	//EPI: 12.4
 	//Time: O(log(n)), Space: O(1)
-	public static int sqrt(int u) {
+	public static int sqrt(int v) {
 		int left = 0;
-		int right = u;
+		int right = v;
 		for (;left <= right;) {
 			int mid = (right - left)/2 + left;
 			int pow = mid * mid;
-			if (pow == u) return mid;
-			else if (pow > u) {
+			if (pow == v) return mid;
+			else if (pow > v) {
 				right = mid - 1;
 			} else {
 				left = mid + 1;
@@ -50,4 +55,38 @@ public class Utils {
 		}
 		return left - 1;
 	}
+	
+	//EPI: 12.5
+	//Time: O(log(x/s)), Space: O(1)
+	public static double sqrt(double v) {
+		double left;
+		double right;
+		if (v < 0) {
+			left = v;
+			right = 1;
+		} else {
+			int sqrt = sqrt((int)v);
+			if (sqrt*sqrt == (int)v) return sqrt;
+			left = sqrt;
+			right = sqrt+1;
+		}
+		
+		for (;compareEps(left,right) <= 0;) {
+			double mid = (right - left) / 2 + left;
+			double pow = mid*mid;
+			if (compareEps(pow,v) == 0) return mid;
+			else if (compareEps(pow,v) > 0) {
+				right = mid;
+			} else {
+				left = mid;
+			}
+		}
+		return left - 1;
+	}
+	public static double EPS = 0.0001;
+	public static double compareEps(double d1, double d2) {
+		double diff = (d1 - d2)/d2;
+		return Math.abs(diff) < EPS ? 0 : diff;
+	}
+	
 }

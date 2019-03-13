@@ -2,7 +2,7 @@ package org.ip.linkedlist;
 
 public class LList {
 	public static void main(String[] s) {
-		testAddMsb();
+		testReverse();
 	}
 	public static void testAddMsb() {
 		Node head = addMsb(testList1(),testList6());
@@ -84,6 +84,9 @@ public class LList {
 	public static Node testList1() {
 		return node(2,node(5,node(7)));
 	}
+	public static Node testList11() {
+		return node(3,node(11));
+	}
 	public static Node testList2() {
 		return node(2,testList4());
 	}
@@ -104,6 +107,9 @@ public class LList {
 	}
 	public static Node testList5() {
 		return node(0,node(1,node(2,node(3,node(4,node(5, node(6))))))); 
+	}
+	public static Node testList55() {
+		return node(0,node(1,node(2,node(3,node(4,node(5, node(6, new Node(7)))))))); 
 	}
 	public static Node testList8() {
 		return node(9,node(3,node(4,node(3))));

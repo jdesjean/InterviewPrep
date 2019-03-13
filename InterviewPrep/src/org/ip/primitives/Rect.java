@@ -1,5 +1,6 @@
 package org.ip.primitives;
 
+// EPI 5.11
 public class Rect {
 	public static void main(String[] s) {
 		Rect rect = new Rect (0,0,3,3);

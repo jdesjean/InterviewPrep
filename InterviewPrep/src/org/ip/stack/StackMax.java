@@ -35,9 +35,8 @@ public class StackMax {
 	Deque<Integer> stackValue = new LinkedList<Integer>();
 	Deque<MaxCountPair> stackMax = new LinkedList<MaxCountPair>();
 	public void push(int value) {
-		if (isEmpty()) stackMax.push(new MaxCountPair(value,1));
+		if (isEmpty() || stackMax.peek().max < value) stackMax.push(new MaxCountPair(value,1));
 		else if (stackMax.peek().max == value) stackMax.peek().count++;
-		else if (stackMax.peek().max < value) stackMax.push(new MaxCountPair(value,1));
 		stackValue.push(value);
 	}
 	public int pop() {
