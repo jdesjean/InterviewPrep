@@ -75,6 +75,20 @@ public class Utils {
 		public boolean test(int[] array, int i);
 	}
 
+	public static void println(Object[] array) {
+		println(array, array.length);
+	}
+	
+	public static void println(Object[] array, int length) {
+		int size = Math.min(array.length, length);
+		for (int i = 0; i < size; i++) {
+			if (i != 0)
+				System.out.print(",");
+			System.out.print(array[i]);
+		}
+		System.out.println("");
+	}
+
 	public static void println(long[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
@@ -93,6 +107,10 @@ public class Utils {
 		}
 		System.out.println("");
 	}
+	
+	public static void println(int[] array) {
+		println(array, array.length);
+	}
 
 	public static void println(int[] array, int length) {
 		println(array, 0, Math.min(array.length, length) - 1);
@@ -106,11 +124,19 @@ public class Utils {
 		}
 		System.out.println("");
 	}
-
+	
+	public static void println(char[] array) { 
+		println(array, array.length, true);
+	}
+	
 	public static void println(char[] array, int length) {
+		println(array, length, true);
+	}
+
+	public static void println(char[] array, int length, boolean printComa) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
-			if (i != 0)
+			if (i != 0 && printComa)
 				System.out.print(",");
 			System.out.print(array[i]);
 		}
@@ -135,6 +161,15 @@ public class Utils {
 	}
 
 	public static void print(char[] array, int length) {
+		int size = Math.min(array.length, length);
+		for (int i = 0; i < size; i++) {
+			if (i != 0)
+				System.out.print(",");
+			System.out.print(array[i]);
+		}
+	}
+	
+	public static void print(int[] array, int length) {
 		int size = Math.min(array.length, length);
 		for (int i = 0; i < size; i++) {
 			if (i != 0)
@@ -239,6 +274,13 @@ public class Utils {
 		}
 		return k;
 	}
+	public static int shiftBackward(int[] array, int i, int j) {
+		int k = array[i];
+		for (; j > i; i++) {
+			array[i] = array[i + 1];
+		}
+		return k;
+	}
 
 	public static int nextPositive(int[] array, int i) {
 		for (; i < array.length; i++) {
@@ -276,6 +318,13 @@ public class Utils {
 			array[j] = temp;
 		}
 	}
+	
+	public static void arraycopy(int[][] source, int[][] target) {
+		for(int i = 0; i < source.length; i++) {
+		  System.arraycopy(source[i], 0, target[i], 0, source[i].length);
+		}
+	}
+	
 
 	public static class Pair {
 		int left;
@@ -318,5 +367,26 @@ public class Utils {
 			}
 			System.out.println();
 		}
+	}
+	public static void println(boolean[][] map) {
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[0].length; j++) {
+				System.out.print("," + (map[i][j] ? "1" : "0"));
+			}
+			System.out.println();
+		}
+	}
+	public static int binarySearch(int[] a,int value) {
+		return binarySearch(a,0,a.length-1,value);
+	}
+	public static int binarySearch(int[] a, int left, int right, int value) {
+		int i = left, j = right, mid =0;
+		while (i <= j) {
+			mid = i+(j-i)/2;
+			if (a[mid] == value) return mid;
+			else if (a[mid] < value) i = mid+1;
+			else if (a[mid] > value) j = mid-1;
+		}
+		return -1*mid;
 	}
 }

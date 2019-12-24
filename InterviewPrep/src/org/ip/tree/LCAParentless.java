@@ -1,11 +1,11 @@
 package org.ip.tree;
 
-//EPI 10.3
+// EPI 10.3
+// leetcode 236
 //Time: n to find nodes v1 & v2
 //Time: H to find LCA
 //Space: H
 public class LCAParentless<T> implements LCA<T> {
-	public final LcaWrapper EMPTY = new LcaWrapper(null);
 	private Tree<T> tree;
 
 	public class LcaWrapper {

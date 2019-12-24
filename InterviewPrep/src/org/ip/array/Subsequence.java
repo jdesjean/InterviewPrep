@@ -7,7 +7,7 @@ import java.util.List;
 
 public class Subsequence {
 	public static void main(String[] s) {
-		testLongestNonDecreasing();
+		testLongestIncreasing();
 	}
 	
 	public static void testLongestCommon() {
@@ -21,6 +21,9 @@ public class Subsequence {
 	
 	public static void testLongestNonDecreasing() {
 		System.out.println(longestNonDecreasing(new int[]{0,8,4,12,2,10,6,14,1,9}));
+	}
+	public static void testLongestIncreasing() {      //1,1,2,3, 1,3,3,4,2,4
+		System.out.println(longestIncreasing2(new int[]{0,8,4,12,2,10,6,14,1,9}));
 	}
 	
 	public static int longestNonDecreasing(int[] array) {
@@ -49,6 +52,31 @@ public class Subsequence {
 			max = Math.max(max, cache[i]);
 		}
 		return max;
+	}
+	
+	public static int longestIncreasing2(int[] array) {
+		//int[] p = new int[array.length];
+		int[] m = new int[array.length + 1]; // [1-N]
+		int length = 0;
+		for (int i = 0; i < array.length; i++) {
+			int l = 1;
+			int r = length;
+			while (l <= r) {
+				int mid = l + (r - l) / 2;
+				if (array[m[mid]] <= array[i]) {
+					l = mid + 1;
+				} else {
+					r = mid - 1;
+				}
+			}
+			int newL = l;
+			//p[i] = m[newL - 1];
+			m[newL] = i;
+			if (newL > length) {
+				length = newL;
+			}
+		}
+		return length;
 	}
 
 	private static class PairLCS {

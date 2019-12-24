@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-public class AdjacencyList<T> implements Graph<T> {
+public class AdjacencyList<T> implements IGraph<T> {
 	Map<T, Set<T>> map = new HashMap<T, Set<T>>();
 	public static AdjacencyList<Integer>  graphLoop() {
 		AdjacencyList<Integer> g = new AdjacencyList<Integer>();
@@ -105,7 +105,7 @@ public class AdjacencyList<T> implements Graph<T> {
 		postOrder(new Visitor<T>() {
 			@Override
 			public void visit(T t, int depth) {
-				stack.addFirst(t);
+				stack.push(t);
 			}
 		});
 		return stack;

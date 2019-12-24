@@ -33,7 +33,16 @@ public class TreeTest {
 	}
 
 	public static Tree<Integer> bst1() {
-		Node<Integer> root = node(5,node(2,node(1),null),node(7, node(6), node(8, null, node(9))));
+		Node<Integer> root = 
+				node(5,
+					node(2,
+							node(1),
+							null),
+					node(7, 
+							node(6), 
+							node(8, 
+									null, 
+									node(9))));
 		return tree(root);
 	}
 	
@@ -67,6 +76,30 @@ public class TreeTest {
 						new Node<Integer>(30)),
 				new Node<Integer>(65, new Node<Integer>(55, new Node<Integer>(50), new Node<Integer>(60)),
 						new Node<Integer>(75, null, new Node<Integer>(80))));
+		return tree(root);
+	}
+	public static Tree<Integer> bst3() {
+		//2,3,5,7,11,13,17,19,23,29,31,37,31,43,47,53
+		Node<Integer> root = node(19,
+				node(7, 
+						node(3, 
+								node(2),
+								node(5)),
+						node(11,
+								null,
+								node(17,
+										node(13)))),
+				node(43,
+						node(23,
+								null,
+								node(37,
+										node(29,
+												null,
+												node(31)),
+										node(41))),
+						node(47,
+								null,
+								node(53))));
 		return tree(root);
 	}
 	public static Tree<Integer> nonBST1() {

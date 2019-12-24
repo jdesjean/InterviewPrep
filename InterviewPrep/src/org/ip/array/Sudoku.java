@@ -3,7 +3,8 @@ package org.ip.array;
 import java.util.BitSet;
 
 
-// EPI: 6.16
+// EPI: 6.16,
+// EPI 2018: 5.17
 public class Sudoku {
 	public static void main(String[] s) {
 		Sudoku sudoku = new Sudoku(new int[][] {

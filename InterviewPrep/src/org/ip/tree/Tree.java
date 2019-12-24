@@ -1,9 +1,11 @@
 package org.ip.tree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.ip.array.Utils;
 import org.ip.tree.Tree.SizeWrapper;
@@ -332,9 +334,9 @@ public class Tree<T> {
 		return rec.execute(0);
 	}*/
 	public int height() {
-		return height(root);
+		return Tree.height(root);
 	}
-	private int height(Node<T> root) {
+	private static <T> int height(Node<T> root) {
 		if (root == null) return 0;
 		int max = 0;
 		for (Node<T> child : root.childs) {
@@ -555,5 +557,58 @@ public class Tree<T> {
 	}
 	public Iterator<Node<T>> bfsIterator() {
 		return new BFS<T>(this);
+	}
+	public static void print(Node root) {
+		Map<Node,Pos> map = new HashMap<Node,Pos>();
+		int height = height(root);
+		int width = (int)Math.pow(2, height - 1);
+		_print(root,0,width * 2,0,map); // accept double the width to handle 0.5f
+		Pos prev = null;
+		int count = 0;
+		for (BFS bfs = new BFS(root); bfs.hasNext(); ) {
+			Node node = bfs.next();
+			Pos pos = map.get(node);
+			if (prev != null && prev.y != pos.y) {
+				System.out.println();
+				count = 1;
+				int spaces = (int)(pos.x * 2f);
+				for (double i = 0; i < spaces; i++) {
+					System.out.print(" ");
+				}
+				System.out.print(node.value);
+			} else {
+				int spaces = prev != null ? (int)((pos.x - prev.x) * 2f) : (int)(pos.x * 2f);
+				spaces-=count;
+				for (int i = 0; i < spaces; i++) {
+					System.out.print(" ");
+				}
+				System.out.print(node.value);
+				count++;
+			}
+			prev = pos;
+		}
+		System.out.println();
+		System.out.println();
+	}
+	private static class Pos {
+		double x;
+		int y;
+		public Pos(double x, int y) {
+			super();
+			this.x = x;
+			this.y = y;
+		}
+		@Override
+		public String toString() {
+			return "Pos [x=" + x + ", y=" + y + "]";
+		}
+		
+	}
+	public static void _print(Node node, double left, double right, int y, Map<Node,Pos> map) {
+		if (node == null) return;
+		double x = left + (right - left) / 2;
+		map.put(node, new Pos(x, y));
+		_print(node.getLeft(), left, x, y + 1, map);
+		_print(node.getRight(), x, right, y + 1, map);
 	}
 }

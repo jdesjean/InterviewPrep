@@ -60,6 +60,7 @@ public class Bit {
 			else if (!leading) sb.append('0');
 			if (value) leading = false;
 		}
+		if (sb.length() == 0) return "0";
 		return sb.toString();
 	}
 	public static void printBinary(int n) {

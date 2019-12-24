@@ -18,6 +18,7 @@ public class OrderPre<T>  implements Iterator<Node<T>> {
 	}
 	public OrderPre(Tree<T> tree, boolean bIterateNullChilds){
 		Node<T> node = tree.root();
+		this.bIterateNullChilds = bIterateNullChilds;
 		if (bIterateNullChilds || node != null) stack.push(node);
 	}
 	@Override
@@ -29,10 +30,17 @@ public class OrderPre<T>  implements Iterator<Node<T>> {
 	public Node<T> next() {
 		Node<T> current = stack.pop();
 		if (current != null) {
-			stack.push(current.getRight());
-			stack.push(current.getLeft());
+			if (bIterateNullChilds || current.getRight() != null) {
+				stack.push(current.getRight());
+			}
+			if (bIterateNullChilds || current.getLeft() != null) {
+				stack.push(current.getLeft());
+			}
 		}
 		return current;
+	}
+	public Node<T> peek() {
+		return stack.peek();
 	}
 	
 }

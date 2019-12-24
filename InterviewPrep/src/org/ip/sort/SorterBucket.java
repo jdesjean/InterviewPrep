@@ -5,6 +5,7 @@ import java.util.LinkedList;
 
 import org.ip.array.Utils;
 
+// This uses O(n) memory where n is length of array. SortBucket uses O(k) memory where k is number of buckets.
 public class SorterBucket<T> {
 	private LinkedList<T>[] buckets;
 	public static void main(String[] s) {

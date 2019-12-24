@@ -5,8 +5,10 @@ public class Node<T> implements Comparable<Node<T>>{
 	public Node<T> parent;
 	public final Node<T>[] childs;
 	public Node<T> sibling;
+	public Node<T> left;
+	public Node<T> right;
 	public Node(T value){this.value=value;childs = new Node[2];}
-	public Node(T value, Node<T> left, Node<T> right){this.value=value;childs=new Node[]{left,right};}
+	public Node(T value, Node<T> left, Node<T> right){this.value=value;childs=new Node[]{this.left = left,this.right = right};}
 	public Node(T value, Node<T>[] childs){this.value=value;this.childs=childs;}
 	public Node<T> getLeft(){return childs[0];}
 	public Node<T> getRight(){return childs[1];}
@@ -17,12 +19,7 @@ public class Node<T> implements Comparable<Node<T>>{
 	}
 	@Override
 	public String toString() {
-		if (sibling != null) {
-			return "Node [value=" + value + "]";
-		} else {
-			return "Node [value=" + value + "]";
-		}
-		
+		return "Node [value=" + value + "]";
 	}
 	@Override
 	public int hashCode() {
@@ -57,5 +54,14 @@ public class Node<T> implements Comparable<Node<T>>{
 			return 1;
 		}
 		return ((Comparable<T>)this.value).compareTo(obj.value);
+	}
+	public static <T> Node<T> node(T value) {
+		return new Node<T>(value);
+	}
+	public static <T> Node<T> node(T value, Node<T> left, Node<T> right) {
+		return new Node<T>(value, left, right);
+	}
+	public static <T> Node<T> node(T value, Node<T> left) {
+		return new Node<T>(value, left, null);
 	}
 }

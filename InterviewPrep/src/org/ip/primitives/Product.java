@@ -2,6 +2,7 @@ package org.ip.primitives;
 
 import java.util.Arrays;
 
+// leetcode 238
 public class Product {
 	public static void main(String[] s) {
 		/*
@@ -13,6 +14,7 @@ public class Product {
 			without using division
 		 */
 		System.out.println(Arrays.toString(product(new int[]{1,2,3,4,5})));
+		System.out.println(Arrays.toString(product(new int[]{0,0})));
 	}
 	public static int[] product(int[] array) {
 		int[] result = Arrays.copyOf(array, array.length);
@@ -22,7 +24,7 @@ public class Product {
 		int product = 1;
 		for (int i = array.length-1; i >= 0; i--) {
 			int tmp = result[i];
-			int next = i - 1 > 0 ? array[i-1] : 1; 
+			int next = i - 1 >= 0 ? array[i-1] : 1; 
 			result[i] = product*next;
 			product*=tmp;
 		}

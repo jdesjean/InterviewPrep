@@ -13,6 +13,10 @@ public class BFS<T> implements Iterator<Node<T>> {
 		if (tree.root() == null) return;
 		queue.add(tree.root());
 	}
+	public BFS(Node<T> node) {
+		if (node == null) return;
+		queue.add(node);
+	}
 	@Override
 	public boolean hasNext() {
 		return !queue.isEmpty();

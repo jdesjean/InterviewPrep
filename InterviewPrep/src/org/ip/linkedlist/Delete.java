@@ -1,6 +1,7 @@
 package org.ip.linkedlist;
 
 // EPI: 8.6
+// leetcode 237
 public class Delete {
 	public static void main(String[] s) {
 		Delete delete = new Delete();
