@@ -11,9 +11,9 @@ public class Delete {
 	}
 	public Node delete(Node node, int value) {
 		for (Node current = node, prev = null; current != null; prev = current, current = current.next) {
-			if(current.value == value) {
+			if(current.val == value) {
 				if (prev == null && current.next != null) { // root
-					current.value = current.next.value;
+					current.val = current.next.val;
 					current.next = current.next.next;
 				} else if (prev != null) {
 					prev.next = current.next;

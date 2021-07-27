@@ -26,7 +26,7 @@ public class Palindrome {
 		slow = reverser.reverse(slow, 0, Integer.MAX_VALUE);
 		prev.next = slow;
 		for (Node p1 = head, p2 = slow; p2 != null; p1 = p1.next, p2 = p2.next) {
-			if (p1.value != p2.value) return false;
+			if (p1.val != p2.val) return false;
 		}
 		return true;
 	}

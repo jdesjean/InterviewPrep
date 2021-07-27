@@ -10,7 +10,7 @@ public class OverlapDetector2 {
 
 		OverlapDetector2 detector = new OverlapDetector2();
 		Node overlap = detector.hasOverlap(one, four);
-		System.out.println(overlap.value);
+		System.out.println(overlap.val);
 		
 		Node one1 = new Node(1);
 		Node three = new Node(3, one1);
@@ -25,10 +25,10 @@ public class OverlapDetector2 {
 		six6.next = five5;
 		
 		Node overlap2 = detector.hasOverlap(zero, four4);
-		System.out.println(overlap2.value);
+		System.out.println(overlap2.val);
 		
 		Node overlap3 = detector.hasOverlap(zero, five5);
-		System.out.println(overlap3 != null ? overlap3.value : null);
+		System.out.println(overlap3 != null ? overlap3.val : null);
 	}
 	CycleDetector cycleDetector = new CycleDetector();
 	OverlapDetectorCycleFree overlapDetector = new OverlapDetectorCycleFree();

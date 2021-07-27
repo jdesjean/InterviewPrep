@@ -8,7 +8,7 @@ public class DupRemover {
 	}
 	public Node remove(Node node) {
 		for (Node current = node.next, prev = node; current != null; prev = current, current = current.next) {
-			if (prev.value == current.value) {
+			if (prev.val == current.val) {
 				prev.next = current.next;
 			}
 		}

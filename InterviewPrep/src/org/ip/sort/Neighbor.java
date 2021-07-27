@@ -9,7 +9,7 @@ public class Neighbor {
 	public static void main(String args[]) {
 		Point[] points = new Point[] { point(1, 1), point(2, 2), point(4, 1), point(-1, -1), point(3, 3), point(-1, 2) };
 		int k = 2;
-		for (Iterator<Point> iterator = new IteratorArraTopKPartitionMin<Point>(points,k,new PointPairComparator(point(0,0))); iterator.hasNext();) {
+		for (Iterator<Point> iterator = new IteratorArrayTopKPartitionMin<Point>(points,k,new PointPairComparator(point(0,0))); iterator.hasNext();) {
 			System.out.print(iterator.next());
 			if (iterator.hasNext()) System.out.print(",");
 		}

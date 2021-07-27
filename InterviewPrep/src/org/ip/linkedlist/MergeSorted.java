@@ -10,7 +10,7 @@ public class MergeSorted {
 	}
 	public Node merge(Node n1, Node n2) {
 		Node head, tail;
-		if (n1.value <= n2.value) {
+		if (n1.val <= n2.val) {
 			head = tail = n1;
 			n1 = n1.next;
 		} else {
@@ -18,7 +18,7 @@ public class MergeSorted {
 			n2 = n2.next;
 		}
 		for (; n1 != null && n2 != null;) {
-			if (n1.value <= n2.value) {
+			if (n1.val <= n2.val) {
 				Node next = n1.next;
 				tail.next = n1;
 				tail = n1;

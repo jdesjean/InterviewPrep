@@ -26,14 +26,14 @@ public class AddMsb2 {
 		
 		if (l1 < l2) {
 			nc = _add(h1, h2.next, l1, l2 - 1);
-			n1 = h2.value;
+			n1 = h2.val;
 		} else if (l2 < l1) {
 			nc = _add(h1.next, h2, l1 - 1, l2);
-			n1 = h1.value;
+			n1 = h1.val;
 		} else if (l1 > 0 && l2 > 0) {
 			nc = _add(h1.next, h2.next, l1 - 1, l2 - 1);
-			n1 = h1.value;
-			n2 = h2.value;
+			n1 = h1.val;
+			n2 = h2.val;
 		} else {
 			return null;
 		}

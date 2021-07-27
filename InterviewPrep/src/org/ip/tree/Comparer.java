@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 
+import org.ip.bst.FinderBST;
 import org.ip.tree.iterator.OrderIn;
 import org.ip.tree.iterator.OrderReverse;
 

@@ -1,22 +1,102 @@
 package org.ip.bst;
 
-import static org.ip.tree.TreeTest.bst1;
-import static org.ip.tree.TreeTest.nonBST3;
+import java.util.function.BiFunction;
 
-import org.ip.tree.Node;
+import org.ip.Test;
+import org.ip.tree.TreeNode;
 
-// EPI 2018: 14.1
 public class BST {
 	public static void main(String[] s) {
-		System.out.println(new BST().isBST(bst1().root()));
-		System.out.println(new BST().isBST(nonBST3().root()));
+		Object[] tc1 = new Object[] { 4, new Integer[] {3,2,4,1}, 4};
+		Object[] tc2 = new Object[] { 4, new Integer[] {3,2,4,1}, 1};
+		Object[] tc3 = new Object[] { 4, new Integer[] {3,2,4,1}, 2};
+		
+		Object[][] tcs = new Object[][] { tc1, tc2, tc3};
+		for (Object[] tc : tcs) {
+			tc[1] = TreeNode.fromBfs((Integer[]) tc[1]);
+		}
+		Problem[] solvers = new Problem[] { new Solver() };
+		Test.apply(solvers, tcs);
 	}
-	public boolean isBST(Node<Integer> root) {
-		return isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE);
+	
+	static class Solver implements Problem {
+
+		@Override
+		public TreeNode apply(TreeNode t, Integer u) {
+			return delete(t, u);
+		}
+		public TreeNode search(TreeNode root, int value) {
+			if (root == null) {
+				return null;
+			}
+			if (value < root.val) {
+				return search(root.left, value);
+			} else if (value > root.val) {
+				return search(root.right, value);
+			} else {
+				return root;
+			}
+		}
+		public TreeNode insert(TreeNode root, int value) {
+			if (root == null) {
+				return new TreeNode(value);
+			}
+			if (value < root.val) {
+				root.left = insert(root.left, value);
+			} else if (value > root.val) {
+				root.right = insert(root.right, value);
+			} // else do nothing
+			return root; 
+		}
+		public TreeNode delete(TreeNode root, int value) {
+			if (root == null) {
+				return null;
+			}
+			if (value < root.val) {
+				root.left = delete(root.left, value);
+			} else if (value > root.val) {
+				root.right = delete(root.right, value);
+			} else {
+				TreeNode next = next(root);
+				if (next == null) {
+					TreeNode prev = prev(root);
+					if (prev == null) {
+						return null;
+					} else {
+						root.val = prev.val;
+						root.left = delete(root.left, prev.val);
+					}
+				} else {
+					root.val = next.val;
+					root.right = delete(root.right, next.val);
+				}
+			}
+			return root;
+		}
+		
+		TreeNode next(TreeNode root) {
+			if (root == null || root.right == null) {
+				return null;
+			}
+			root = root.right;
+			while (root.left != null) {
+				root = root.left;
+			}
+			return root;
+		}
+		TreeNode prev(TreeNode root) {
+			if (root == null || root.left == null) {
+				return null;
+			}
+			root = root.left;
+			while (root.right != null) {
+				root = root.right;
+			}
+			return root;
+		}
+		
 	}
-	public boolean isBST(Node<Integer> root, int left, int right) {
-		if (root == null) return true;
-		if (root.value < left || root.value > right) return false;
-		return isBST(root.getLeft(), left, root.value) && isBST(root.getRight(), root.value, right);
+	interface Problem extends BiFunction<TreeNode, Integer, TreeNode> {
+		
 	}
 }

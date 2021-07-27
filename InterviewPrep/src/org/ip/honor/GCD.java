@@ -6,6 +6,7 @@ public class GCD {
 		GCD gcd = new GCD();
 		System.out.println(gcd.solve(36, 24));
 		System.out.println(gcd.solve(40, 25));
+		System.out.println(gcd.solve(6, 5));
 	}
 	public int solve(int a, int b) {
 		if (a > b) return solve(b, a);

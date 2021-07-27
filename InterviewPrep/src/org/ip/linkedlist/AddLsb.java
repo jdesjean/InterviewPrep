@@ -14,8 +14,8 @@ public class AddLsb {
 		int carry = 0;
 		List list = new List();
 		for (Node c1 = n1, c2 = n2; c1 != null || c2 != null;) {
-			int i1 = c1 != null ? c1.value : 0;
-			int i2 = c2 != null ? c2.value : 0;
+			int i1 = c1 != null ? c1.val : 0;
+			int i2 = c2 != null ? c2.val : 0;
 			int value = i1 + i2 + carry;
 			list.append(new Node(value % 10));
 			carry = value / 10;

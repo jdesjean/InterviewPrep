@@ -1,7 +1,7 @@
 package org.ip.tree;
 
 import org.ip.array.Utils;
-import org.ip.queue.BFS.Node;
+import org.ip.tree.BFS.Node;
 
 // EPI 2018: 9.6
 public class Sum {

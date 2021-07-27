@@ -15,9 +15,9 @@ public class Partition2 {
 		List l2 = new List();
 		List l3 = new List();
 		for (; h != null; h = h.next) {
-			if (h.value < p) {
+			if (h.val < p) {
 				l1.append(h);
-			} else if (h.value == p) {
+			} else if (h.val == p) {
 				l2.append(h);
 			} else {
 				l3.append(h);

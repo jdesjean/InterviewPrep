@@ -16,7 +16,7 @@ public class DeleteFromLast {
 		if (current.next == null) {
 			prev.next = current.next;
 		} else {
-			current.value = current.next.value;
+			current.val = current.next.val;
 			current.next = current.next.next;
 		}
 		return node;

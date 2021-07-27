@@ -13,13 +13,13 @@ public class AddLsb2 {
 		List l1 = new List();
 		int carry = 0;
 		for (; n1 != null && n2 != null; n1 = n1.next, n2 = n2.next) {
-			int v = n1.value + n2.value + carry;
+			int v = n1.val + n2.val + carry;
 			l1.append(new Node(v % 10));
 			carry = v / 10;
 		}
 		Node n = n1 != null ? n1 : n2;
 		for (; n != null; n = n.next) {
-			int v = n.value + carry;
+			int v = n.val + carry;
 			l1.append(new Node(v % 10));
 			carry = v / 10;
 		}

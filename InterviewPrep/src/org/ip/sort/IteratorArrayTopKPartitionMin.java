@@ -3,13 +3,13 @@ package org.ip.sort;
 import java.util.Comparator;
 import java.util.Iterator;
 
-public class IteratorArraTopKPartitionMin<T> implements Iterator<T>{
+public class IteratorArrayTopKPartitionMin<T> implements Iterator<T>{
 	private final Partition<T> partition = new PartitionDutchFlag<T>();
 	private final Selector<T> selector = new SelectorMid<T>();
 	private T[] array;
 	private int k;
 	
-	public IteratorArraTopKPartitionMin(T[] array, int k, Comparator<T> comparator) {
+	public IteratorArrayTopKPartitionMin(T[] array, int k, Comparator<T> comparator) {
 		this.array=array;
 		this.k=k-1;
 		for (int left = 0, right = array.length-1; left < right;) {

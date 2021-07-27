@@ -8,7 +8,7 @@ public class CycleDetector2 {
 		Node node = new Node(0, one);
 		CycleDetector2 detection = new CycleDetector2();
 		Node root = detection.hasCycle(node);
-		System.out.println(root.value);
+		System.out.println(root.val);
 	}
 	public Node hasCycle(Node h) {
 		Node found = null;

@@ -15,7 +15,7 @@ public class Palindrome2 {
 		Node tail = reverse(mid);
 		//mid - prev.next = tail;
 		for (; tail != null; node = node.next, tail = tail.next) {
-  			if (node.value != tail.value) {
+  			if (node.val != tail.val) {
 				return false;
 			}
 		}

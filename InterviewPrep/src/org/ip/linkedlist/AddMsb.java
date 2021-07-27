@@ -26,14 +26,14 @@ public class AddMsb {
 	public Node add(Node n1, Node n2, int diff, MutableInteger carry) {
 		int value;
 		if (diff < 0) {
-			value = n2.value;
+			value = n2.val;
 			diff++;
 		} else if (diff > 0) {
-			value = n1.value;
+			value = n1.val;
 			diff--;
 		} else {
-			int i1 = n1 != null ? n1.value : 0;
-			int i2 = n2 != null ? n2.value : 0;
+			int i1 = n1 != null ? n1.val : 0;
+			int i2 = n2 != null ? n2.val : 0;
 			value = i1 + i2;
 		}
 		Node next = null;

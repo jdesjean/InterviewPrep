@@ -1,5 +1,8 @@
 package org.ip.array;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +38,12 @@ public class Utils {
 			swap(array, i, j);
 		}
 		return String.copyValueOf(array);
+	}
+	
+	public static void swap(double[] array, int i, int j) {
+		double tmp = array[i];
+		array[i] = array[j];
+		array[j] = tmp;
 	}
 
 	public static void swap(Object[] array, int i, int j) {
@@ -169,17 +178,139 @@ public class Utils {
 		}
 	}
 	
-	public static void print(int[] array, int length) {
-		int size = Math.min(array.length, length);
-		for (int i = 0; i < size; i++) {
+	public static void print(Object array) {
+		if (array instanceof int[][]) {
+			Utils.print((int[][]) array);
+		} else if (array instanceof int[]) {
+			Utils.print((int[]) array);
+		} else if (array instanceof double[]) {
+			Utils.print((double[]) array);
+		} else if (array instanceof Integer[]) {
+			System.out.print(Arrays.toString((Integer[])array));
+		} else if (array instanceof Boolean[]) {
+			System.out.print(Arrays.toString((Boolean[])array));
+		} else if (array instanceof char[][]) {
+			Utils.print((char[][]) array);
+		} else if (array instanceof String[][]) {
+			Utils.print((String[][]) array);
+		} else if (array != null) {
+			System.out.print(array.toString());
+		} else {
+			System.out.print("[]");
+		}
+	}
+	
+	public static void print(String[][] array) {
+		print(System.out, array);
+	}
+	
+	public static void print(PrintStream os, String[][] array) {
+		os.print("[");
+		for (int r = 0; r < array.length; r++) {
+			if (r != 0) {
+				os.print(",");
+			}
+			os.println(Arrays.toString(array[r]));
+		}
+		os.print("]");
+	}
+	
+	public static void print(PrintStream os, Integer[][] array) {
+		os.print("[");
+		for (int r = 0; r < array.length; r++) {
+			if (r != 0) {
+				os.print(",");
+			}
+			os.print(Arrays.toString(array[r]));
+		}
+		os.print("]");
+	}
+	
+	public static void print(double[] array) {
+		System.out.print("[");
+		for (int i = 0; i < array.length; i++) {
+			if (i != 0)
+				System.out.print(", ");
+			System.out.print(array[i]);
+		}
+		System.out.print("]");
+	}
+	
+	public static void print(int[] array) {
+		print(array, array.length);
+	}
+	
+	public static void print(boolean[] array) {
+		print(array, array.length);
+	}
+	
+	public static void print(char[][] array) {
+		print(System.out, array);
+	}
+	
+	public static void print(PrintStream os, char[][] array) {
+		os.print("[");
+		for (int r = 0; r < array.length; r++) {
+			if (r != 0) {
+				os.print(",");
+				os.println();
+				os.print(' ');
+			}
+			os.print(Arrays.toString(array[r]));
+		}
+		os.print("]");
+	}
+	
+	public static void print(char[] array) {
+		print(array, array.length);
+	}
+	
+	public static void print(boolean[] array, int length) {
+		for (int i = 0; i < length; i++) {
 			if (i != 0)
 				System.out.print(",");
 			System.out.print(array[i]);
 		}
 	}
+	
+	public static void print(int[] array, int length) {
+		int size = Math.min(array.length, length);
+		System.out.print("[");
+		for (int i = 0; i < size; i++) {
+			if (i != 0)
+				System.out.print(", ");
+			System.out.print(array[i]);
+		}
+		System.out.print("]");
+	}
+	
+	public static void print(int[][] array) {
+		print(System.out, array);
+	}
+	
+	public static void print(PrintStream os, int[][] array) {
+		os.print("[");
+		for (int r = 0; r < array.length; r++) {
+			if (r != 0) {
+				os.print(",");
+				os.println();
+				os.print(' ');
+			}
+			os.print(Arrays.toString(array[r]));
+		}
+		os.print("]");
+	}
 
 	public static int min(int a, int b, int c) {
 		return Math.min(a, Math.min(b, c));
+	}
+	
+	public static int min(int[] a) {
+		return min(a, a.length);
+	}
+	
+	public static int minIndex(int[] a) {
+		return minIndex(a, a.length);
 	}
 
 	public static int min(int[] array, int length) {
@@ -187,6 +318,18 @@ public class Utils {
 		int min = Integer.MAX_VALUE;
 		for (int i = 0; i < size; i++) {
 			min = Math.min(min, array[i]);
+		}
+		return min;
+	}
+	
+	public static int minIndex(int[] array, int length) {
+		if (array == null || array.length == 0) return -1;
+		int size = Math.min(array.length, length);
+		int min = 0;
+		for (int i = 1; i < size; i++) {
+			if (array[i] < array[min]) {
+				min = i;
+			}
 		}
 		return min;
 	}
@@ -217,6 +360,10 @@ public class Utils {
 
 	public static int sum(int[] array, int length) {
 		return sum(array, 0, Math.min(array.length, length) - 1);
+	}
+	
+	public static int sum(int[] array) {
+		return sum(array, 0, array.length - 1);
 	}
 
 	public static int sumNegatives(int[] array, int left, int right) {

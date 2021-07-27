@@ -54,20 +54,20 @@ public class LList {
 		Node n1 = node(5,node(7,node(9,node(11))));
 		Node n2 = node(2,n1);
 		Node n3 = hasOverlap(n1,n2);
-		if (n3 != null) System.out.println(n3.value);
+		if (n3 != null) System.out.println(n3.val);
 		else System.out.println(false);
 	}
 	public static void testHasOverlap2() {
 		Node n1 = node(0,node(1,testListCycle()));
 		Node n2 = node(2,n1);
 		Node n3 = hasOverlap(n1,n2);
-		if (n3 != null) System.out.println(n3.value);
+		if (n3 != null) System.out.println(n3.val);
 		else System.out.println(false);
 	}
 	public static void testHasCycle() {
 		Node h = testList3();
 		Node n = hasCycle(h);
-		if (n != null) System.out.print(n.value);
+		if (n != null) System.out.print(n.val);
 		else System.out.println(false);
 	}
 	public static void testReverse() {
@@ -131,7 +131,7 @@ public class LList {
 	public static void println(Node h1) {
 		for (Node current = h1; current != null; current = current.next) {
 			if (current != h1) System.out.print(',');
-			System.out.print(current.value);
+			System.out.print(current.val);
 		}
 		System.out.println();
 	}
@@ -168,7 +168,7 @@ public class LList {
 		if (h1 == null) return h2;
 		else if (h2 == null) return h1;
 		Node head;
-		if (h1.value <= h2.value) {
+		if (h1.val <= h2.val) {
 			head = h1;
 			h1 = h1.next;
 		} else {
@@ -177,7 +177,7 @@ public class LList {
 		}
 		Node current = head;
 		while (h1 != null && h2 != null) {
-			if (h1.value <= h2.value) {
+			if (h1.val <= h2.val) {
 				current.next = h1;
 				h1 = h1.next;
 			} else {
@@ -227,7 +227,7 @@ public class LList {
 	}
 	public static void delete(Node node) {
 		if (node == null || node.next == null) return;
-		node.value = node.next.value;
+		node.val = node.next.val;
 		node.next = node.next.next;
 	}
 	public static void deleteKth(Node h, int k) {
@@ -243,7 +243,7 @@ public class LList {
 	}
 	public static void removeDuplicate(Node h) {
 		for (Node current = h.next, prev = h; current != null; current = current.next) {
-			if (current.value == prev.value) {
+			if (current.val == prev.val) {
 				prev.next = current.next;
 			} else {
 				prev = prev.next;
@@ -282,7 +282,7 @@ public class LList {
 		half.next = reversed;
 		int itr = length / 2;
 		for (Node first = h, second = reversed; itr > 0; itr--) {
-			if (first.value !=second.value) return false;
+			if (first.val !=second.val) return false;
 			first = first.next;
 			second = second.next;
 		}
@@ -293,10 +293,10 @@ public class LList {
 		Node equalHead = node(0), equalTail = equalHead;
 		Node largerHead = node(0), largerTail = largerHead;
 		for (Node current = h; current != null; current = current.next) {
-			if (current.value < pivot) {
+			if (current.val < pivot) {
 				smallerTail.next = current;
 				smallerTail = current;
-			} else if (current.value == pivot) {
+			} else if (current.val == pivot) {
 				equalTail.next = current;
 				equalTail = current;
 			} else {
@@ -363,14 +363,14 @@ public class LList {
 		int v2 = 0;
 		if (l1 < l2) {
 			nodeCarry = getNodeCarry(l1,l2-1,h1,h2.next);
-			v2 = h2 != null ? h2.value : 0;
+			v2 = h2 != null ? h2.val : 0;
 		} else if (l1 > l2){
 			nodeCarry = getNodeCarry(l1-1,l2,h1.next,h2);
-			v1 = h1 != null ? h1.value : 0;
+			v1 = h1 != null ? h1.val : 0;
 		} else {
 			nodeCarry = getNodeCarry(l1-1,l2-1,h1.next,h2.next);
-			v1 = h1 != null ? h1.value : 0;
-			v2 = h2 != null ? h2.value : 0;
+			v1 = h1 != null ? h1.val : 0;
+			v2 = h2 != null ? h2.val : 0;
 		}
 		int value = nodeCarry.carry + v1 + v2;
 		int digit = value % 10;
@@ -383,11 +383,11 @@ public class LList {
 		for (Node n1 = h1, n2 = h2; n1 != null || n2 != null || carry > 0;) {
 			int value = carry;
 			if (n1 != null) {
-				value += n1.value;
+				value += n1.val;
 				n1 = n1.next;
 			}
 			if (n2 != null) {
-				value += n2.value;
+				value += n2.val;
 				n2 = n2.next;
 			}
 			int digit = value % 10;

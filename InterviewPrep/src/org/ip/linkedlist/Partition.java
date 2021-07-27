@@ -18,9 +18,9 @@ public class Partition {
 		List equal = new List();
 		List larger = new List();
 		for (Node current = node; current != null; current = current.next) {
-			if (current.value < k) {
+			if (current.val < k) {
 				smaller.append(current);
-			} else if (current.value == k) {
+			} else if (current.val == k) {
 				equal.append(current);
 			} else {
 				larger.append(current);

@@ -25,10 +25,10 @@ public class OverlapDetector {
 		six6.next = five5;
 		
 		Node overlap2 = detector.hasOverlap(zero, four4);
-		System.out.println(overlap2.value);
+		System.out.println(overlap2.val);
 		
 		Node overlap3 = detector.hasOverlap(zero, five5);
-		System.out.println(overlap3 != null ? overlap3.value : null);
+		System.out.println(overlap3 != null ? overlap3.val : null);
 	}
 	CycleDetector detector = new CycleDetector();
 	public Node hasOverlap(Node n1, Node n2) {
