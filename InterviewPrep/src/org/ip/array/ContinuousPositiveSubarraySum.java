@@ -36,21 +36,14 @@ public class ContinuousPositiveSubarraySum {
 		@Override
 		public Boolean apply(int[] t, Integer u) {
 			if (t == null || t.length < 2) return false;
-			int sum = t[0] + t[1];
-			for (int l = 0, r = 1; r < t.length; ) {
-				if (sum == u) {
+			int sum = 0;
+			for (int l = 0, r = 0; r < t.length; ) {
+				if (sum == u && l + 1 < r) {
 					break;
 				} else if (sum < u) {
-					if (++r < t.length) {
-						sum += t[r];
-					}
-				} else if (l + 1 < r) { // minimum 2 elements
+					sum += t[r++];
+				} else if (l < r) {
 					sum -= t[l++];
-				} else {
-					sum -= t[l++];
-					if (++r < t.length) {
-						sum += t[r];
-					}
 				}
 			}
 			return sum == u;

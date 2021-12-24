@@ -178,12 +178,20 @@ public class Test {
 		}
     }
 	public static void apply(TriFunction[] solvers, Object[][] tcs) {
+		apply(solvers, tcs, true);
+    }
+	public static void apply(TriFunction[] solvers, Object[][] tcs, boolean shouldClone) {
 		for (int i = 0; i < tcs.length; i++) {
 			Object[] tc = tcs[i];
 			System.out.println("TC " + i);
 			Utils.print(tc[0]);
 			System.out.println();
 			for (TriFunction solver : solvers) {
+				if (shouldClone) {
+					Utils.print(solver.apply(clone(tc[1]), clone(tc[2]), clone(tc[3])));
+				} else {
+					Utils.print(solver.apply(tc[1], tc[2], tc[3]));
+				}
 				Utils.print(solver.apply(clone(tc[1]), clone(tc[2]), clone(tc[3])));
 				System.out.println();
 			}

@@ -6,11 +6,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+
+import org.ip.Test;
+import org.ip.array.CarFleet.Problem;
+import org.ip.array.CarFleet.Solver;
 
 /**
  * <a href="https://leetcode.com/problems/continuous-subarray-sum/">LC: 523</a>
  */
-public class ContinuousPositiveSubarrayMultipleSum {
+public class ContinuousPositiveSubarrayMultipleSum2 {
 	public static void main(String[] s) {
 		Object[] tc1 = new Object[] {false, new int[] {1,2,3,4}, 4};
 		Object[] tc2 = new Object[] {false, new int[] {1,2,4,3}, 4};
@@ -32,44 +37,35 @@ public class ContinuousPositiveSubarrayMultipleSum {
 		Object[] tc18 = new Object[] {true, new int[] {0, 0, 0}, 1};
 		Object[] tc19 = new Object[] {true, new int[] {23,2,4,6,6}, 7};
 		Object[] tc20 = new Object[] {true, new int[] {2,4,3}, 6};
-		List<Object[]> tcs = Arrays.asList(tc1, tc2, tc3, tc4, tc5, tc6, tc7, tc8, tc9, tc10, tc11, tc12, tc13, tc14, tc15, tc16, tc17, tc18, tc19, tc20);
-		BiFunction<int[], Integer, Boolean>[] solvers = new BiFunction[] {new Solver()};
-		for (Object[] tc : tcs) { 
-			System.out.print(String.valueOf(tc[0]));
-			for (BiFunction<int[], Integer, Boolean> solver : solvers) {
-				System.out.print("," + solver.apply((int[]) tc[1], (Integer)tc[2]));
-			}
-			System.out.println();
-		}
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5, tc6, tc7, tc8, tc9, tc10, tc11, tc12, tc13, tc14, tc15, tc16, tc17, tc18, tc19, tc20};
+		Problem[] solvers = new Problem[] { new Solver() };
+		Test.apply(solvers, tcs);
 	}
-	public static class Solver implements BiFunction<int[], Integer, Boolean> {
+	public static class Solver implements Problem {
 
 		@Override
-		public Boolean apply(int[] t, Integer u) {
-			if (t == null || t.length < 2) return false;
-			if (u == 0) return checkZero(t);
-			int mod = Math.abs(u);
-			BitSet sums = new BitSet();
-			int sum = 0;
-			int prevSum = 0;
-			for (int i = 0; i < t.length; i++) {
-				sum = (sum + t[i]) % mod;
-				if (sums.get(sum)) {
-					return true;
-				}
-				sums.set(prevSum);
-				prevSum = sum;
+		public boolean test(int[] t, Integer u) {
+			int k = u;
+			if (k == 0) return checkZero(t);
+			Set<Integer> set = new HashSet<>();
+			set.add(0);
+			for (int i = 1, sum = t[0] % k, prev = sum; i < t.length; i++) {
+				sum = (sum + t[i]) % k;
+				if (set.contains(sum)) return true;
+				set.add(prev);
+				prev = sum;
+			}
+			return false;
+		}
+		boolean checkZero(int[] t) {
+			for (int i = 1; i < t.length; i++) {
+				if (t[i] == t[i - 1] && t[i] == 0) return true;
 			}
 			return false;
 		}
 		
-		boolean checkZero(int[] t) {
-			for (int i = 1; i < t.length; i++) {
-				if (t[i] == 0 && t[i - 1] == 0) {
-					return true;
-				}
-			}
-			return false;
-		}
+	}
+	interface Problem extends BiPredicate<int[], Integer> {
+		
 	}
 }

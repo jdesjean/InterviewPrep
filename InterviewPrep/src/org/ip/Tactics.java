@@ -8,7 +8,7 @@ public class Tactics {
 	 * Tree / graph: dfs (pre, in, post), bfs, a start, dijikstra
 	 * Recursion: top down, bottom up
 	 * 
-	 * sort: quicksort, mergesort, bubble sort, insertion sort, bucket sort, counting sort,
+	 * sort: quicksort, mergesort, bubble sort, selection sort, insertion sort, bucket sort, counting sort, radix sort
 	 * string: rabin karpe, KMP
 	 *  
 	 * index: partition

@@ -6,9 +6,6 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-
-import org.ip.array.Utils;
 
 public class TreeNode {
 	 public int val;

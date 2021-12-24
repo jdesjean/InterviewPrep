@@ -196,7 +196,7 @@ public class Utils {
 		} else if (array != null) {
 			System.out.print(array.toString());
 		} else {
-			System.out.print("[]");
+			System.out.print("null");
 		}
 	}
 	

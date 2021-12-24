@@ -11,7 +11,10 @@ public class WordAbbreviation {
 	public static void main(String[] s) {
 		Object[] tc1 = new Object[] { true, "internationalization", "i12iz4n" };
 		Object[] tc2 = new Object[] { false, "apple", "a2e" };
-		Object[][] tcs = new Object[][] { tc1, tc2 };
+		Object[] tc3 = new Object[] { false, "substitution", "s55n" };
+		Object[] tc4 = new Object[] { false, "substitution", "s010n" };
+		Object[] tc5 = new Object[] { false, "substitution", "s0ubstitution" };
+		Object[][] tcs = new Object[][] { tc1, tc2, tc3, tc4, tc5 };
 		Problem[] solvers = new Problem[] { new Solver() };
 		Test.apply(solvers, tcs);
 	}
@@ -20,27 +23,18 @@ public class WordAbbreviation {
 
 		@Override
 		public boolean test(String t, String u) {
-			int val = 0;
-			int i = 0, j = 0;
-			while (i < t.length() && j < u.length()) {
-				if (t.charAt(i) == u.charAt(j)) {
-					i++;
-					j++;
-				} else {
-					while (j < u.length() && Character.isDigit(u.charAt(j))) {
-						val *= 10;
-						val += (u.charAt(j) - '0');
-						if (val == 0)
-							return false; // starts with a 0
-						j++;
+			int iu = 0, it = 0;
+			for (; it < t.length() && iu < u.length(); ) {
+				if (Character.isDigit(u.charAt(iu))) {
+					int n = 0;
+					for (; iu < u.length() && Character.isDigit(u.charAt(iu)); iu++) {
+						n = n * 10 + (u.charAt(iu) - '0');
+						if (n == 0) return false;
 					}
-					if (val == 0)
-						return false;
-					i += val;
-					val = 0;
-				}
+					it += n;
+				} else if (t.charAt(it++) != u.charAt(iu++)) return false;
 			}
-			return i == t.length() && j == u.length();
+			return iu == u.length() && it == t.length();
 		}
 
 	}

@@ -2,6 +2,7 @@ package org.ip.string;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +11,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
+
+import org.ip.Test;
 
 /**
  * <a href="https://leetcode.com/problems/accounts-merge/">LC: 721</a>
@@ -24,17 +27,69 @@ public class AccountMerge {
 				Arrays.asList(new String[] {"John", "johnnybravo@mail.com"}), 
 				Arrays.asList(new String[] {"John", "johnsmith@mail.com", "john_newyork@mail.com"}),
 				Arrays.asList(new String[] {"Mary", "mary@mail.com"}))};
-		List<Object[]> tcs = Arrays.asList(tc1, tc1);
-		Function<List<List<String>>, List<List<String>>>[] solvers = new Function[] {new Solver(), new UnionFind(), new Solver2()};
-		for (Object[] tc : tcs) { 
-			System.out.print(String.valueOf(tc[0]));
-			for (Function<List<List<String>>, List<List<String>>> solver : solvers) {
-				System.out.print("," + solver.apply((List<List<String>>) tc[1]));
+		Object[][] tcs = new Object[][] {tc1};
+		Problem[] solvers = new Problem[] {new Solver(), new UnionFind(), new Solver2(), new UnionFind2()};
+		Test.apply(solvers, tcs);
+	}
+	static class UnionFind2 implements Problem {
+
+		@Override
+		public List<List<String>> apply(List<List<String>> t) {
+			UnionFind unionFind = new UnionFind(t);
+			Map<String, String> names = new HashMap<>();
+			for (int i = 0; i < t.size(); i++) {
+				String name = t.get(i).get(0);
+				String email1 = t.get(i).get(1);
+				names.put(email1, name);
+				for (int j = 2; j < t.get(i).size(); j++) {
+					String email2 = t.get(i).get(j);
+					unionFind.union(email1, email2);
+					names.put(email2, name);
+				}
 			}
-			System.out.println();
+			
+			Map<String, List<String>> parentToEmails = new HashMap<>();
+			for (String email : unionFind.parents.keySet()) {
+				String pa = unionFind.find(email);
+				List<String> emails = parentToEmails.computeIfAbsent(pa, (k) -> {
+					List<String> list = new ArrayList<>();
+					list.add(names.get(email)); // add name
+					return list;
+				});
+				emails.add(email);
+			}
+			List<List<String>> res = new ArrayList<>(parentToEmails.size());
+			for (List<String> emails : parentToEmails.values()) {
+				Collections.sort(emails.subList(1, emails.size())); // first element is name
+				res.add(emails);
+			}
+			return res;
+		}
+		static class UnionFind {
+			Map<String, String> parents = new HashMap<>();
+			public UnionFind(List<List<String>> t) {
+				for (int i = 0; i < t.size(); i++) {
+					for (int j = 1; j < t.get(i).size(); j++) {
+						String email2 = t.get(i).get(j);
+						parents.put(email2, email2);
+					}
+				}
+			}
+			public String find(String a) {
+				if (parents.get(a) != a) {
+					return parents.compute(a, (k, v) -> find(parents.get(a)));
+				}
+				return parents.get(a);
+			}
+			public void union(String a, String b) {
+				String pa = find(a);
+				String pb = find(b);
+				parents.put(pa, pb);
+			}
 		}
 	}
-	public static class UnionFind implements Function<List<List<String>>, List<List<String>>> {
+	
+	public static class UnionFind implements Problem {
 
 		@Override
 		public List<List<String>> apply(List<List<String>> t) {
@@ -90,7 +145,7 @@ public class AccountMerge {
 			}
 		}
 	}
-	public static class Solver2 implements Function<List<List<String>>, List<List<String>>>{
+	public static class Solver2 implements Problem {
 
 		@Override
 		public List<List<String>> apply(List<List<String>> t) {
@@ -158,7 +213,7 @@ public class AccountMerge {
 		}
 		
 	}
-	public static class Solver implements Function<List<List<String>>, List<List<String>>>{
+	public static class Solver implements Problem {
 
 		@Override
 		public List<List<String>> apply(List<List<String>> t) {
@@ -219,5 +274,7 @@ public class AccountMerge {
 			}
 		}
 	}
-	
+	interface Problem extends Function<List<List<String>>, List<List<String>>> {
+		
+	}
 }

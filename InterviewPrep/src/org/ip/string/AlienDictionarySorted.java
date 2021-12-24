@@ -18,7 +18,7 @@ public class AlienDictionarySorted {
 		BiPredicate<String[], String>[] solvers = new BiPredicate[] {new Solver()};
 		Test.apply(solvers, consumers);
 	}
-	public static class Solver implements BiPredicate<String[], String> {
+	static class Solver implements BiPredicate<String[], String> {
 
 		@Override
 		public boolean test(String[] t, String u) {
@@ -33,7 +33,7 @@ public class AlienDictionarySorted {
 			}
 			return true;
 		}
-		public static class AlienComparator implements Comparator<String> {
+		static class AlienComparator implements Comparator<String> {
 			private int[] alphabet;
 
 			public AlienComparator(int[] alphabet) {

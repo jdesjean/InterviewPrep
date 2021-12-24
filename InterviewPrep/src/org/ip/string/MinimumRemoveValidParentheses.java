@@ -11,15 +11,42 @@ import org.ip.Test;
  * <a href="https://leetcode.com/problems/minimum-remove-to-make-valid-parentheses/">lC: 1249</a>
  * Facebook 10/03/2019
  */
-public class BalancedParenthesis {
+public class MinimumRemoveValidParentheses {
 	public static void main(String[] s) {
 		Object[] tc1 = new Object[] {"lee(t(c)o)de", "lee(t(c)o)de)"};
 		Object[] tc2 = new Object[] {"ab(c)d", "a)b(c)d"};
 		Object[] tc3 = new Object[] {"", "))(("};
 		Object[] tc4 = new Object[] {"a(b(c)d)", "(a(b(c)d)"};
-		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4};
-		Function[] solvers = new Function[] {new Solver(), new Solver2(), new Solver3()};
+		Object[] tc5 = new Object[] {"a", "(a"};
+		Object[] tc6 = new Object[] {"a", "a("};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5, tc6};
+		Function[] solvers = new Function[] {new Solver(), new Solver2(), new Solver3(), new Solver4()};
 		Test.apply(solvers, tcs);
+	}
+	public static class Solver4 implements Function<String, String> {
+		@Override
+		public String apply(String t) {
+			Deque<Integer> deque = new LinkedList<>();
+			for (int i = 0; i < t.length(); i++) {
+				if (t.charAt(i) == '(') {
+					deque.addLast(i);
+				} else if (t.charAt(i) == ')') {
+					if (!deque.isEmpty() && t.charAt(deque.peekLast()) == '(') {
+						deque.removeLast();
+					} else {
+						deque.addLast(i);
+					}
+				}
+			}
+			if (deque.isEmpty()) return t;
+			StringBuilder res = new StringBuilder();
+			int i = 0;
+			for (int j = 0; !deque.isEmpty(); i = j + 1) {
+				res.append(t.substring(i, j = deque.removeFirst()));
+			}
+			res.append(t.substring(i));
+			return res.toString();
+		}
 	}
 	public static class Solver3 implements Function<String, String> {
 		@Override

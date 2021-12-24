@@ -21,40 +21,37 @@ public class BasicCalculatorII {
 		@Override
 		public int applyAsInt(String s) {
 			int res = 0, prev = 0, cur = 0;
-			s = s.trim();
 			char sign = '+';
 			for (int i = 0; i < s.length(); i++) {
 				char c = s.charAt(i);
-				if (c == ' ') {
-					continue;
-				}
 				if (Character.isDigit(c)) {
 					cur = cur * 10 + (c - '0');
-					if (i != s.length() - 1) {
-						continue;
-					}
 				}
+				if (i != s.length() - 1 && !isSign(c)) continue;
 				switch (sign) {
-				case '+':
-					res += prev;
-					prev = cur;
-					break;
-				case '-':
-					res += prev;
-					prev = -cur;
-					break;
-				case '*':
-					prev *= cur;
-					break;
-				case '/':
-					prev /= cur;
-					break;
+					case '+':
+						res += prev;
+						prev = cur;
+						break;
+					case '-':
+						res += prev;
+						prev = -cur;
+						break;
+					case '*':
+						prev *= cur;
+						break;
+					case '/':
+						prev /= cur;
+						break;
 				}
 				sign = c;
 				cur = 0;
 			}
 			res += prev;
 			return res;
+		}
+		boolean isSign(char c) {
+			return c == '+' || c == '-' || c == '/' || c == '*';
 		}
 	}
 

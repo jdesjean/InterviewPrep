@@ -1,43 +1,52 @@
 package org.ip.array;
 
+import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.function.Function;
+
+import org.ip.Test;
 
 /**
  * <a href="https://leetcode.com/problems/merge-intervals/">LC: 56</a>
  */
 public class MergeIntervals {
 	public static void main(String[] s) {
-		List<Consumer<Solver>> consumers = Arrays.asList(
-				MergeIntervals::tc1,
-				MergeIntervals::tc2,
-				MergeIntervals::tc3,
-				MergeIntervals::tc4);
-		Solver[] solvers = new Solver[] {new SortIterative()};
-		for (Consumer<Solver> consumer : consumers) {
-			for (Solver solver : solvers) {
-				consumer.accept(solver);
+		Object[] tc1 = new Object[] {new int[][] {{1,6},{8,10},{15,18}}, new int[][] {{1,3},{2,6},{8,10},{15,18}}};
+		Object[] tc2 = new Object[] {new int[][] {{1,5}}, new int[][] {{1,4},{4,5}}};
+		Object[] tc3 = new Object[] {new int[][] {{1,4}}, new int[][] {{1,4}}};
+		Object[] tc4 = new Object[] {new int[][] {{0,4}}, new int[][] {{1,4},{0,4}}};
+		Object[] tc5 = new Object[] {new int[][] {{1,4}}, new int[][] {{1,4},{2,3}}};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5};
+		Problem[] solvers = new Problem[] { new Solver(), new SortIterative() };
+		Test.apply(solvers, tcs);
+	}
+	static class Solver implements Problem {
+
+		private final static Comparator<int[]> INTERVAL_COMPARATOR_START = (a, b) -> Integer.compare(a[0], b[0]);
+		
+		@Override
+		public int[][] apply(int[][] intervals) {
+			if (intervals == null || intervals.length == 0) return null;
+			Arrays.sort(intervals, INTERVAL_COMPARATOR_START);
+			Deque<int[]> res = new ArrayDeque<>(intervals.length);
+			res.add(intervals[0]);
+			for (int i = 1; i < intervals.length; i++) {
+				if (res.peekLast()[1] >= intervals[i][0]) {
+					res.peekLast()[1] = Math.max(intervals[i][1], res.peekLast()[1]);
+				} else {
+					res.add(intervals[i]);
+				}
 			}
-			System.out.println();
+			return res.stream().toArray(int[][]::new);
 		}
+		
 	}
-	public static void tc1(Solver solver) {
-		Utils.println(solver.solve(new int[][] {{1,3},{2,6},{8,10},{15,18}}));
-	}
-	public static void tc2(Solver solver) {
-		Utils.println(solver.solve(new int[][] {{1,4},{4,5}}));
-	}
-	public static void tc3(Solver solver) {
-		Utils.println(solver.solve(new int[][] {{1,4}}));
-	}
-	public static void tc4(Solver solver) {
-		Utils.println(solver.solve(new int[][] {}));
-	}
-	private static class SortIterative implements Solver {
+	static class SortIterative implements Problem {
 
 		@Override
-		public int[][] solve(int[][] intervals) {
+		public int[][] apply(int[][] intervals) {
 			if (intervals == null || intervals.length == 0) return intervals;
 			int index = _solve(intervals);
 			return Arrays.copyOf(intervals, index + 1);
@@ -57,7 +66,8 @@ public class MergeIntervals {
 			return count;
 		}
 	}
-	private interface Solver {
-		public int[][] solve(int[][] intervals);
+	interface Problem extends Function<int[][], int[][]> {
+		
 	}
+	
 }

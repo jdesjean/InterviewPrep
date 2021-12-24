@@ -27,9 +27,10 @@ public class AddParenthesis {
 			for (int i = 0; i < value.length(); i++) {
 				if (value.charAt(i) == '(') {
 					open++;
+				} else if (open != 0){
+					open--;
 				} else {
-					if (open == 0) res++;
-					else open--;
+					res++;;
 				}
 			}
 			

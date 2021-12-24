@@ -19,9 +19,67 @@ public class MakeLargeIsland {
 		Object[] tc1 = new Object[] {3, new int[][] {{1,0},{0,1}}};
 		Object[] tc2 = new Object[] {4, new int[][] {{1,1},{0,1}}};
 		Object[] tc3 = new Object[] {4, new int[][] {{1,1},{1,1}}};
-		Object[][] tcs = new Object[][] {tc1, tc2, tc3};
-		Problem[] solvers = new Problem[] {new Solver()};
+		Object[] tc4 = new Object[] {1, new int[][] {{0,0},{0,0}}};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4};
+		Problem[] solvers = new Problem[] {new Solver(), new Solver2()};
 		Test.apply(solvers, tcs);
+	}
+	static class Solver2 implements Problem {
+
+		private final static int[][] DIRS = new int[][] {{0,-1},{0,1},{-1,0},{1,0}};
+		@Override
+		public Integer apply(int[][] t) {
+			Map<Integer, Integer> sizes = sizes(t);
+			return largest(t, sizes);
+		}
+		int largest(int[][] a, Map<Integer, Integer> sizes) {
+			int max = sizes.isEmpty() ? a.length > 0 && a[0].length > 0 ? 1 : 0 : sizes.values().iterator().next();
+			for (int l = 0; l < a.length; l++) {
+				for (int c = 0; c < a[l].length; c++) {
+					if (a[l][c] != 0) continue;
+					max = Math.max(max, sum(a, l, c, sizes));
+				}
+			}
+			return max;
+		}
+		int sum(int[][] a, int l, int c, Map<Integer, Integer> count) {
+			int sum = 1;
+			BitSet ids = new BitSet();
+			for (int i = 0; i < DIRS.length; i++) {
+				int ll = l + DIRS[i][0];
+				int cc = c + DIRS[i][1];
+				if (ll < 0 || cc < 0 || ll >= a.length || cc >= a[ll].length || a[ll][cc] < 2) continue;
+				int id = a[ll][cc];
+				if (!ids.get(id)) {
+					ids.set(id);
+					sum += count.get(id);
+				}
+			}
+			return sum;
+		}
+		Map<Integer, Integer> sizes(int[][] a) {
+			int id = 2;
+			Map<Integer, Integer> size = new HashMap<>();
+			for (int l = 0; l < a.length; l++) {
+				for (int c = 0; c < a[l].length; c++) {
+					if (a[l][c] != 1) continue;
+					size.put(id, dfs(a, l, c, id++));
+				}
+			}
+			return size;
+		}
+		int dfs(int[][] a, int l, int c, int id) {
+			if (a[l][c] != 1) return 0;
+			a[l][c] = id;
+			int sum = 1;
+			for (int i = 0; i < DIRS.length; i++) {
+				int ll = l + DIRS[i][0];
+				int cc = c + DIRS[i][1];
+				if (ll < 0 || cc < 0 || ll >= a.length || cc >= a[l].length) continue;
+				sum += dfs(a, ll, cc, id);
+			}
+			return sum;
+		}
 	}
 	public static class Solver implements Problem {
 		

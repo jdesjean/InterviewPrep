@@ -1,7 +1,7 @@
 package org.ip.tree;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
@@ -10,90 +10,100 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.ip.Test;
 
 /**
- * <a href=
- * "https://leetcode.com/problems/binary-tree-vertical-order-traversal/">LC:
- * 314</a>
+ * <a href="https://leetcode.com/problems/binary-tree-vertical-order-traversal/">LC: 314</a>
  * <a href="https://leetcode.com/problems/vertical-order-traversal-of-a-binary-tree/">LC: 987</a>
  */
 public class VerticalOrder {
 	public static void main(String[] s) {
-		List<Consumer<Solver>> consumers = Arrays.asList(VerticalOrder::tc4);
-		Solver[] solvers = new Solver[] { new DFSTreeMap(), new DFS() };
-		for (Consumer<Solver> consumer : consumers) {
-			for (Solver solver : solvers) {
-				consumer.accept(solver);
-			}
-			System.out.println();
+		Object[] tc1 = new Object[] {new int[][] {{9},{3,15},{20},{7}}, new Integer[] {3,9,20,null,null,15,7}};
+		Object[] tc2 = new Object[] {new int[][] {{4},{9},{3,0,1},{8},{7}}, new Integer[] {3,9,8,4,0,1,7}};
+		Object[] tc3 = new Object[] {new int[][] {{4},{9,5},{3,0,1},{8,2},{7}}, new Integer[] {3,9,8,4,0,1,7,null,null,null,2,5}};
+		Object[] tc4 = new Object[] {new int[][] {}, new Integer[] {}};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4};
+		for (Object[] tc : tcs) {
+			tc[1] = TreeNode.fromBfs((Integer[]) tc[1]);
 		}
-	}
-
-	public static void tc1(Solver solver) {
-		List<List<Integer>> res = solver.solve(
-				new TreeNode(3,
-						new TreeNode(9),
-						new TreeNode(20,
-								new TreeNode(15),
-								new TreeNode(7))));
-		System.out.println(res);
+		Problem[] solvers = new Problem[] {new DFSTreeMap(), new DFS(), new Solver()};
+		Test.apply(solvers, tcs);
 	}
 	
-	public static void tc2(Solver solver) {
-		List<List<Integer>> res = solver.solve(
-				new TreeNode(3,
-						new TreeNode(9,
-								new TreeNode(4),
-								new TreeNode(0)),
-						new TreeNode(8,
-								new TreeNode(1),
-								new TreeNode(7))));
-		System.out.println(res);
-	}
-	
-	public static void tc3(Solver solver) {
-		List<List<Integer>> res = solver.solve(
-				new TreeNode(3,
-						new TreeNode(9,
-								new TreeNode(4),
-								new TreeNode(0,
-										null,
-										new TreeNode(2))),
-						new TreeNode(8,
-								new TreeNode(1,
-										new TreeNode(5),
-										null),
-								new TreeNode(7))));
-		System.out.println(res);
-	}
-	
-	public static void tc4(Solver solver) {
-		//[0,2,1,3,null,null,null,4,5,null,7,6,null,10,8,11,9]
-		List<List<Integer>> res = solver.solve(
-				new TreeNode(0,
-						new TreeNode(2,
-								new TreeNode(3,
-										new TreeNode(4,
-												null,
-												new TreeNode(7,
-														new TreeNode(10),
-														new TreeNode(8))),
-										new TreeNode(5,
-												new TreeNode(6,
-														new TreeNode(11),
-														new TreeNode(9)),
-												null)),
-								null),
-						new TreeNode(1,
-								null,
-								null)));
-		System.out.println(res);
-	}
-	
-	private static class DFS implements Solver {
+	private static class Solver implements Problem {
 
 		@Override
-		public List<List<Integer>> solve(TreeNode node) {
+		public List<List<Integer>> apply(TreeNode t) {
+			List<List<Integer>> positive = new ArrayList<>();
+			List<List<Integer>> negative = new ArrayList<>();
+			bfs((node) -> {
+				List<List<Integer>> list = positive;
+				int x = node.x;
+				if (x < 0) {
+					x = Math.abs(x) - 1;
+					list = negative;
+				}
+				if (list.size() <= x) {
+					list.add(new ArrayList<>());
+				}
+				list.get(x).add(node.node.val);
+			}, t);
+			Collections.reverse(negative);
+			return new CompositeUnmodifiableList<>(negative, positive);
+		}
+		void bfs(Consumer<TreeNodePair> consumer, TreeNode t) {
+			if (t == null) return;
+			Deque<TreeNodePair> deque = new LinkedList<>();
+			deque.add(new TreeNodePair(t, 0));
+			while(!deque.isEmpty()) {
+				TreeNodePair current = deque.remove();
+				consumer.accept(current);
+				if (current.node.left != null) {
+					deque.add(new TreeNodePair(current.node.left, current.x - 1));
+				}
+				if (current.node.right != null) {
+					deque.add(new TreeNodePair(current.node.right, current.x + 1));
+				}
+			}
+		}
+		static class CompositeUnmodifiableList<E> extends AbstractList<E> {
+
+		    private final List<? extends E> list1;
+		    private final List<? extends E> list2;
+
+		    public CompositeUnmodifiableList(List<? extends E> list1, List<? extends E> list2) {
+		        this.list1 = list1;
+		        this.list2 = list2;
+		    }
+		    
+		    @Override
+		    public E get(int index) {
+		        if (index < list1.size()) {
+		            return list1.get(index);
+		        }
+		        return list2.get(index-list1.size());
+		    }
+
+		    @Override
+		    public int size() {
+		        return list1.size() + list2.size();
+		    }
+		}
+		private static class TreeNodePair {
+			TreeNode node;
+			int x;
+			public TreeNodePair(TreeNode node, int x) {
+				this.node=node;this.x=x;
+			}
+		}
+	}
+	
+	private static class DFS implements Problem {
+
+		@Override
+		public List<List<Integer>> apply(TreeNode node) {
 			int min = minX(node, 0);
 			int max = maxX(node, 0);
 			int diameter = node != null ? max - min + 1 : 0;
@@ -162,10 +172,10 @@ public class VerticalOrder {
 		}
 		
 	}
-	private static class DFSTreeMap implements Solver {
+	private static class DFSTreeMap implements Problem {
 
 		@Override
-		public List<List<Integer>> solve(TreeNode node) {
+		public List<List<Integer>> apply(TreeNode node) {
 			Map<Integer, List<TreeNodePair>> map = new TreeMap<>();
 			dfs(node, map);
 			List<List<Integer>> res = new ArrayList<>();
@@ -218,26 +228,6 @@ public class VerticalOrder {
 		}
 	}
 
-	private interface Solver {
-		public List<List<Integer>> solve(TreeNode node);
-	}
-
-	private static class TreeNode {
-		int val;
-		TreeNode left;
-		TreeNode right;
-
-		TreeNode() {
-		}
-
-		TreeNode(int val) {
-			this.val = val;
-		}
-
-		TreeNode(int val, TreeNode left, TreeNode right) {
-			this.val = val;
-			this.left = left;
-			this.right = right;
-		}
+	interface Problem extends Function<TreeNode, List<List<Integer>>> {
 	}
 }

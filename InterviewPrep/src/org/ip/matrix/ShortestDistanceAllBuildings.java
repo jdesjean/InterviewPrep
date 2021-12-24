@@ -37,7 +37,13 @@ public class ShortestDistanceAllBuildings {
 			{0,0,0,0,0,1},
 			{0,1,1,0,0,1}
 		}};
-		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4};
+		Object[] tc5 = new Object[] {8, new int[][] {
+			{0,2,1,0},
+			{2,0,2,0},
+			{1,2,0,0},
+			{0,0,0,0},
+		}};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5};
 		Problem[] solvers = new Problem[] {new Solver(), new Solver2()};
 		Test.apply(solvers, tcs);
 	}

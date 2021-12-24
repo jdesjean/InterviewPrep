@@ -4,7 +4,7 @@ package org.ip.tree;
 //Time: n to find nodes v1 & v2
 //Time: H to find LCA
 //Space: H
-public class LCAParentfull<T> implements LCA<T> {
+public class LCAParentfull<T> implements LCASolver<T> {
 	private Tree<T> tree;
 
 	public LCAParentfull(Tree<T> tree) {

@@ -10,7 +10,7 @@ import org.ip.Test;
 /**
  * <a href="https://leetcode.com/problems/dot-product-of-two-sparse-vectors/">LC: 1570</a>
  */
-public class SparseVectorHashMap {
+public class SparseVectorHashMap2 {
 	public static void main(String[] s) {
 		Object[] tc1 = new Object[] {8, new TestCase1()};
 		Object[] tc2 = new Object[] {0, new TestCase2()};
@@ -22,10 +22,8 @@ public class SparseVectorHashMap {
 	
     public static class SparseVector implements Problem {
     	Map<Integer, Integer> values = new HashMap<>();
-    	private int[] nums;
 
 		public SparseVector(int[] nums) {
-    		this.nums = nums;
     		for (int i = 0; i < nums.length; i++) {
     			if (nums[i] == 0) continue;
     			values.put(i, nums[i]);

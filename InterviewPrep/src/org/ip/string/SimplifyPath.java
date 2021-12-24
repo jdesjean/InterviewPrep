@@ -40,10 +40,10 @@ public class SimplifyPath {
 					stack.addLast(tokens[i]);
 				}
 			}
-			if (stack.isEmpty()) {
-				stack.addLast("");
-			}
 			StringBuilder res = new StringBuilder();
+			if (stack.isEmpty()) {
+				res.append("/");
+			}
 			while (!stack.isEmpty()) {
 				res.append("/" + stack.removeFirst());
 			}

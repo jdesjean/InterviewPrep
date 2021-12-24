@@ -2,26 +2,23 @@ package org.ip.array;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
+
+import org.ip.Test;
 
 /**
  * <a href="https://leetcode.com/problems/nested-list-weight-sum/">LC: 339</a>
  */
 public class NestedListSum {
 	public static void main(String[] s) {
-		List<Consumer<Solver>> consumers = Arrays.asList(
-				NestedListSum::tc1,
-				NestedListSum::tc2,
-				NestedListSum::tc3);
-		Solver[] solvers = new Solver[] {new Recursive()};
-		for (Consumer<Solver> consumer : consumers) {
-			for (Solver solver : solvers) {
-				consumer.accept(solver);
-			}
-			System.out.println();
-		}
+		Object[] tc1 = new Object[] {10, tc1()};
+		Object[] tc2 = new Object[] {27, tc2()};
+		Object[] tc3 = new Object[] {0, tc3()};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3};
+		Problem[] solvers = new Problem[] { new Solver() };
+		Test.apply(solvers, tcs);
 	}
-	public static void tc1(Solver solver) {
+	public static List<NestedInteger> tc1() {
 		//[[1,1],2,[1,1]]
 		//10
 		NestedInteger one = new NestedInteger(1);
@@ -32,9 +29,9 @@ public class NestedListSum {
 		NestedInteger l2 = new NestedInteger();
 		l2.add(one);
 		l2.add(one);
-		System.out.println(solver.solve(Arrays.asList(l1, two, l1)));
+		return Arrays.asList(l1, two, l1);
 	}
-	public static void tc2(Solver solver) {
+	public static List<NestedInteger> tc2() {
 		//[1,[4,[6]]]
 		//27
 		NestedInteger one = new NestedInteger(1);
@@ -46,36 +43,37 @@ public class NestedListSum {
 		l2.add(four);
 		l2.add(l1);
 		
-		System.out.println(solver.solve(Arrays.asList(one, l2)));
+		return Arrays.asList(one, l2);
 	}
-	public static void tc3(Solver solver) {
+	public static List<NestedInteger> tc3() {
 		//[0]
 		//0
-		System.out.println(solver.solve(Arrays.asList(new NestedInteger(0))));
+		return Arrays.asList(new NestedInteger(0));
 	}
-	public static class Recursive implements Solver {
+	public static class Solver implements Problem {
 
 		@Override
-		public int solve(List<NestedInteger> list) {
+		public int applyAsInt(List<NestedInteger> value) {
 			int sum = 0;
-			for (NestedInteger integer : list) {
-				sum += solve(integer, 1);
+			for (NestedInteger nic : value) {
+				sum += applyAsInt(nic, 1);
 			}
 			return sum;
 		}
 		
-		public int solve(NestedInteger integer, int depth) {
-			if (integer.isInteger()) {
-				return integer.getInteger() * depth;
+		int applyAsInt(NestedInteger ni, int depth) {
+			if (ni.isInteger()) {
+				return ni.getInteger() * depth;
 			}
+			int next = depth + 1;
 			int sum = 0;
-			for (NestedInteger nested : integer.getList()) {
-				sum += solve(nested, depth + 1);
+			for (NestedInteger nic : ni.getList()) {
+				sum += applyAsInt(nic, next);
 			}
 			return sum;
 		}
 	}
-	public interface Solver {
-		public int solve(List<NestedInteger> list);
+	public interface Problem extends ToIntFunction<List<NestedInteger>> {
+		
 	}
 }
