@@ -23,23 +23,35 @@ public class MergeKSorted {
 
 		@Override
 		public ListNode apply(ListNode[] t) {
-			if (t.length == 0) return null;
-			List list = new List();
-			PriorityQueue<Integer> pq = new PriorityQueue<>(new ListNodeComparator(t));
+			PriorityQueue<Integer> pq = new PriorityQueue<>(new ListComparator(t));
 			for (int i = 0; i < t.length; i++) {
-				if (t[i] == null) continue;
-				pq.add(i);
+				if (t[i] != null) pq.add(i);
 			}
+			ListNode head = new ListNode(0);
+			ListNode tail = head;
 			while (!pq.isEmpty()) {
 				int index = pq.remove();
-				ListNode next = t[index].next;
-				list.appendToTail(t[index]);
-				t[index] = next;
+				tail.next = t[index];
+				tail = t[index];
+				t[index] = t[index].next;
 				if (t[index] != null) {
 					pq.add(index);
 				}
 			}
-			return list.head;
+			return head.next;
+		}
+		
+	}
+	static class ListComparator implements Comparator<Integer> {
+		private ListNode[] listNodes;
+
+		public ListComparator(ListNode[] listNodes) {
+			this.listNodes = listNodes;
+		}
+
+		@Override
+		public int compare(Integer o1, Integer o2) {
+			return Integer.compare(listNodes[o1].val, listNodes[o2].val);
 		}
 		
 	}
@@ -55,19 +67,6 @@ public class MergeKSorted {
 			}
 			tail.next = null;
 		}
-	}
-	static class ListNodeComparator implements Comparator<Integer> {
-		private ListNode[] t;
-
-		public ListNodeComparator(ListNode[] t) {
-			this.t = t;
-		}
-
-		@Override
-		public int compare(Integer o1, Integer o2) {
-			return Integer.compare(t[o1].val, t[o2].val);
-		}
-		
 	}
 	interface Problem extends Function<ListNode[], ListNode> {
 		

@@ -1,13 +1,13 @@
 package org.ip.string;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import org.ip.Test;
 
 /**
  * <a href="https://leetcode.com/problems/alien-dictionary/">LC: 269</a>
@@ -20,17 +20,64 @@ public class AlienDictionaryAlphabet {
 		Object[] tc4 = new Object[] {"z", new String[] {"z", "z"}};
 		Object[] tc5 = new Object[] {"z", new String[] {"z"}};
 		Object[] tc6 = new Object[] {"", new String[] {"abc", "ab"}};
-		List<Object[]> tcs = Arrays.asList(tc1, tc2, tc3, tc4, tc5, tc6);
-		Function<String[], String>[] solvers = new Function[] {new Solver()};
-		for (Object[] tc : tcs) { 
-			System.out.print(String.valueOf(tc[0]));
-			for (Function<String[], String> solver : solvers) {
-				System.out.print("," + solver.apply((String[]) tc[1]));
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5, tc6};
+		Problem[] solvers = new Problem[] {new Solver(), new Solver2()};
+		Test.apply(solvers, tcs);
+	}
+	public static class Solver2 implements Problem {
+
+		@Override
+		public String apply(String[] t) {
+			if (t.length == 0) return "";
+			Map<Character, Set<Character>> g = new HashMap<>();
+			for (int i = 0; i < t.length; i++) {
+				for (int j = 0; j < t[i].length(); j++) {
+					g.computeIfAbsent(t[i].charAt(j), (k) -> new HashSet<>());
+				}
 			}
-			System.out.println();
+			for (int i = 1; i < t.length; i++) {
+				int l1 = t[i - 1].length();
+				int l2 = t[i].length();
+				int j = 0;
+				for (; j < Math.min(l1, l2); j++) {
+					if (t[i - 1].charAt(j) == t[i].charAt(j)) continue;
+					g.get(t[i].charAt(j)).add(t[i - 1].charAt(j));
+					break;
+				}
+				if (l1 > l2 && j == l2) { // [aa, a] is invalid. Add cycle to make invalid during topoSort
+					for (j = 0; j < l1; j++) {
+						g.get(t[i - 1].charAt(j)).add(t[i - 1].charAt(j));
+					}
+				}
+			}
+			StringBuilder sb = new StringBuilder();
+			Map<Character, State> visited = new HashMap<>();
+			for (Character key : g.keySet()) {
+				topoSort(sb, g, visited, key);
+			}
+			return sb.toString();
+		}
+		boolean topoSort(StringBuilder sb, Map<Character, Set<Character>> g, Map<Character, State> visited, Character current) {
+			State state = visited.get(current);
+			if (state != null) {
+				return state == State.VISITING;
+			}
+			visited.put(current, State.VISITING);
+			Set<Character> edges = g.get(current);
+			if (edges != null) {
+				for (Character edge : edges) {
+					if (topoSort(sb, g, visited, edge)) return true;
+				}
+			}
+			visited.put(current, State.VISITED);
+			sb.append(current);
+			return false;
+		}
+		enum State {
+			VISITING, VISITED;
 		}
 	}
-	public static class Solver implements Function<String[], String> {
+	public static class Solver implements Problem {
 
 		@Override
 		public String apply(String[] t) {
@@ -101,5 +148,8 @@ public class AlienDictionaryAlphabet {
 		private enum Status {
 			NONE, VISITING, VISITED
 		}
+	}
+	interface Problem extends Function<String[], String> {
+		
 	}
 }

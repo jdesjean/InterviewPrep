@@ -1,5 +1,6 @@
 package org.ip.stream;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -12,33 +13,45 @@ import org.ip.Test;
  */
 public class MovingAverage {
 	public static void main(String[] s) {
-		Object[] tc1 = new Object[] { new Double[] {1.0, 5.5, 4.66667, 6.0}, new TestCase1()};
+		Object[] tc1 = new Object[] { new double[] {1.0, 5.5, 4.66667, 6.0}, new TestCase1()};
 		Object[][] tcs = new Object[][] {tc1};
-		Problem[] solvers = new Problem[] { new Solver(), new Solver2(), new Solver3() };
+		TestCaseSolver[] solvers = new TestCaseSolver[] { 
+				new SolverAbstractProblem(Solver.class),
+				new SolverAbstractProblem(Solver2.class),
+				new SolverAbstractProblem(Solver3.class),
+				new SolverAbstractProblem(Solver4.class)};
 		Test.apply(solvers, tcs);
+	}
+	static class Solver4 implements Problem {
+		private final int size;
+		private final Deque<Integer> deque;
+		double sum = 0;
+
+		public Solver4(int size) {
+			this.size = size;
+			deque = new ArrayDeque<>(size);
+		}
+
+		@Override
+		public double next(int n) {
+			if (deque.size() >= size) {
+				sum -= deque.removeFirst();
+			}
+			deque.addLast(n);
+			sum += n;
+			return sum / deque.size();
+		}
+		
 	}
 	static class Solver3 implements Problem {
 
 		LimitedArrayDeque<Integer> circularQueue;
 		double sum = 0;
 		
-		public Solver3() {
-		}
-
 		public Solver3(int n) {
 			circularQueue = new LimitedArrayDeque<>(n);
 		}
 		
-		@Override
-		public double[] apply(Function<Problem, double[]> t) {
-			return t.apply(this);
-		}
-
-		@Override
-		public Problem problem(int n) {
-			return new Solver3(n);
-		}
-
 		@Override
 		public double next(int n) {
 			sum += n;
@@ -90,24 +103,11 @@ public class MovingAverage {
 
 		double sum = 0;
 		final CircularQueue circularQueue;
-		public Solver2() {
-			circularQueue = new CircularQueue(0);
-		}
 
 		public Solver2(int n) {
 			circularQueue = new CircularQueue(n);
 		}
 		
-		@Override
-		public double[] apply(Function<Problem, double[]> t) {
-			return t.apply(this);
-		}
-
-		@Override
-		public Problem problem(int n) {
-			return new Solver2(n);
-		}
-
 		@Override
 		public double next(int n) {
 			sum += n;
@@ -145,24 +145,11 @@ public class MovingAverage {
 		private final int size;
 		double sum = 0;
 		Deque<Integer> deque = new LinkedList<>();
-		public Solver() {
-			size = 0;
-		}
 
 		public Solver(int n) {
 			this.size = n;
 		}
 		
-		@Override
-		public double[] apply(Function<Problem, double[]> t) {
-			return t.apply(this);
-		}
-
-		@Override
-		public Problem problem(int n) {
-			return new Solver(n);
-		}
-
 		@Override
 		public double next(int n) {
 			sum += n;
@@ -174,23 +161,48 @@ public class MovingAverage {
 		}
 		
 	}
-	interface Problem extends Function<Function<Problem, double[]>, double[]> {
-		public Problem problem(int n);
+	
+	interface Problem {
 		public double next(int n);
 	}
-	static class TestCase1 implements Function<Problem, double[]> {
+	static class TestCase1 implements TestCase {
 
 		@Override
-		public double[] apply(Problem t) {
-			// TODO Auto-generated method stub
-			Problem copy = t.problem(3);
+		public double[] apply(Class<? extends Problem> clazz) {
+			Problem t;
+			try {
+				t = clazz.getConstructor(Integer.TYPE).newInstance(3);
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				throw new RuntimeException(e);
+			}
 			return new double[] {
-					copy.next(1),
-					copy.next(10),
-					copy.next(3),
-					copy.next(5)
+					t.next(1),
+					t.next(10),
+					t.next(3),
+					t.next(5)
 			};
 		}
 		
 	}
+	
+	static class SolverAbstractProblem implements TestCaseSolver {
+		private Class<? extends Problem> _clazz;
+
+		public SolverAbstractProblem(Class<? extends Problem> clazz) {
+			_clazz = clazz;
+		}
+
+		@Override
+		public double[] apply(TestCase t) {
+			return t.apply(_clazz);
+		}
+		
+	}
+    interface TestCaseSolver extends Function<TestCase, double[]> {
+    	
+    }
+    interface TestCase extends Function<Class<? extends Problem>, double[]> {
+    	
+    }
 }

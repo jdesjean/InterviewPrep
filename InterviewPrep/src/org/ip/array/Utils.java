@@ -59,6 +59,7 @@ public class Utils {
 	}
 
 	public static void swap(int[] array, int i, int j) {
+		if (i == j) return;
 		int tmp = array[i];
 		array[i] = array[j];
 		array[j] = tmp;
@@ -185,6 +186,8 @@ public class Utils {
 			Utils.print((int[]) array);
 		} else if (array instanceof double[]) {
 			Utils.print((double[]) array);
+		} else if (array instanceof boolean[]) {
+			Utils.print((boolean[]) array);
 		} else if (array instanceof Integer[]) {
 			System.out.print(Arrays.toString((Integer[])array));
 		} else if (array instanceof Boolean[]) {
@@ -193,12 +196,15 @@ public class Utils {
 			Utils.print((char[][]) array);
 		} else if (array instanceof String[][]) {
 			Utils.print((String[][]) array);
+		} else if (array instanceof Integer[][]) {
+			Utils.print(System.out, (Integer[][]) array);
 		} else if (array != null) {
 			System.out.print(array.toString());
 		} else {
 			System.out.print("null");
 		}
 	}
+	
 	
 	public static void print(String[][] array) {
 		print(System.out, array);

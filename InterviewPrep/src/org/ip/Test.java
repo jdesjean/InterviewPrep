@@ -14,6 +14,7 @@ import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
 
 import org.ip.array.Utils;
+import org.ip.siblingtree.Node;
 import org.ip.tree.TreeNode;
 
 public class Test {
@@ -136,6 +137,32 @@ public class Test {
 			System.out.println();
 		}
     }
+	public static void apply(BiIntToDoubleOperator[] solvers, Object[][] tcs) {
+		for (int i = 0; i < tcs.length; i++) {
+			Object[] tc = tcs[i];
+			System.out.println("TC " + i);
+			Utils.print(tc[0]);
+			System.out.println();
+			for (BiIntToDoubleOperator solver : solvers) {
+				Utils.print(solver.applyAsDouble((Integer) tc[1], (Integer)tc[2]));
+				System.out.println();
+			}
+			System.out.println();
+		}
+    }
+	public static void apply(BiIntUnaryOperator[] solvers, Object[][] tcs) {
+		for (int i = 0; i < tcs.length; i++) {
+			Object[] tc = tcs[i];
+			System.out.println("TC " + i);
+			Utils.print(tc[0]);
+			System.out.println();
+			for (BiIntUnaryOperator solver : solvers) {
+				Utils.print(solver.applyAsInt((Integer) tc[1], (Integer)tc[2]));
+				System.out.println();
+			}
+			System.out.println();
+		}
+    }
 	public static void apply(Function[] solvers, Object[][] tcs) {
 		for (int i = 0; i < tcs.length; i++) {
 			Object[] tc = tcs[i];
@@ -192,7 +219,6 @@ public class Test {
 				} else {
 					Utils.print(solver.apply(tc[1], tc[2], tc[3]));
 				}
-				Utils.print(solver.apply(clone(tc[1]), clone(tc[2]), clone(tc[3])));
 				System.out.println();
 			}
 			System.out.println();
@@ -206,6 +232,20 @@ public class Test {
 			System.out.println();
 			for (TriPredicate solver : solvers) {
 				Utils.print(solver.test(clone(tc[1]), clone(tc[2]), clone(tc[3])));
+				System.out.println();
+			}
+			System.out.println();
+		}
+    }
+	public static void apply(TriConsumer[] solvers, Object[][] tcs) {
+		for (int i = 0; i < tcs.length; i++) {
+			Object[] tc = tcs[i];
+			System.out.println("TC " + i);
+			Utils.print(tc[0]);
+			System.out.println();
+			for (TriConsumer solver : solvers) {
+				solver.accept(tc[1], tc[2], tc[3]);
+				Utils.print(tc[1]);
 				System.out.println();
 			}
 			System.out.println();
@@ -230,11 +270,20 @@ public class Test {
 	public interface TriFunction<A, B, C, R> {
 		public R apply(A a, B b, C c);
 	}
+	public interface TriConsumer<A, B, C> {
+		public void accept(A a, B b, C c);
+	}
 	public interface QuadFunction<A, B, C, D, R> {
 		public R apply(A a, B b, C c, D d);
 	}
 	public interface VarArgsFunction<T> {
 		public T apply(Object... obj);
+	}
+	public interface BiIntUnaryOperator {
+		public int applyAsInt(int a, int b);
+	}
+	public interface BiIntToDoubleOperator {
+		public double applyAsDouble(int a, int b);
 	}
 	static Object clone(Object o) {
 		if (o instanceof int[][]) {
@@ -267,6 +316,8 @@ public class Test {
 			return ((Integer[])o).clone();
 		} else if (o instanceof TreeNode) {
 			return ((TreeNode) o).clone();
+		} else if (o instanceof Node) {
+			return ((Node) o).clone();
 		}
 		return o;
 	}

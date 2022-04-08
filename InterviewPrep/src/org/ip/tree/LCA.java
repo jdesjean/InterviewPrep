@@ -1,8 +1,6 @@
 package org.ip.tree;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.ip.Test;
 import org.ip.Test.TriFunction;

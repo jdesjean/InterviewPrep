@@ -1,7 +1,9 @@
 package org.ip.matrix;
 
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.function.ToIntFunction;
 
 import org.ip.Test;
@@ -25,11 +27,60 @@ public class ShortestPathBinaryMatrix {
 			{1,1,1,1,1,0},
 			{1,1,1,1,1,0}}};
 		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4};
-		Problem[] solvers = new Problem[] { new Solver() };
+		Problem[] solvers = new Problem[] { new Solver(), new SolverAStar() };
 		Test.apply(solvers, tcs);
 	}
+	static class SolverAStar implements Problem {
+
+		@Override
+		public int applyAsInt(int[][] value) {
+			if (value.length == 0 || value[0][0] != 0) return -1;
+			return bfs(value);
+		}
+		int bfs(int[][] value) {
+			PriorityQueue<int[]> pq = new PriorityQueue<>(new PosComparator(value.length - 1, value[0].length - 1));
+			pq.add(new int[] {1, 0, 0});
+			boolean[][] visited = new boolean[value.length][value[0].length];
+			while (!pq.isEmpty()) {
+				int[] pos = pq.remove();
+				if (visited[pos[1]][pos[2]]) {
+					continue;
+				}
+				visited[pos[1]][pos[2]] = true;
+				if (pos[1] == value.length - 1 && pos[2] == value[0].length - 1) {
+					return pos[0];
+				}
+				for (int r = -1; r <= 1; r++) {
+					for (int c = -1; c <= 1; c++) {
+						int rr = pos[1] + r;
+						int cc = pos[2] + c;
+						if (rr < 0 || rr >= value.length || cc < 0 || cc >= value.length) continue;
+						if (value[rr][cc] != 0) continue;
+						pq.add(new int[] {pos[0] + 1, rr, cc});
+					}
+				}
+			}
+			return -1;
+		}
+		static class PosComparator implements Comparator<int[]> {
+			private int w;
+			private int h;
+
+			public PosComparator(int w, int h) {
+				this.w = w;
+				this.h = h;
+			}
+
+			@Override
+			public int compare(int[] o1, int[] o2) {
+				int s1 = o1[0] + Math.max(h - o1[1], w - o1[2]);
+				int s2 = o2[0] + Math.max(h - o2[1], w - o2[2]);
+				return Integer.compare(s1, s2);
+			}
+			
+		}
+	}
 	static class Solver implements Problem {
-		private final static int[][] DIRS = new int[][] {{0,1},{1,0},{1,1}};
 		@Override
 		public int applyAsInt(int[][] value) {
 			if (value == null || value.length == 0 || value[0].length == 0 || value[0][0] != 0) return -1;
@@ -39,10 +90,15 @@ public class ShortestPathBinaryMatrix {
 		}
 		int bfs(int[][] value, Deque<int[]> deque) {
 			int length = 1;
+			boolean[][] visited = new boolean[value.length][value[0].length];
 			while (!deque.isEmpty()) {
 				int size = deque.size();
 				while (size-- > 0) {
 					int[] pos = deque.remove();
+					if (visited[pos[0]][pos[1]]) {
+						continue;
+					}
+					visited[pos[0]][pos[1]] = true;
 					if (pos[0] == value.length - 1 && pos[1] == value[pos[0]].length - 1) {
 						return length;
 					}

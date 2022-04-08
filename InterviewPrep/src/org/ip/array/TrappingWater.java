@@ -1,74 +1,54 @@
 package org.ip.array;
 
-import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.ToIntFunction;
+
+import org.ip.Test;
 
 /**
  * <a href="https://leetcode.com/problems/trapping-rain-water/">LC: 42</a>
  */
 public class TrappingWater {
 	public static void main(String[] s) {
-		List<Consumer<Solver>> consumers = Arrays.asList(
-				TrappingWater::tc1,
-				TrappingWater::tc2,
-				TrappingWater::tc3,
-				TrappingWater::tc4);
-		Solver[] solvers = new Solver[] {new StackSolver(), new DP(), new Pointers()};
-		for (Consumer<Solver> consumer : consumers) {
-			for (Solver solver : solvers) {
-				consumer.accept(solver);
-			}
-			System.out.println();
-		}
+		Object[] tc1 = new Object[] {6, new int[] {0,1,0,2,1,0,1,3,2,1,2,1}};
+		Object[] tc2 = new Object[] {2, new int[] {2,1,1,2}};
+		Object[] tc3 = new Object[] {1, new int[] {1,1,0,1}};
+		Object[] tc4 = new Object[] {9, new int[] {4,2,0,3,2,5}};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4};
+		Problem[] solvers = new Problem[] { new StackSolver(), new DP(), new Pointers() };
+		Test.apply(solvers, tcs);
 	}
-	public static void tc1(Solver solver) {
-		System.out.println(solver.solve(new int[] {0,1,0,2,1,0,1,3,2,1,2,1}));
-	}
-	public static void tc2(Solver solver) {
-		System.out.println(solver.solve(new int[] {2,1,1,2}));
-	}
-	public static void tc3(Solver solver) {
-		System.out.println(solver.solve(new int[] {1,1,0,1}));
-	}
-	public static void tc4(Solver solver) {
-		System.out.println(solver.solve(new int[] {4,2,0,3,2,5}));
-	}
-	public static class Pointers implements Solver {
+	static class Pointers implements Problem {
 
 		@Override
-		public int solve(int[] height) {
+		public int applyAsInt(int[] value) {
 			int res = 0;
-			int left = 0;
-			int right = 0;
-			// TODO: Fix start length 3
-			for (int i = 0, j = height.length - 1; i <= j;) {
-				if (left <= right) {
-					if (height[i] > left) {
-						left = height[i];
+			for (int l = 0, lmax = 0, r = value.length - 1, rmax = 0; l < r;) {
+				if (value[l] <= value[r]) {
+					if (value[l] > lmax) {
+						lmax = value[l];
 					} else {
-						res += left - height[i];
+						res += lmax - value[l];
 					}
-					i++;
+					l++;
 				} else {
-					if (height[j] > right) {
-						right = height[j];
+					if (value[r] > rmax) {
+						rmax = value[r];
 					} else {
-						res += right - height[j];
+						res += rmax - value[r];
 					}
-					j--;
+					r--;
 				}
 			}
 			return res;
 		}
 		
 	}
-	public static class DP implements Solver {
+	public static class DP implements Problem {
 
 		@Override
-		public int solve(int[] height) {
+		public int applyAsInt(int[] height) {
 			int[] left = new int[height.length];
 			int[] right = new int[height.length];
 			left[0] = height[0];
@@ -90,10 +70,10 @@ public class TrappingWater {
 		}
 		
 	}
-	public static class StackSolver implements Solver {
+	public static class StackSolver implements Problem {
 
 		@Override
-		public int solve(int[] height) {
+		public int applyAsInt(int[] height) {
 			Deque<Integer> stack = new LinkedList<Integer>();
 			int res = 0;
 			for (int i = 0; i < height.length; i++) {
@@ -126,7 +106,7 @@ public class TrappingWater {
 		}
 		
 	}
-	public interface Solver {
-		public int solve(int[] height);
+	public interface Problem extends ToIntFunction<int[]> {
+		
 	}
 }

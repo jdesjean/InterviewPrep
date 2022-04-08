@@ -1,49 +1,108 @@
 package org.ip.string;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.IntFunction;
+
+import org.ip.Test;
 
 /**
  * <a href="https://leetcode.com/problems/integer-to-english-words/">LC: 273</a>
  */
 public class IntegerToEnglish {
 	public static void main(String[] s) {
-		List<Consumer<Solver>> consumers = Arrays.asList(
-				IntegerToEnglish::tc1,
-				IntegerToEnglish::tc2,
-				IntegerToEnglish::tc3,
-				IntegerToEnglish::tc4,
-				IntegerToEnglish::tc5,
-				IntegerToEnglish::tc6
-				);
-		Solver[] solvers = new Solver[] {new Iterative()};
-		for (Consumer<Solver> consumer : consumers) {
-			for (Solver solver : solvers) {
-				consumer.accept(solver);
+		var tc1 = new Object[] {"Nine Hundred Ninety Nine", 999};
+		var tc2 = new Object[] {"Two Billion One Hundred Forty Seven Million Four Hundred Eighty Three Thousand Six Hundred Forty Seven", Integer.MAX_VALUE};
+		var tc3 = new Object[] {"Zero", 0};
+		var tc4 = new Object[] {"One Hundred Eleven", 111};
+		var tc5 = new Object[] {"Thirty", 30};
+		var tc6 = new Object[] {"One Hundred", 100};
+		var tc7 = new Object[] {"One Million", 1000000};
+		var tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5, tc6, tc7};
+		var solvers = new Problem[] {new Solver(), new Iterative()};
+		Test.apply(solvers, tcs);
+	}
+	public static class Solver implements Problem {
+		private final static String[] ZERO_TO_NINE = new String[] {
+				"",
+				"One",
+				"Two",
+				"Three",
+				"Four",
+				"Five",
+				"Six",
+				"Seven",
+				"Eight",
+				"Nine"
+		};
+		private final static String[] TENS = new String[] {
+				"",
+				"Ten",
+				"Twenty",
+				"Thirty",
+				"Forty",
+				"Fifty",
+				"Sixty",
+				"Seventy",
+				"Eighty",
+				"Ninety"
+		};
+		private final static String[] GROUPS = new String[] {
+				"",
+				"Thousand",
+				"Million",
+				"Billion"
+		};
+		private final static String[] TEENS = new String[] {
+				"Ten",
+				"Eleven",
+				"Twelve",
+				"Thirteen",
+				"Fourteen",
+				"Fifteen",
+				"Sixteen",
+				"Seventeen",
+				"Eighteen",
+				"Nineteen"
+		};
+
+		@Override
+		public String apply(int value) {
+			if (value < 0) return null;
+			if (value == 0) return "Zero";
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; value > 0; i++, value /= 1000) {
+				int current = value % 1000;
+				if (current == 0) continue;
+				
+				appendReversed(sb, GROUPS[i]);
+				
+				int hundreds = current / 100;
+				int tens = (current % 100) / 10;
+				int digit = current % 10;
+				
+				if (tens == 1) {
+					appendReversed(sb, TEENS[digit]);
+				}
+				else {
+					appendReversed(sb, ZERO_TO_NINE[digit]);
+					appendReversed(sb, TENS[tens]);
+				}
+				if (hundreds > 0) {
+					appendReversed(sb, "Hundred");
+					appendReversed(sb, ZERO_TO_NINE[hundreds]);
+				}
 			}
-			System.out.println();
+			return sb.reverse().toString();
+		}
+		void appendReversed(StringBuilder sb, String s) {
+			if (!sb.isEmpty() && s.length() > 0) {
+				sb.append(" ");
+			}
+			for (int i = s.length() - 1; i >= 0; i--) {
+				sb.append(s.charAt(i));
+			}
 		}
 	}
-	public static void tc1(Solver solver) {
-		System.out.println(solver.solve(999));
-	}
-	public static void tc2(Solver solver) {
-		System.out.println(solver.solve(Integer.MAX_VALUE));
-	}
-	public static void tc3(Solver solver) {
-		System.out.println(solver.solve(0));
-	}
-	public static void tc4(Solver solver) {
-		System.out.println(solver.solve(111));
-	}
-	public static void tc5(Solver solver) {
-		System.out.println(solver.solve(30));
-	}
-	public static void tc6(Solver solver) {
-		System.out.println(solver.solve(100));
-	}
-	public static class Iterative implements Solver {
+	public static class Iterative implements Problem {
 
 		private final static String[] UNITS = new String[] {"Billion", "Million", "Thousand", ""};
 		private final static String[] TENS = new String[] {
@@ -83,7 +142,7 @@ public class IntegerToEnglish {
 		};
 		
 		@Override
-		public String solve(int n) {
+		public String apply(int n) {
 			if (n < 0) return "";
 			if (n == 0) return "Zero";
 			StringBuilder sb = new StringBuilder();
@@ -131,7 +190,7 @@ public class IntegerToEnglish {
 		}
 		
 	}
-	public interface Solver {
-		public String solve(int n);
+	public interface Problem extends IntFunction<String> {
+		
 	}
 }

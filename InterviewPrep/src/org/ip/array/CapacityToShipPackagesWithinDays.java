@@ -1,5 +1,7 @@
 package org.ip.array;
 
+import java.util.Arrays;
+import java.util.IntSummaryStatistics;
 import java.util.function.ToIntBiFunction;
 
 import org.ip.Test;
@@ -20,45 +22,29 @@ public class CapacityToShipPackagesWithinDays {
 
 		@Override
 		public int applyAsInt(int[] t, Integer u) {
-			if (t == null || t.length == 0) return 0;
-			int d = u;
-			int left = max(t);
-			int right = sum(t);
-			for (; left < right; ) {
-				int mid = left + (right - left) / 2;
-				if (canShip(t, d, mid)) {
-					right = mid;
+			int k = u;
+			IntSummaryStatistics stats = Arrays.stream(t).summaryStatistics();
+			int h = (int) stats.getSum();
+			for (int l = Math.max((int) stats.getSum() / k, stats.getMax()); l < h; ) {
+				int m = l + (h - l) / 2;
+				if (nDays(t, m) <= k) {
+					h = m;
 				} else {
-					left = mid + 1;
+					l = m + 1;
 				}
 			}
-			return right;
+			return h;
 		}
-		int sum(int[] t) {
-			int sum = 0;
-			for (int i = 0; i < t.length; i++) {
-				sum += t[i];
-			}
-			return sum;
-		}
-		int max(int[] t) {
-			int min = Integer.MIN_VALUE;
-			for (int i = 0; i < t.length; i++) {
-				min = Math.max(min, t[i]);
-			}
-			return min;
-		}
-		boolean canShip(int[] t, int d, int w) {
-			int cum = 0;
-			for (int i = 0; i < t.length; i++) {
-				if (w - t[i] < cum) {
-					cum = t[i];
-					if (--d <= 0) return false;
-				} else {
-					cum += t[i];
+		int nDays(int[] a, int n) {
+			int days = 1;
+			for (int i = 0, sum = 0; i < a.length; i++) {
+				sum += a[i];
+				if (sum > n) {
+					sum = a[i];
+					days++;
 				}
 			}
-			return true;
+			return days;
 		}
 		
 	}

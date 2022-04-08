@@ -1,11 +1,11 @@
 package org.ip.bst;
 
+import static org.ip.tree.TreeTest.bst3;
+
 import java.util.Iterator;
 
 import org.ip.tree.Node;
 import org.ip.tree.iterator.OrderPre;
-
-import static org.ip.tree.TreeTest.bst3;
 
 // EPI 2018: 14.5
 public class NodeFromPreOrder {

@@ -2,17 +2,21 @@ package org.ip;
 
 public class Tactics {
 	/**
-	 * Data structure: queues, stack, hashtable, graph, tree, bst, trie, heap, bloom filter, linked list, array, 2d array, strings, interval tree
-	 * approach: binary search, divide and conquer, dp, toposort, recursion
+	 * Data structure
+	 * queues, circular queues, stack, monotonic stack, hashtable, graph, heap, bloom filter, linked list, 2d array
+	 * nary tree, binary tree, bst, perfect tree, balanced tree, trie, interval tree, nb of nodes, height, descendant, parent, sibling
+	 * array, sorted, unique
+	 * strings, character set, length
+	 * integer, sign, overflow
 	 * 
-	 * Tree / graph: dfs (pre, in, post), bfs, a start, dijikstra
-	 * Recursion: top down, bottom up
-	 * 
+	 * Algos
+	 * binary search, divide and conquer, DP
+	 * Array: in order, reverse, partition (3 flags), prefix sum
+	 * Tree / graph: dfs (pre, in, post), bfs, a star, dijikstra, toposort
+	 * Union Find
+	 * Recursion: top down, bottom up, memoization
 	 * sort: quicksort, mergesort, bubble sort, selection sort, insertion sort, bucket sort, counting sort, radix sort
 	 * string: rabin karpe, KMP
-	 *  
-	 * index: partition
-	 * sum: prefix sum
 	 * 
 	 * 2 players games: minimax
 	 * 
@@ -27,15 +31,18 @@ public class Tactics {
 	 * next letter pointers
 	 * 
 	 * Binary Search
-	 * l < h
 	 * when l = m
+	 * l < h
 	 * m = l + (h - l + 1) / 2;
-	 * when l = m + 1 
+	 * when l = m + 1, r = m - 1
+	 * l <= h
 	 * m = l + (h - l) / 2;
+	 * when r = m
+	 * l < h
+	 * 
+	 * 
 	 * https://stackoverflow.com/questions/26564658/binary-search-and-invariant-relation
 	 * https://heidi-newton.com/blog/getting-good-at-leetcode
-	 * 
-	 * Can replace fixed size queue with circular queue.
 	 */
 	
 }

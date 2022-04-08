@@ -1,46 +1,75 @@
 package org.ip.bst;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
+import org.ip.Test;
 import org.ip.tree.TreeNode;
 
 /**
  * <a href="https://leetcode.com/problems/closest-binary-search-tree-value/">LC: 270</a>
  */
 public class BSTClosestValue {
-	public static void main(String[] s) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public static void main(String[] s) {
 		Object[] tc1 = new Object[] {4, new Integer[] {4,2,5,1,3}, 3.714286};
 		Object[] tc2 = new Object[] {Integer.MAX_VALUE, new Integer[] {Integer.MAX_VALUE}, -Double.MAX_VALUE};
 		Object[] tc3 = new Object[] {Integer.MIN_VALUE, new Integer[] {Integer.MIN_VALUE}, Double.MAX_VALUE};
 		Object[] tc4 = new Object[] {0, new Integer[] {}, Double.MAX_VALUE};
 		Object[] tc5 = new Object[] {2, new Integer[] {5,3,6,2,4}, 1d};
-		List<Object[]> tcs = Arrays.asList(tc1, tc2, tc3, tc4, tc5);
-		Class<? extends Problem>[] solvers = new Class[] {Solver.class};
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5};
 		for (Object[] tc : tcs) {
-			System.out.print(tc[0]);
-			System.out.println();
-			for (Class<? extends Problem> solver : solvers) {
-				Problem function = solver.getConstructor(TreeNode.class).newInstance(TreeNode.fromBfs((Integer[]) tc[1]));
-				System.out.print(function.apply((Double) tc[2]));
-				System.out.println();
-			}
-			System.out.println();
+			tc[1] = TreeNode.fromBfs((Integer[]) tc[1]);
 		}
+		Problem[] solvers = new Problem[] {new Solver(), new Solver2(), new Solver3()};
+		Test.apply(solvers, tcs);
 	}
-	public static class Solver implements Problem {
-		private TreeNode root;
-
-		public Solver(TreeNode root) {
-			this.root = root;
-		}
+	static class Solver2 implements Problem {
 
 		@Override
-		public Integer apply(Double t) {
+		public Integer apply(TreeNode t, Double u) {
+			if (t == null) return 0;
+			TreeNode pt = t;
+			while (t != null) {
+				int cmp = u.compareTo((double) t.val);
+				if (cmp == 0) {
+					return t.val;
+				}
+				double diff = Math.abs(Double.sum(t.val, -u));
+				double prev = Math.abs(Double.sum(pt.val, -u));
+				if (diff < prev) {
+					pt = t;
+				}
+				t = cmp > 0 ? t.right : t.left;
+			}
+			return pt.val;
+		}
+	}
+	static class Solver3 implements Problem {
+
+		@Override
+		public Integer apply(TreeNode t, Double u) {
+			if (t == null) return 0;
+			return _apply(t, u);
+		}
+		Integer _apply(TreeNode t, Double u) {
+			if (t == null) return null;
+			
+			int cmp = u.compareTo((double) t.val);
+			if (cmp == 0) {
+				return t.val;
+			}
+			Integer child = cmp > 0 ? _apply(t.right, u) : _apply(t.left, u);
+			if (child == null) return t.val;
+			double diff = Math.abs(Double.sum(t.val, -u));
+			double prev = Math.abs(Double.sum(child, -u));
+			return Double.compare(diff, prev) < 0 ? t.val : child; 
+		}
+		
+	}
+	public static class Solver implements Problem {
+		@Override
+		public Integer apply(TreeNode root, Double t) {
 			AtomicInteger closest = new AtomicInteger();
 			AtomicBoolean set = new AtomicBoolean(false);
 			_solve(closest, set, root, t);
@@ -70,7 +99,7 @@ public class BSTClosestValue {
 		}
 		
 	}
-	public interface Problem extends Function<Double, Integer> {
+	interface Problem extends BiFunction<TreeNode, Double, Integer> {
 		
 	}
 }

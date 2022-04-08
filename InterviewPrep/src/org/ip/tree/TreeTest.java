@@ -182,10 +182,6 @@ public class TreeTest {
 		System.out.println(tree.lcaParentfull(10, 20));
 		System.out.println(tree.lcaParentfull(50, 80));
 		System.out.println(tree.lcaParentfull(20, 60));
-		
-		System.out.println(tree.lcaParentless(10, 20));
-		System.out.println(tree.lcaParentless(50, 80));
-		System.out.println(tree.lcaParentless(20, 60));
 	}
 
 	public static void testPopulateSibling() {

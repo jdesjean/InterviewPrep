@@ -183,9 +183,6 @@ public class Tree<T> {
 	public Node<T> lcaParentfull(T v1, T v2) {
 		return new LCAParentfull(this).lca(v1, v2);
 	}
-	public Node<T> lcaParentless(T v1, T v2) {
-		return new LCAParentless<T>(this).lca(v1, v2);
-	}
 	//EPI 10.5
 	//Time: n, Space: H
 	public static int sumRootToLeaf(Tree<Integer> tree) {

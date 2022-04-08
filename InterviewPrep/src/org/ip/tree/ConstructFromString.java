@@ -17,8 +17,44 @@ public class ConstructFromString {
 		Object[] tc3 = new Object[] {new Integer[] {-4,2,6,3,1,5,7}, "-4(2(3)(1))(6(5)(7))"};
 		Object[] tc4 = new Object[] {new Integer[] {4}, "4"};
 		Object[][] tcs = new Object[][] {tc4, tc1, tc2, tc3, tc4};
-		Problem[] solvers = new Problem[] {new Solver()};
+		Problem[] solvers = new Problem[] {new Solver(), new Solver2()};
 		Test.apply(solvers, tcs);
+	}
+	public static class Solver2 implements Problem  {
+
+		@Override
+		public TreeNode apply(String t) {
+			return _apply(t, new AtomicInteger(0));
+		}
+		TreeNode _apply(String t, AtomicInteger idx) {
+			if (idx.get() == t.length()) {
+				return null;
+			}
+			TreeNode node = new TreeNode(getInteger(t, idx));
+			node.left = getNode(t, idx);
+			node.right = node.left != null ? getNode(t, idx) : null;
+			return node;
+		}
+		int getInteger(String t, AtomicInteger idx) {
+			int v = 0;
+			int sign = 1;
+			if (t.charAt(idx.get()) == '-') {
+				sign = -1;
+				idx.incrementAndGet();
+			}
+			for (; idx.get() < t.length() && Character.isDigit(t.charAt(idx.get())); idx.incrementAndGet()) {
+				v = v * 10 + Character.digit(t.charAt(idx.get()), 10);
+			}
+			v *= sign;
+			return v;
+		}
+		TreeNode getNode(String t, AtomicInteger idx) {
+			if (idx.get() >= t.length() || t.charAt(idx.get()) != '(') return null;
+			idx.incrementAndGet();
+			TreeNode child = _apply(t, idx);
+			idx.incrementAndGet();
+			return child;
+		}
 	}
 	public static class Solver implements Problem  {
 

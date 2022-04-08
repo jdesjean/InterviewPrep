@@ -1,5 +1,6 @@
 package org.ip.string;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
@@ -15,10 +16,31 @@ public class PalindromePermutation {
 		Object[] tc2 = new Object[] {true, "aab"};
 		Object[] tc3 = new Object[] {true, "carerac"};
 		Object[][] tcs = new Object[][] {tc1, tc2, tc3};
-		Problem[] solvers = new Problem[] {new Solver()};
+		Problem[] solvers = new Problem[] {new Solver(), new Solver2()};
 		Test.apply(solvers, tcs);
 	}
-	public static class Solver implements Problem {
+	static class Solver2 implements Problem {
+
+		private final static byte[] ALL_MINUS_ONES = new byte[26];
+		static {
+			Arrays.fill(ALL_MINUS_ONES, (byte)-1);
+		}
+		@Override
+		public Boolean apply(String t) {
+			return odd(t) <= 1;
+		}
+		
+		int odd(String t) {
+			byte[] odd = Arrays.copyOf(ALL_MINUS_ONES, 26);
+			int count = 0;
+			for (int i = 0 ;i < t.length(); i++) {
+				count += odd[t.charAt(i) - 'a'] *= -1;
+			}
+			return count;
+		}
+		
+	}
+	static class Solver implements Problem {
 
 		@Override
 		public Boolean apply(String t) {
@@ -38,7 +60,7 @@ public class PalindromePermutation {
 		}
 		
 	}
-	public interface Problem extends Function<String, Boolean> {
+	interface Problem extends Function<String, Boolean> {
 		
 	}
 }

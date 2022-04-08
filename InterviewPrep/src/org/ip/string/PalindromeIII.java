@@ -15,7 +15,7 @@ public class PalindromeIII {
 		Object[] tc3 = new Object[] { false, "abcdeca", 1};
 		
 		Object[][] tcs = new Object[][] { tc1, tc2, tc3};
-		Problem[] solvers = new Problem[] { new RecursiveSolver(), new DPSolver() };
+		Problem[] solvers = new Problem[] { new Recursive(), new RecursiveSolver(), new DPSolver(), new DPSolver() };
 		Test.apply(solvers, tcs);
 	}
 	static class DPSolver implements Problem {
@@ -24,11 +24,10 @@ public class PalindromeIII {
 		public boolean test(String t, Integer u) {
 			int k = u;
 			int[] cache = new int[t.length()];
-			int temp = 0;
 			for (int l = t.length() - 2; l >= 0; l--) {
 				int prev = 0;
 				for (int r = l + 1; r < t.length(); r++) {
-					temp = cache[r];
+					int temp = cache[r];
 					if (t.charAt(l) == t.charAt(r)) {
 						cache[r] = prev; //cache[l + 1][r - 1]
 					} else {
@@ -42,6 +41,18 @@ public class PalindromeIII {
 			return cache[t.length() - 1] <= k;
 		}
 		
+	}
+	static class DP implements Problem {
+		@Override
+		public boolean test(String t, Integer u) {
+			int[][] cache = new int[t.length()][t.length()];
+			for (int l = t.length() - 2; l >= 0; l--) {
+				for (int c = l + 1; c < t.length(); c++) {
+					cache[l][c] = t.charAt(l) == t.charAt(c) ? cache[l + 1][c - 1] : Math.min(cache[l + 1][c], cache[l][c - 1]) + 1;
+				}
+			}
+			return cache[0][t.length() - 1] <= u;
+		}
 	}
 	static class RecursiveSolver implements Problem {
 
@@ -65,6 +76,19 @@ public class PalindromeIII {
 			}
 			return cache[l][r];
 		}
+	}
+	static class Recursive implements Problem {
+
+		@Override
+		public boolean test(String t, Integer u) {
+			return _test(t, 0, t.length() - 1, u);
+		}
+		boolean _test(String t, int i, int j, int k) {
+			if (k < 0) return false;
+			if (i >= j) return true;
+			return t.charAt(i) == t.charAt(j) ? _test(t, i + 1, j - 1, k) : _test(t, i + 1, j, k - 1) | _test(t, i, j - 1, k - 1);
+		}
+		
 	}
 	interface Problem extends BiPredicate<String, Integer> {
 		

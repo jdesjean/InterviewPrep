@@ -1,7 +1,8 @@
 package org.ip.leetcode;
 
-import org.ip.tree.Node;
 import static org.ip.tree.Node.node;
+
+import org.ip.tree.Node;
 
 //leetcode 230
 public class BSTKSmallest {

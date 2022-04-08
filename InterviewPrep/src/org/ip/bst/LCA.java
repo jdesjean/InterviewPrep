@@ -1,7 +1,8 @@
 package org.ip.bst;
 
-import org.ip.tree.Node;
 import static org.ip.tree.TreeTest.bst3;
+
+import org.ip.tree.Node;
 
 // EPI 2018: 14.4
 // leetcode 235

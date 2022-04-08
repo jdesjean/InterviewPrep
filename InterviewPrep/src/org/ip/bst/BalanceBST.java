@@ -24,8 +24,8 @@ public class BalanceBST {
 				new Integer[] { 5, 4, 6, 3, null, null, 8, 1, null, null, 9 } };
 		Object[] tc4 = new Object[] { new Integer[] { 17, 5, 19, 4, 10, null, null, null, null, null, null },
 				new Integer[] { 19, 10, null, 4, 17, null, 5 } };
-		Object[] tc5 = new Object[] { new Integer[] { 12, 7, 15, 2, 11, 14, 17, 1, 3, 9, null, null, null, null, null, null, null, null, null, null, null }, new Integer[] { 1, null, 15, 14,
-				17, 7, null, null, null, 2, 12, null, 3, 9, null, null, null, null, 11 } };
+		Object[] tc5 = new Object[] { new Integer[] { 12, 7, 15, 2, 11, 14, 17, 1, 3, 9, null, null, null, null, null, null, null, null, null, null, null },
+				new Integer[] { 1, null, 15, 14, 17, 7, null, null, null, 2, 12, null, 3, 9, null, null, null, null, 11 } };
 		Object[][] tcs = new Object[][] { tc1, tc2, tc3, tc4, tc5 };
 		for (Object[] tc : tcs) {
 			tc[1] = TreeNode.fromBfs((Integer[]) tc[1]);
@@ -41,7 +41,7 @@ public class BalanceBST {
 			TreeNode grand = new TreeNode(0);
 			grand.right = t;
 			int length = _inOrder(grand);
-			return balance(grand, 0, length - 1);
+ 			return balance(grand, 0, length - 1);
 		}
 		int _inOrder(TreeNode grand) {
 			int cnt = 0;

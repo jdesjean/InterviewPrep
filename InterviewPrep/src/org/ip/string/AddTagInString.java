@@ -1,11 +1,12 @@
 package org.ip.string;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 
@@ -21,8 +22,103 @@ public class AddTagInString {
 		Object[] tc3 = new Object[] { "<b>a</b>b<b>c</b>d<b>e</b>f", "abcdef", new String[] {"a","c","e","g"}};
 		Object[] tc4 = new Object[] { "<b>xhhjzbkvpmasiypsqqjobufcqmlhdjffrdohsxgksftaekzhwzydhbfdiylihnvjlvpoptnqigszckimljbepgisnmyszfsxkx</b>y<b>fd</b>fqngytfuihe<b>poh</b>apv<b>hb</b>yhq<b>yd</b>vroflfnsyjmygtykdejfudrhxxawcewg<b>ig</b>uiwsvqrgbxrbdnrvguzjftqcsjb<b>vj</b>lbxfsvzpd<b>pm</b>tlzobwnxrtg<b>is</b>bc<b>qm</b>hugncjwgat<b>fc</b>t<b>yd</b>rya<b>kv</b>b<b>nm</b>lbiftndfefylsmlebzdumefuflwhtwijtrhhhmknklalgqjaoicmnywtvzld<b>be</b>ftk<b>ydj</b>sdkkonayhd<b>xh</b>rjazosqloilagc<b>wz</b>eezavnsqelxqhtlzymedxmkrov<b>xh</b>krgfenyhxgdroeejedbwpnkqbqknalwgxoxweyxngorvrpnf<b>kv</b>agdqkbtuayaihyhwcsdtjzzvxfavrhzgf", "xhhjzbkvpmasiypsqqjobufcqmlhdjffrdohsxgksftaekzhwzydhbfdiylihnvjlvpoptnqigszckimljbepgisnmyszfsxkxyfdfqngytfuihepohapvhbyhqydvroflfnsyjmygtykdejfudrhxxawcewgiguiwsvqrgbxrbdnrvguzjftqcsjbvjlbxfsvzpdpmtlzobwnxrtgisbcqmhugncjwgatfctydryakvbnmlbiftndfefylsmlebzdumefuflwhtwijtrhhhmknklalgqjaoicmnywtvzldbeftkydjsdkkonayhdxhrjazosqloilagcwzeezavnsqelxqhtlzymedxmkrovxhkrgfenyhxgdroeejedbwpnkqbqknalwgxoxweyxngorvrpnfkvagdqkbtuayaihyhwcsdtjzzvxfavrhzgf", new String[] {"xh","hj","zb","kv","pm","as","iy","ps","qq","jo","bu","fc","qm","lh","dj","ff","rd","oh","sx","gk","sf","ta","ek","zh","wz","yd","hb","fd","li","hn","vj","lv","po","pt","nq","ig","sz","ck","im","lj","be","pg","is","nm","ys","zf","kx"}};
 		Object[][] tcs = new Object[][] { tc1, tc2, tc3, tc4};
-		Problem[] solvers = new Problem[] { new Solver2(), new Solver() };
+		Problem[] solvers = new Problem[] { new Solver2(), new Solver(), new Solver3(), new Solver4() };
 		Test.apply(solvers, tcs);
+	}
+	static class Solver4 implements Problem {
+
+		@Override
+		public String apply(String t, String[] u) {
+			StringBuilder sb = new StringBuilder();
+			int end = -1;
+			for (int i = 0, start = -1; i < t.length(); i++) {
+				for (String word : u) {
+					if (t.startsWith(word, i)) {
+						if (end < i) start = i;
+						end = Math.max(end, i + word.length());
+					}
+				}
+				if (end == i) {
+					sb.append("</b>");
+				}
+				if (i == start) {
+					sb.append("<b>");
+				}
+				sb.append(t.charAt(i));
+			}
+			if (end == t.length()) {
+				sb.append("</b>");
+			}
+			// need to close
+			return sb.toString();
+		}
+		
+		
+	}
+	static class Solver3 implements Problem {
+
+		@Override
+		public String apply(String t, String[] u) {
+			Trie trie = new Trie(u);
+			StringBuilder sb = new StringBuilder();
+			int end = -1;
+			for (int i = 0, start = -1; i < t.length(); i++) {
+				Node prev = null;
+				for (int j = i; j < t.length(); j++) {
+					Node node = j == i ? trie.getNode(t.charAt(j)) : trie.getNode(t.charAt(j), prev);
+					prev = node;
+					if (node == null) break;
+					if (node.end == null) continue;
+					if (end < i) start = i;
+					end = Math.max(end, j + 1);
+				}
+				if (end == i) {
+					sb.append("</b>");
+				}
+				if (i == start) {
+					sb.append("<b>");
+				}
+				sb.append(t.charAt(i));
+			}
+			if (end == t.length()) {
+				sb.append("</b>");
+			}
+			// need to close
+			return sb.toString();
+		}
+		
+		
+	}
+	static class Node {
+		public Map<Character, Node> childs = new HashMap<>(); //lower case letters + digits
+		public String end;
+	}
+	static class Trie {
+		private Node root = new Node();
+		public Trie(String[] s) {
+			for (int i = 0; i < s.length; i++) {
+				add(s[i],i);
+			}
+		}
+		public Trie(List<String> s) {
+			for (int i = 0; i < s.size(); i++) {
+				add(s.get(i),i);
+			}
+		}
+		private void add(String s, int position) {
+			if (s == null || s.length() == 0) return;
+			Node current = root;
+			for (int i = 0; i < s.length(); i++) {
+				current = current.childs.computeIfAbsent(s.charAt(i), (k) -> new Node());
+			}
+			current.end = s;
+		}
+		public Node getNode(char c) {
+			return getNode(c,root);
+		}
+		public Node getNode(char c, Node current) {
+			return current.childs.get(c); 
+		}
 	}
 	static class Solver2 implements Problem {
 

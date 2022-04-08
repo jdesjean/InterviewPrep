@@ -1,9 +1,12 @@
 package org.ip.tree;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.ip.Test;
@@ -22,8 +25,29 @@ public class LargestInEachRow {
 		for (Object[] tc : tcs) {
 			tc[1] = TreeNode.fromBfs((Integer[])tc[1]);
 		}
-		Problem[] solvers = new Problem[] { new Solver() };
+		Problem[] solvers = new Problem[] { new Solver(), new Solver2() };
 		Test.apply(solvers, tcs);
+	}
+	static class Solver2 implements Problem {
+
+		@Override
+		public List<Integer> apply(TreeNode t) {
+			Deque<TreeNode> deque = new ArrayDeque<>(t != null ? Arrays.asList(t) : Arrays.asList());
+			List<Integer> res = new ArrayList<>();
+			Consumer<TreeNode> addNonNull = (child) -> {
+				if (child != null) deque.add(child);
+			};
+			for (int max = Integer.MIN_VALUE; !deque.isEmpty(); max = Integer.MIN_VALUE) {
+				for (int size = deque.size(); size > 0; size--) {
+					TreeNode current = deque.remove();
+					max = Math.max(max, current.val);
+					addNonNull.accept(current.left);
+					addNonNull.accept(current.right);
+				}
+				res.add(max);
+			}
+			return res;
+		}
 	}
 	static class Solver implements Problem {
 

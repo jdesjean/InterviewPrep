@@ -1,9 +1,10 @@
 package org.ip.tree.reducer;
 
+import java.lang.reflect.Array;
+
 import org.ip.tree.Node;
 import org.ip.tree.Tree;
 import org.ip.tree.Tree.ArrayVisitor;
-import java.lang.reflect.Array;
 
 public class ReducerBooleanPrint<T extends Comparable<T>> implements Boolean<T> {
 	private ArrayVisitor<T> visitor;

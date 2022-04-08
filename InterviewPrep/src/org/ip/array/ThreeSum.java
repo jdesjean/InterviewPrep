@@ -8,51 +8,28 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.ip.Test;
 
 /**
  * <a href="https://leetcode.com/problems/3sum/">LC: 15</a>
  */
 public class ThreeSum {
 	public static void main(String[] s) {
-		List<Consumer<Solver>> consumers = Arrays.asList(
-				ThreeSum::tc1,
-				ThreeSum::tc2,
-				ThreeSum::tc3,
-				ThreeSum::tc4,
-				ThreeSum::tc5);
+		Object[] tc1 = new Object[] {new int[][] {{-1,-1,2}, {-1,0,1}}, new int[] {-1,0,1,2,-1,-4}};
+		Object[] tc2 = new Object[] {new int[][] {}, new int[] {}};
+		Object[] tc3 = new Object[] {new int[][] {}, new int[] {0}};
+		Object[] tc4 = new Object[] {new int[][] {}, new int[] {0,0,0}};
+		Object[] tc5 = new Object[] {new int[][] {{-1,0,1}}, new int[] {1,-1,-1,0}};
+		
+		Object[][] tcs = new Object[][] {tc1, tc2, tc3, tc4, tc5};
 		Solver[] solvers = new Solver[] {new MapSolver(), new SortSolver()};
-		for (Consumer<Solver> consumer : consumers) {
-			for (Solver solver : solvers) {
-				consumer.accept(solver);
-			}
-			System.out.println();
-		}
-	}
-	public static void tc1(Solver solver) {
-		//[[-1,-1,2],[-1,0,1]]
-		System.out.println(solver.solve(new int[] {-1,0,1,2,-1,-4}));
-	}
-	public static void tc2(Solver solver) {
-		//[]
-		System.out.println(solver.solve(new int[] {}));
-	}
-	public static void tc3(Solver solver) {
-		//[]
-		System.out.println(solver.solve(new int[] {0}));
-	}
-	public static void tc4(Solver solver) {
-		//[]
-		System.out.println(solver.solve(new int[] {0,0,0}));
-	}
-	public static void tc5(Solver solver) {
-		//[[-1,0,1]]
-		System.out.println(solver.solve(new int[] {1,-1,-1,0}));
+		Test.apply(solvers, tcs);
 	}
 	public static class SortSolver implements Solver {
-
 		@Override
-		public List<List<Integer>> solve(int[] nums) {
+		public List<List<Integer>> apply(int[] nums) {
 			List<List<Integer>> res = new ArrayList<>();
 			Arrays.sort(nums);
 			for (int i = 0; i < nums.length; i++) {
@@ -62,6 +39,7 @@ public class ThreeSum {
 			}
 			return res;
 		}
+		
 		void _solve(int[] nums, List<List<Integer>> res, int index) {
 			for (int i = index + 1, j = nums.length - 1; i < j;) {
 				int sum = nums[index] + nums[i] + nums[j];
@@ -77,11 +55,12 @@ public class ThreeSum {
 				}
 			}
 		}
+		
 	}
 	public static class MapSolver implements Solver {
 
 		@Override
-		public List<List<Integer>> solve(int[] nums) {
+		public List<List<Integer>> apply(int[] nums) {
 			Map<Integer, Set<Integer>> map = map(nums);
 			Set<Triplet> set = new LinkedHashSet<>();
 			//Arrays.sort(nums);
@@ -127,9 +106,10 @@ public class ThreeSum {
 			}
 			return res;
 		}
+		
 	}
-	public interface Solver {
-		public List<List<Integer>> solve(int[] nums);
+	public interface Solver extends Function<int[], List<List<Integer>>>{
+		
 	}
 	private static class Triplet {
 		private final int a;

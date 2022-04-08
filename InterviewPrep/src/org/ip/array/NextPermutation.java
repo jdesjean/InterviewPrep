@@ -29,7 +29,7 @@ public class NextPermutation {
 			// l < 0 all decreasing (left to right)
 			if (l >= 0) {
 				int r = nums.length - 1;
-				for (; r >= l; ) {
+				for (; r >= l; r--) {
 					if (nums[l] < nums[r]) break;
 				}
 				swap(nums, l, r);
