@@ -32,16 +32,14 @@ public class WebCrawlerMultithreaded {
 	}
 	static class Solver implements Problem {
 
-		ReentrantLock lock = new ReentrantLock();
-		Condition empty = lock.newCondition();
 		ExecutorService executor = Executors.newFixedThreadPool(4);
-		Set<String> visited = ConcurrentHashMap.newKeySet();
 		
 		@Override
 		public List<String> apply(String t, HtmlParser u) {
 			Count count = new Count(1);
+			Set<String> visited = ConcurrentHashMap.newKeySet();
 			visited.add(t);
-			executor.execute(new ProcessLinks(t, domain(t), u, count));
+			executor.execute(new ProcessLinks(t, domain(t), u, count, visited));
 			try {
 				count.awaitEmpty();
 				executor.shutdown();
@@ -64,11 +62,13 @@ public class WebCrawlerMultithreaded {
 			private String url;
 			private String domain;
 			private Count count;
-			public ProcessLinks(String t, String domain, HtmlParser u, Count count) {
+			private Set<String> visited;
+			public ProcessLinks(String t, String domain, HtmlParser u, Count count, Set<String> visited) {
 				this.url = t;
 				this.domain = domain;
 				this.parser = u;
 				this.count = count;
+				this.visited = visited;
 			}
 			@Override
 			public void run() {
@@ -81,7 +81,7 @@ public class WebCrawlerMultithreaded {
 							.toList();
 					size += n.size();
 					n.stream()
-						.map(next -> new ProcessLinks(next, domain, parser, count))
+						.map(next -> new ProcessLinks(next, domain, parser, count, visited))
 						.forEach(executor::execute);
 				}
 				count.incr(size - 1);
