@@ -1,4 +1,4 @@
-package org.ip.primitives;
+package org.ip.stream;
 
 public class RateLimiter {
 	public static void main(String[] s) {

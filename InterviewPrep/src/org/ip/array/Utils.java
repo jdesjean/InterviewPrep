@@ -192,6 +192,8 @@ public class Utils {
 			System.out.print(Arrays.toString((Integer[])array));
 		} else if (array instanceof Boolean[]) {
 			System.out.print(Arrays.toString((Boolean[])array));
+		} else if (array instanceof String[]) {
+			System.out.print(Arrays.toString((String[])array));
 		} else if (array instanceof char[][]) {
 			Utils.print((char[][]) array);
 		} else if (array instanceof String[][]) {

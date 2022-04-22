@@ -12,11 +12,14 @@ public class Tactics {
 	 * Algos
 	 * binary search, divide and conquer, DP
 	 * Array: in order, reverse, partition (3 flags), prefix sum
-	 * Tree / graph: dfs (pre, in, post), bfs, a star, dijikstra, toposort
+	 * Tree / graph: dfs (pre, in, post), bfs, a star, dijikstra, toposort, 
+	 * Square of adjacency matrix represents number of walks of length two from vertex i to j
+	 * 
 	 * Union Find
 	 * Recursion: top down, bottom up, memoization
 	 * sort: quicksort, mergesort, bubble sort, selection sort, insertion sort, bucket sort, counting sort, radix sort
 	 * string: rabin karpe, KMP
+	 * 
 	 * 
 	 * 2 players games: minimax
 	 * 
@@ -34,9 +37,11 @@ public class Tactics {
 	 * when l = m
 	 * l < h
 	 * m = l + (h - l + 1) / 2;
+	 * 
 	 * when l = m + 1, r = m - 1
 	 * l <= h
 	 * m = l + (h - l) / 2;
+	 * 
 	 * when r = m
 	 * l < h
 	 * 

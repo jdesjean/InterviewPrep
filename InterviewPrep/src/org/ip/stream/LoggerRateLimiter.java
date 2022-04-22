@@ -1,6 +1,5 @@
-package org.ip;
+package org.ip.stream;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiPredicate;
@@ -31,6 +30,7 @@ public class LoggerRateLimiter {
 		public boolean test(Integer timestamp, String message) {
 			Integer prev = map.get(message);
 			latest = timestamp;
+			
 			boolean canPrint = prev == null || timestamp - prev >= 10;
 			if (canPrint) {
 				map.put(message, timestamp);

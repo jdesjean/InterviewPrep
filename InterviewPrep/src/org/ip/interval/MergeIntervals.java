@@ -1,4 +1,4 @@
-package org.ip.array;
+package org.ip.interval;
 
 import java.util.ArrayDeque;
 import java.util.Arrays;

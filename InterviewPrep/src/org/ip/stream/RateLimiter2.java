@@ -1,4 +1,4 @@
-package org.ip.primitives;
+package org.ip.stream;
 
 import java.util.Deque;
 import java.util.LinkedList;
